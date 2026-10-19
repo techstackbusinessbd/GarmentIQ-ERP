@@ -105,6 +105,8 @@ services:
   # 6. MinIO (S3-Compatible Object Storage)
   # ---------------------------------------------------------------------------
   minio:
+    profiles:
+      - storage
     image: minio/minio:latest
     container_name: garments_erp_minio
     restart: unless-stopped
