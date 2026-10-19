@@ -18,6 +18,7 @@
 - [HARDWARE_COST_AND_DEVICES.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/HARDWARE_COST_AND_DEVICES.md) — ডিভাইস ও হার্ডওয়্যার খরচ গাইড (জিরো ভেন্ডর লক-ইন ও সাশ্রয়ী বাজেট)।
 - [TECH_STACK.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/TECH_STACK.md) — গ্রুপভিত্তিক পূর্ণাঙ্গ টেক স্ট্যাক ও সকল লাইব্রেরির তালিকা।
 - [BUSINESS_RULES.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/BUSINESS_RULES.md) — তৈরি পোশাক খাতের নির্দিষ্ট হিসাব-নিকাশ (সুতার কনজাম্পশন, ৪-পয়েন্ট ফেব্রিক চেকিং, কাটিং অপচয়)।
+- [VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md) — ভার্সন কন্ট্রোল, গিট ব্রাঞ্চিং স্ট্র্যাটেজি, কনভেনশনাল কমিটস ও রিলিজ ম্যানেজমেন্ট।
 
 ### ৩. 👥 টিম ও প্রজেক্ট ম্যানেজমেন্ট ([docs/management/](file:///g:/ERP-Software/Garments-ERP/docs/management/))
 - [TASK_BOARD.md](file:///g:/ERP-Software/Garments-ERP/docs/management/TASK_BOARD.md) — লাইভ স্ক্রাম স্প্রিন্ট টাস্ক বোর্ড ও কাজের সামগ্রিক মাইলস্টোন।
@@ -27,11 +28,13 @@
 
 ### ৪. 📑 রিকোয়ারমেন্টস, বিআরডি ও এসওপি ([docs/requirements/](file:///g:/ERP-Software/Garments-ERP/docs/requirements/))
 - [SRS.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/SRS.md) — মাস্টার সফটওয়্যার রিকোয়ারমেন্টস পোর্টাল (IEEE 830)।
+  - [SRS-00: ফাউন্ডেশন ও টেক স্ট্যাক](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_00_FOUNDATION.md)
   - [SRS-01: মার্চেন্ডাইজিং ও অর্ডার](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_01_MERCHANDISING.md)
   - [SRS-02: ফেব্রিক ও ট্রিমস ইনভেন্টরি](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_02_FABRIC_INVENTORY.md)
   - [SRS-03: প্রোডাকশন প্ল্যানিং ও শপ ফ্লোর](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_03_PRODUCTION_PLANNING.md)
   - [SRS-04: কোয়ালিটি কন্ট্রোল (QC/QA)](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_04_QUALITY_CONTROL.md)
   - [SRS-05: কমার্শিয়াল ও শিপিং](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_05_COMMERCIAL_SHIPPING.md)
+  - [SRS-06: ভার্সন কন্ট্রোল ও রিলিজ](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_06_VERSION_CONTROL.md)
 - [BRD_MERCHANDISING.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/BRD/BRD_MERCHANDISING.md) — মার্চেন্ডাইজিং ও বায়ার অর্ডার বিজনেস রুলস।
 - [BRD_PRODUCTION_CUTTING.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/BRD/BRD_PRODUCTION_CUTTING.md) — কাটিং অর্ডার ও মার্কার প্ল্যানিং রিকোয়ারমেন্ট।
 - [SOP_FABRIC_INSPECTION.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/SOP/SOP_FABRIC_INSPECTION.md) — ফেব্রিক রোল ৪-পয়েন্ট সিস্টেম ইন্সপেকশন এসওপি।

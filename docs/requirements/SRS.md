@@ -34,6 +34,10 @@
 - 📄 **পূর্ণাঙ্গ স্পেসিফিকেশন**: [srs/SRS_05_COMMERCIAL_SHIPPING.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_05_COMMERCIAL_SHIPPING.md)
 - **স্কোপ**: অটোমেটিক প্যাকিং লিস্ট বিল্ডার, কমার্শিয়াল ইনভয়েস, এক্সপোর্ট এল/সি ট্র্যাকিং ও ফ্যাক্টরি গেট পাস।
 
+### ৬. 🔄 ভার্সন কন্ট্রোল ও রিলিজ ম্যানেজমেন্ট (SRS-06)
+- 📄 **পূর্ণাঙ্গ স্পেসিফিকেশন**: [srs/SRS_06_VERSION_CONTROL.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_06_VERSION_CONTROL.md)
+- **স্কোপ**: এন্টারপ্রাইজ গিট ব্রাঞ্চিং মডেল (`main`, `develop`, `feature/`), কনভেনশনাল কমিট মেসেজ, পিআর অনুমোদন গেট, ফ্লাইওয়ে ডেটাবেজ স্কিমা ভার্সনিং ও সেমভার ২.০ রিলিজ ট্যাগিং।
+
 ---
 
 ## 🔒 গ্লোবাল নন-ফাংশনাল নীতিমালা (Cross-Cutting Requirements):

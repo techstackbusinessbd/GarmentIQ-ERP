@@ -53,3 +53,35 @@ is_deleted    BOOLEAN NOT NULL DEFAULT FALSE  -- Soft Delete Support
 6. **`fabric_rolls`**: রোল নম্বর, লট নম্বর, জিএসএম (GSM), গজ/কেজি এবং ৪-পয়েন্ট কিউসি স্কোর।
 7. **`cutting_orders`**: মার্কার লেন্থ, প্লাই কাউন্ট ও টোটাল কাটিং কোয়ান্টিটি।
 8. **`bundle_cards`**: প্রতিটি কাটিং বান্ডিলের বারকোড, সাইজ, সিরিয়াল ও সুইং লাইন ট্র্যাকিং।
+
+---
+
+## ৩. মাল্টি-টেন্যান্ট ডাইনামিক ফিল্ডস ও মেটাডাটা স্কিমা (Tenant Dynamic Fields & JSONB Engine - ADR-008)
+
+মাল্টি-টেন্যান্ট SaaS গ্রাহকদের ভিন্ন ভিন্ন তথ্যের চাহিদার জন্য কোর রিলেশনাল কলামের পাশাপাশি হাইব্রিড JSONB ইঞ্জিন ব্যবহৃত হবে:
+
+```sql
+-- ১. ক্লায়েন্ট কাস্টম ফিল্ড মেটাডাটা ডেফিনিশন টেবিল
+CREATE TABLE tenant_custom_field_definitions (
+    id                UUID PRIMARY KEY,               -- RFC 9562 UUIDv7
+    tenant_id         UUID NOT NULL,                  -- নির্দিষ্ট ক্লায়েন্ট
+    entity_name       VARCHAR(50) NOT NULL,           -- e.g. 'users', 'buyers', 'orders'
+    field_name        VARCHAR(50) NOT NULL,           -- e.g. 'nid_number', 'blood_group'
+    field_label       VARCHAR(100) NOT NULL,          -- UI Label
+    data_type         VARCHAR(20) NOT NULL,           -- STRING, NUMBER, DATE, BOOLEAN, SELECT
+    is_required       BOOLEAN NOT NULL DEFAULT FALSE,
+    validation_regex  VARCHAR(255),
+    dropdown_options  JSONB DEFAULT '[]'::jsonb,      -- ড্রপডাউন অপশনস
+    display_order     INT NOT NULL DEFAULT 0,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by        VARCHAR(100) NOT NULL,
+    version           BIGINT NOT NULL DEFAULT 0,
+    CONSTRAINT uq_tenant_entity_field UNIQUE (tenant_id, entity_name, field_name)
+);
+
+-- ২. ব্যবসায়িক টেবিলে কাস্টম অ্যাট্রিবিউটস JSONB কলামের প্রয়োগ (e.g. users / styles)
+-- custom_attributes JSONB NOT NULL DEFAULT '{}'::jsonb
+-- এবং উচ্চগতির ফিল্টারিং ও সার্চের জন্য GIN ইনডেক্স:
+-- CREATE INDEX idx_users_custom_attrs ON users USING gin (custom_attributes jsonb_path_ops);
+```
+
