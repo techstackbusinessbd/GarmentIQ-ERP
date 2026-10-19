@@ -82,7 +82,7 @@ export const ThemeSwitcher = () => {
           <div className="px-3.5 py-2 border-b border-border-subtle flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-text-primary">
               <Sparkles size={14} className="text-brand-accent" />
-              <span>Theme System / থিম নির্বাচন</span>
+              <span>Enterprise Theme System</span>
             </div>
             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-muted text-text-muted">
               4 Palettes

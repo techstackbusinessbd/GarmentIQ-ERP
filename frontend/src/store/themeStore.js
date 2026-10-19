@@ -32,7 +32,6 @@ export const AVAILABLE_THEMES = [
   {
     id: 'indigo',
     name: 'Royal Indigo & Denim',
-    bnName: 'রয়্যাল ইন্ডিগো ও ডেনিম',
     subtitle: 'Merchandising & Core Denim O2S',
     accentColor: '#4f46e5',
     sidebarColor: '#0f172a',
@@ -41,7 +40,6 @@ export const AVAILABLE_THEMES = [
   {
     id: 'sapphire',
     name: 'Sapphire Corporate',
-    bnName: 'স্যাফায়ার কর্পোরেট',
     subtitle: 'Commercial, Finance & Executive',
     accentColor: '#2563eb',
     sidebarColor: '#111827',
@@ -50,7 +48,6 @@ export const AVAILABLE_THEMES = [
   {
     id: 'emerald',
     name: 'Emerald Sustainable',
-    bnName: 'এমারেল্ড সাসটেইনেবল',
     subtitle: 'Eco-Audit, GOTS & Green Factory',
     accentColor: '#059669',
     sidebarColor: '#064e3b',
@@ -59,7 +56,6 @@ export const AVAILABLE_THEMES = [
   {
     id: 'obsidian',
     name: 'Midnight Obsidian',
-    bnName: 'মিডনাইট অবসিডিয়ান',
     subtitle: 'Floor Touchscreens & Night Shift',
     accentColor: '#6366f1',
     sidebarColor: '#090d16',
