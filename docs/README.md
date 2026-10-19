@@ -20,7 +20,7 @@
 - [BUSINESS_RULES.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/BUSINESS_RULES.md) — তৈরি পোশাক খাতের নির্দিষ্ট হিসাব-নিকাশ (সুতার কনজাম্পশন, ৪-পয়েন্ট ফেব্রিক চেকিং, কাটিং অপচয়)।
 - [VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md) — ভার্সন কন্ট্রোল, গিট ব্রাঞ্চিং স্ট্র্যাটেজি, কনভেনশনাল কমিটস ও রিলিজ ম্যানেজমেন্ট।
 - [STORAGE_AND_CACHING_ARCHITECTURE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/STORAGE_AND_CACHING_ARCHITECTURE.md) — অবজেক্ট স্টোরেজ (MinIO/S3) ও ৩-স্তরের ক্যাশিং আর্কিটেকচার (Caffeine+Redis+TanStack)।
-
+- [ENTERPRISE_THEME_DESIGN_SYSTEM.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/ENTERPRISE_THEME_DESIGN_SYSTEM.md) — এন্টারপ্রাইজ মাল্টি-থিম ডিজাইন সিস্টেম স্পেসিফিকেশন (৪টি প্রিমিয়াম থিম আর্কিটেকচার)।
 
 ### ৩. 👥 টিম ও প্রজেক্ট ম্যানেজমেন্ট ([docs/management/](file:///g:/ERP-Software/Garments-ERP/docs/management/))
 - [TASK_BOARD.md](file:///g:/ERP-Software/Garments-ERP/docs/management/TASK_BOARD.md) — লাইভ স্ক্রাম স্প্রিন্ট টাস্ক বোর্ড ও কাজের সামগ্রিক মাইলস্টোন।
@@ -37,6 +37,8 @@
   - [SRS-04: কোয়ালিটি কন্ট্রোল (QC/QA)](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_04_QUALITY_CONTROL.md)
   - [SRS-05: কমার্শিয়াল ও শিপিং](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_05_COMMERCIAL_SHIPPING.md)
   - [SRS-06: ভার্সন কন্ট্রোল ও রিলিজ](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_06_VERSION_CONTROL.md)
+  - [SRS-07: এন্টারপ্রাইজ মাল্টি-থিম সিস্টেম](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_07_ENTERPRISE_THEME_SYSTEM.md)
+
 - [BRD_MERCHANDISING.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/BRD/BRD_MERCHANDISING.md) — মার্চেন্ডাইজিং ও বায়ার অর্ডার বিজনেস রুলস।
 - [BRD_PRODUCTION_CUTTING.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/BRD/BRD_PRODUCTION_CUTTING.md) — কাটিং অর্ডার ও মার্কার প্ল্যানিং রিকোয়ারমেন্ট।
 - [SOP_FABRIC_INSPECTION.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/SOP/SOP_FABRIC_INSPECTION.md) — ফেব্রিক রোল ৪-পয়েন্ট সিস্টেম ইন্সপেকশন এসওপি।

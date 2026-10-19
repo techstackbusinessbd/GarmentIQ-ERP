@@ -38,6 +38,10 @@
 - 📄 **পূর্ণাঙ্গ স্পেসিফিকেশন**: [srs/SRS_06_VERSION_CONTROL.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_06_VERSION_CONTROL.md)
 - **স্কোপ**: এন্টারপ্রাইজ গিট ব্রাঞ্চিং মডেল (`main`, `develop`, `feature/`), কনভেনশনাল কমিট মেসেজ, পিআর অনুমোদন গেট, ফ্লাইওয়ে ডেটাবেজ স্কিমা ভার্সনিং ও সেমভার ২.০ রিলিজ ট্যাগিং।
 
+### ৭. 🎨 এন্টারপ্রাইজ মাল্টি-থিম সিস্টেম (SRS-07)
+- 📄 **পূর্ণাঙ্গ স্পেসিফিকেশন**: [srs/SRS_07_ENTERPRISE_THEME_SYSTEM.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_07_ENTERPRISE_THEME_SYSTEM.md)
+- **স্কোপ**: ৪টি প্রিমিয়াম থিম (Indigo Denim, Sapphire Corporate, Emerald Sustainable, Midnight Obsidian), জিরো-রিলোড সিএসএস `@theme` ভ্যারিয়েবল আর্কিটেকচার ও লোকাল পারসিসটেন্স।
+
 ---
 
 ## 🔒 গ্লোবাল নন-ফাংশনাল নীতিমালা (Cross-Cutting Requirements):
