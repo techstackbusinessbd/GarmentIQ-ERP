@@ -19,8 +19,11 @@
 - [TECH_STACK.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/TECH_STACK.md) — গ্রুপভিত্তিক পূর্ণাঙ্গ টেক স্ট্যাক ও সকল লাইব্রেরির তালিকা।
 - [BUSINESS_RULES.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/BUSINESS_RULES.md) — তৈরি পোশাক খাতের নির্দিষ্ট হিসাব-নিকাশ (সুতার কনজাম্পশন, ৪-পয়েন্ট ফেব্রিক চেকিং, কাটিং অপচয়)।
 - [VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md) — ভার্সন কন্ট্রোল, গিট ব্রাঞ্চিং স্ট্র্যাটেজি, কনভেনশনাল কমিটস ও রিলিজ ম্যানেজমেন্ট।
-- [STORAGE_AND_CACHING_ARCHITECTURE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/STORAGE_AND_CACHING_ARCHITECTURE.md) — অবজেক্ট স্টোরেজ (MinIO/S3) ও ৩-স্তরের ক্যাশিং আর্কিটেকচার (Caffeine+Redis+TanStack)।
-- [ENTERPRISE_THEME_DESIGN_SYSTEM.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/ENTERPRISE_THEME_DESIGN_SYSTEM.md) — এন্টারপ্রাইজ মাল্টি-থিম ডিজাইন সিস্টেম স্পেসিফিকেশন (৪টি প্রিমিয়াম থিম আর্কিটেকচার)।
+- [ENTERPRISE_THEME_DESIGN_SYSTEM.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/ENTERPRISE_THEME_DESIGN_SYSTEM.md) — মাস্টার এন্টারপ্রাইজ মাল্টি-থিম ও পূর্ণাঙ্গ ডিজাইন সিস্টেম স্পেসিফিকেশন।
+  - [01_TYPOGRAPHY_AND_TYPE_SCALE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/01_TYPOGRAPHY_AND_TYPE_SCALE.md) — ইন্টার ও মনো ফন্ট, ১০-স্তরের টাইপ-স্কেল (10px-36px), লাইন-হাইট, ওয়েট ও ট্যাবুলার রুলস।
+  - [02_COLOR_PALETTES_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/02_COLOR_PALETTES_AND_VARIANTS.md) — ৪টি থিমের পূর্ণ ৫০-৯৫০ টোনাল স্কেল, ৪টি সেমান্টিক স্ট্যাটাস ও WCAG 2.1 AA/AAA ম্যাট্রিক্স।
+  - [03_SPATIAL_GRID_AND_ELEVATION.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/03_SPATIAL_GRID_AND_ELEVATION.md) — ৪px/৮px বেসলাইন গ্রিড, ব্রেকপয়েন্টস, লেআউট ডাইমেনশনস, বর্ডার রেডিয়াস ও শ্যাডো এলিভেশন।
+  - [04_COMPONENT_ANATOMY_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/04_COMPONENT_ANATOMY_AND_VARIANTS.md) — বাটন (৫ ভ্যারিয়েন্ট, ৪ সাইজ), ব্যাজ, ইনপুট, হাই-ডেনসিটি টেবিল ও মোডাল স্পেক্স।
 
 ### ৩. 👥 টিম ও প্রজেক্ট ম্যানেজমেন্ট ([docs/management/](file:///g:/ERP-Software/Garments-ERP/docs/management/))
 - [TASK_BOARD.md](file:///g:/ERP-Software/Garments-ERP/docs/management/TASK_BOARD.md) — লাইভ স্ক্রাম স্প্রিন্ট টাস্ক বোর্ড ও কাজের সামগ্রিক মাইলস্টোন।
