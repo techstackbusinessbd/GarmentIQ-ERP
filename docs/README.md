@@ -19,6 +19,8 @@
 - [TECH_STACK.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/TECH_STACK.md) — গ্রুপভিত্তিক পূর্ণাঙ্গ টেক স্ট্যাক ও সকল লাইব্রেরির তালিকা।
 - [BUSINESS_RULES.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/BUSINESS_RULES.md) — তৈরি পোশাক খাতের নির্দিষ্ট হিসাব-নিকাশ (সুতার কনজাম্পশন, ৪-পয়েন্ট ফেব্রিক চেকিং, কাটিং অপচয়)।
 - [VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md) — ভার্সন কন্ট্রোল, গিট ব্রাঞ্চিং স্ট্র্যাটেজি, কনভেনশনাল কমিটস ও রিলিজ ম্যানেজমেন্ট।
+- [STORAGE_AND_CACHING_ARCHITECTURE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/STORAGE_AND_CACHING_ARCHITECTURE.md) — অবজেক্ট স্টোরেজ (MinIO/S3) ও ৩-স্তরের ক্যাশিং আর্কিটেকচার (Caffeine+Redis+TanStack)।
+
 
 ### ৩. 👥 টিম ও প্রজেক্ট ম্যানেজমেন্ট ([docs/management/](file:///g:/ERP-Software/Garments-ERP/docs/management/))
 - [TASK_BOARD.md](file:///g:/ERP-Software/Garments-ERP/docs/management/TASK_BOARD.md) — লাইভ স্ক্রাম স্প্রিন্ট টাস্ক বোর্ড ও কাজের সামগ্রিক মাইলস্টোন।
