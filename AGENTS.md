@@ -54,6 +54,7 @@
 - 🧭 **সেশন রিকভারি ও ধারাবাহিকতা নীতি**: [.agents/rules/18_session_recovery_and_state_continuity.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/18_session_recovery_and_state_continuity.md)
 - 📦 **সেন্ট্রালাইজড ইউআই কনস্ট্যান্টস নীতি**: [.agents/rules/19_centralized_ui_constants_and_zero_inline_data.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/19_centralized_ui_constants_and_zero_inline_data.md)
 - 🎨 **সেন্ট্রালাইজড ডিজাইন টোকেনস নীতি**: [.agents/rules/20_centralized_design_tokens_and_zero_inline_styles.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/20_centralized_design_tokens_and_zero_inline_styles.md)
+- 🧩 **১০০% কম্পোনেন্ট-ভিত্তিক UI/UX নীতি**: [.agents/rules/21_component_based_ui_ux_architecture.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/21_component_based_ui_ux_architecture.md)
 - 🎯 **মিশন ও ভিশন চার্টার**: [docs/specifications/MISSION_VISION.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/MISSION_VISION.md)
 - 📊 **এন্ড-টু-এন্ড প্রসেস ট্র্যাকিং ম্যাট্রিক্স**: [docs/specifications/PROCESS_TRACKING_MATRIX.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/PROCESS_TRACKING_MATRIX.md)
 - 🧵 **সুইং ফ্লোর ডিপ ট্র্যাকিং আর্কিটেকচার**: [docs/specifications/SEWING_FLOOR_DEEP_TRACKING.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/SEWING_FLOOR_DEEP_TRACKING.md)

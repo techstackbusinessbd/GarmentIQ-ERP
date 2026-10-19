@@ -19,6 +19,7 @@ import {
   User,
 } from 'lucide-react';
 import { NAVIGATION_ITEMS, FACTORY_UNITS } from '../../constants/navigationConstants';
+import { ThemeSwitcher } from '../ui/ThemeSwitcher';
 
 /**
  * [EN] Icon Resolver Map to dynamically render Lucide icons by name.
@@ -51,19 +52,19 @@ export const AppLayout = () => {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-surface-base flex text-text-primary transition-colors duration-200">
       {/* ================================================================== */}
       {/* 1. MASTER SIDEBAR (Fixed w-64, Unified Typography & Spacing)      */}
       {/* ================================================================== */}
       <aside
         className={`${
           isSidebarOpen ? 'w-64' : 'w-20'
-        } bg-slate-900 text-slate-300 transition-all duration-300 flex flex-col shrink-0 border-r border-slate-800 z-30`}
+        } bg-brand-sidebar text-slate-300 transition-all duration-300 flex flex-col shrink-0 border-r border-brand-sidebar-border z-30`}
       >
         {/* Brand Header */}
-        <div className="h-16 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950">
+        <div className="h-16 flex items-center justify-between px-5 border-b border-brand-sidebar-border bg-brand-sidebar-header">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="h-9 w-9 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shrink-0 shadow-xs">
+            <div className="h-9 w-9 rounded-lg bg-brand-accent flex items-center justify-center font-bold text-white shrink-0 shadow-xs">
               R
             </div>
             {isSidebarOpen && (
@@ -71,7 +72,7 @@ export const AppLayout = () => {
                 <span className="font-bold text-sm tracking-wide text-white uppercase">
                   Garments ERP
                 </span>
-                <span className="text-[10px] text-indigo-400 font-mono tracking-wider">
+                <span className="text-[10px] text-brand-accent-light font-mono tracking-wider">
                   DENIM & WOVEN O2S
                 </span>
               </div>
@@ -98,8 +99,8 @@ export const AppLayout = () => {
                 to={item.path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-xs font-semibold'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
+                    ? 'bg-brand-accent text-white shadow-xs font-semibold'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
                 title={!isSidebarOpen ? item.label : undefined}
               >
@@ -108,7 +109,7 @@ export const AppLayout = () => {
                   <span className="truncate flex-1">{item.label}</span>
                 )}
                 {isSidebarOpen && item.badge && (
-                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-400/30">
+                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-md bg-brand-accent/20 text-brand-accent-light font-semibold border border-brand-accent/30">
                     {item.badge}
                   </span>
                 )}
@@ -119,9 +120,9 @@ export const AppLayout = () => {
 
         {/* Tenant Footer Profile with SemVer Release Badge */}
         {isSidebarOpen && (
-          <div className="p-3 border-t border-slate-800 bg-slate-950/50 space-y-2">
-            <div className="flex items-center gap-3 p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <div className="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 shrink-0">
+          <div className="p-3 border-t border-brand-sidebar-border bg-brand-sidebar-header/60 space-y-2">
+            <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/10">
+              <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300 shrink-0">
                 <User size={16} />
               </div>
               <div className="flex flex-col truncate">
@@ -129,7 +130,7 @@ export const AppLayout = () => {
                 <span className="text-[10px] text-slate-400">admin@garmentserp.com</span>
               </div>
             </div>
-            <div className="flex items-center justify-between px-1 text-[10px] text-slate-500 font-mono">
+            <div className="flex items-center justify-between px-1 text-[10px] text-slate-400 font-mono">
               <span>GarmentIQ-ERP</span>
               <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
                 v0.1.0-alpha
@@ -143,15 +144,15 @@ export const AppLayout = () => {
       {/* 2. MAIN VIEW SHELL (Global Top Header + Workspace)                 */}
       {/* ================================================================== */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Global Top Header (h-16, Unit Selector, Notifications) */}
-        <header className="h-16 bg-white border-b border-slate-200/80 px-6 flex items-center justify-between sticky top-0 z-20 shadow-xs">
+        {/* Global Top Header (h-16, Unit Selector, Notifications, Themes) */}
+        <header className="h-16 bg-surface-card border-b border-border-subtle px-6 flex items-center justify-between sticky top-0 z-20 shadow-xs transition-colors duration-200">
           {/* Factory Unit Selector */}
           <div className="flex items-center gap-3">
-            <Building2 size={18} className="text-slate-500" />
+            <Building2 size={18} className="text-text-muted" />
             <select
               value={selectedUnit}
               onChange={(e) => setSelectedUnit(e.target.value)}
-              className="text-xs font-medium bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors cursor-pointer"
+              className="text-xs font-medium bg-surface-muted border border-border-subtle rounded-lg px-3 py-1.5 text-text-primary focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors cursor-pointer"
             >
               {FACTORY_UNITS.map((unit) => (
                 <option key={unit.id} value={unit.id}>
@@ -161,23 +162,26 @@ export const AppLayout = () => {
             </select>
           </div>
 
-          {/* Quick Search & Notification Utilities */}
-          <div className="flex items-center gap-4">
+          {/* Quick Search, Theme Switcher & Notification Utilities */}
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="relative hidden md:block">
-              <Search size={15} className="absolute left-3 top-2.5 text-slate-400" />
+              <Search size={15} className="absolute left-3 top-2.5 text-text-muted" />
               <input
                 type="text"
                 placeholder="Search styles, PO, roll barcode..."
-                className="pl-9 pr-4 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg w-64 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                className="pl-9 pr-4 py-1.5 text-xs bg-surface-muted border border-border-subtle rounded-lg w-64 text-text-primary placeholder:text-text-muted focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors"
               />
             </div>
 
+            {/* Enterprise Multi-Theme Switcher (Rule 21 & ADR-010) */}
+            <ThemeSwitcher />
+
             <button
-              className="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors relative"
+              className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-muted transition-colors relative"
               title="System Alerts"
             >
               <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-status-danger ring-2 ring-surface-card"></span>
             </button>
           </div>
         </header>

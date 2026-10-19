@@ -18,20 +18,20 @@ export const PageHeader = ({
   return (
     <div className="mb-6 space-y-2">
       {/* 1. Breadcrumbs Row */}
-      <nav className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-        <Link to="/" className="hover:text-indigo-600 flex items-center gap-1 transition-colors">
+      <nav className="flex items-center gap-1.5 text-xs text-text-muted font-medium">
+        <Link to="/" className="hover:text-brand-accent flex items-center gap-1 transition-colors">
           <Home size={13} />
           <span>Home</span>
         </Link>
         {breadcrumbs.map((crumb, idx) => (
           <React.Fragment key={idx}>
-            <ChevronRight size={12} className="text-slate-400 shrink-0" />
+            <ChevronRight size={12} className="text-text-muted shrink-0 opacity-60" />
             {crumb.path ? (
-              <Link to={crumb.path} className="hover:text-indigo-600 transition-colors">
+              <Link to={crumb.path} className="hover:text-brand-accent transition-colors">
                 {crumb.label}
               </Link>
             ) : (
-              <span className="text-slate-800 font-semibold">{crumb.label}</span>
+              <span className="text-text-primary font-semibold">{crumb.label}</span>
             )}
           </React.Fragment>
         ))}
@@ -40,11 +40,11 @@ export const PageHeader = ({
       {/* 2. Page Title & Action Buttons Row */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-1">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-text-primary">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+            <p className="text-xs text-text-muted mt-0.5 leading-relaxed">
               {subtitle}
             </p>
           )}

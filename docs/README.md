@@ -58,6 +58,7 @@
 - 🧭 [18_session_recovery_and_state_continuity.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/18_session_recovery_and_state_continuity.md) — **সেশন রিকভারি ও ধারাবাহিকতা নীতি**।
 - 📦 [19_centralized_ui_constants_and_zero_inline_data.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/19_centralized_ui_constants_and_zero_inline_data.md) — **সেন্ট্রালাইজড ইউআই কনস্ট্যান্টস নীতি**।
 - 🎨 [20_centralized_design_tokens_and_zero_inline_styles.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/20_centralized_design_tokens_and_zero_inline_styles.md) — **সেন্ট্রালাইজড ডিজাইন টোকেনস নীতি**।
+- 🧩 [21_component_based_ui_ux_architecture.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/21_component_based_ui_ux_architecture.md) — **১০০% কম্পোনেন্ট-ভিত্তিক UI/UX আর্কিটেকচার নীতি**।
 - [00_virtual_team_os.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/00_virtual_team_os.md) — ভার্চুয়াল টিম অপারেটিং সিস্টেম ও ৬-ধাপের SDLC।
 - [01_backend_standards_java.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/01_backend_standards_java.md) — জাভা ও স্প্রিং বুট ক্লিন আর্কিটেকচার স্ট্যান্ডার্ড।
 - [02_frontend_standards_react.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/02_frontend_standards_react.md) — রিঅ্যাক্ট ও টেইলউইন্ড সিএসএস স্ট্যান্ডার্ড।

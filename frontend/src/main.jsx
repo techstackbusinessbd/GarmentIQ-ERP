@@ -4,6 +4,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import App from './App';
 import './index.css';
+import { useThemeStore } from './store/themeStore';
+
+// [EN] Initialize theme on startup / [BN] অ্যাপ শুরুতে সক্রিয় থিম ইনিশিয়ালাইজ করা
+useThemeStore.getState().initTheme();
 
 /**
  * [EN] Create TanStack Query Client with optimal caching defaults.

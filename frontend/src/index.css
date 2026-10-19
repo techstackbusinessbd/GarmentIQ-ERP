@@ -1,51 +1,156 @@
 /* ==============================================================================
-   [EN] Enterprise Garments ERP - Centralized Design Tokens (Tailwind CSS v4 @theme)
-   [BN] এন্টারপ্রাইজ গার্মেন্টস ইআরপি - সেন্ট্রালাইজড ডিজাইন টোকেনস ও গ্লোবাল স্টাইল
-   Rule 20: No inline styles (style={{}}), 100% centralized design tokens.
+   [EN] Enterprise Garments ERP - Centralized Multi-Theme Design Tokens (Tailwind v4)
+   [BN] এন্টারপ্রাইজ গার্মেন্টস ইআরপি - সেন্ট্রালাইজড মাল্টি-থিম ডিজাইন টোকেনস
+   Rule 20: 100% centralized design tokens.
+   Rule 21: 100% component-based UI/UX.
    ============================================================================== */
 
 @import "tailwindcss";
 
+/* -----------------------------------------------------------------------------
+   1. Multi-Theme CSS Custom Properties (:root & [data-theme])
+   ----------------------------------------------------------------------------- */
+:root,
+[data-theme="indigo"] {
+  /* [EN] Theme 1: Royal Indigo & Raw Denim (Default) */
+  /* [BN] থিম ১: রয়্যাল ইন্ডিগো ও র-ডেনিম (ডিফল্ট) */
+  --brand-sidebar: #0f172a;
+  --brand-sidebar-header: #020617;
+  --brand-sidebar-border: #1e293b;
+  --brand-accent: #4f46e5;
+  --brand-accent-hover: #4338ca;
+  --brand-accent-light: #e0e7ff;
+  --brand-accent-glow: rgba(79, 70, 229, 0.2);
+  --surface-base: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-muted: #f1f5f9;
+  --surface-hover: #f8fafc;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+}
+
+[data-theme="sapphire"] {
+  /* [EN] Theme 2: Sapphire Corporate & Pure Steel */
+  /* [BN] থিম ২: স্যাফায়ার কর্পোরেট ও পিওর স্টিল */
+  --brand-sidebar: #111827;
+  --brand-sidebar-header: #030712;
+  --brand-sidebar-border: #1f2937;
+  --brand-accent: #2563eb;
+  --brand-accent-hover: #1d4ed8;
+  --brand-accent-light: #dbeafe;
+  --brand-accent-glow: rgba(37, 99, 235, 0.2);
+  --surface-base: #f9fafb;
+  --surface-card: #ffffff;
+  --surface-muted: #f3f4f6;
+  --surface-hover: #f9fafb;
+  --border-subtle: #e5e7eb;
+  --border-strong: #d1d5db;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+}
+
+[data-theme="emerald"] {
+  /* [EN] Theme 3: Emerald Sustainable & Green Factory */
+  /* [BN] থিম ৩: এমারেল্ড সাসটেইনেবল ও গ্রিন ফ্যাক্টরি */
+  --brand-sidebar: #064e3b;
+  --brand-sidebar-header: #022c22;
+  --brand-sidebar-border: #065f46;
+  --brand-accent: #059669;
+  --brand-accent-hover: #047857;
+  --brand-accent-light: #d1fae5;
+  --brand-accent-glow: rgba(5, 150, 105, 0.2);
+  --surface-base: #fafafa;
+  --surface-card: #ffffff;
+  --surface-muted: #f4f4f5;
+  --surface-hover: #f4f4f5;
+  --border-subtle: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+}
+
+[data-theme="obsidian"] {
+  /* [EN] Theme 4: Midnight Obsidian & Cyber Neon (Dark Mode) */
+  /* [BN] থিম ৪: মিডনাইট অবসিডিয়ান ও সাইবার নিয়ন (ডার্ক মোড) */
+  --brand-sidebar: #090d16;
+  --brand-sidebar-header: #05070c;
+  --brand-sidebar-border: #161e30;
+  --brand-accent: #6366f1;
+  --brand-accent-hover: #818cf8;
+  --brand-accent-light: #1e1b4b;
+  --brand-accent-glow: rgba(99, 102, 241, 0.25);
+  --surface-base: #0b0f19;
+  --surface-card: #151c2c;
+  --surface-muted: #1e293b;
+  --surface-hover: #1b2438;
+  --border-subtle: #252f44;
+  --border-strong: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+}
+
+/* -----------------------------------------------------------------------------
+   2. Tailwind CSS v4 @theme Token Registration
+   ----------------------------------------------------------------------------- */
 @theme {
-  /* [EN] Brand & Accent Tokens / [BN] ব্র্যান্ড ও মূল অ্যাকসেন্ট কালার */
-  --color-brand-primary: #0f172a;       /* Slate 900 */
-  --color-brand-accent: #4f46e5;        /* Indigo 600 */
-  --color-brand-accent-hover: #4338ca;  /* Indigo 700 */
-  --color-brand-accent-light: #e0e7ff;  /* Indigo 100 */
+  /* Dynamic Theme Tokens */
+  --color-brand-sidebar: var(--brand-sidebar);
+  --color-brand-sidebar-header: var(--brand-sidebar-header);
+  --color-brand-sidebar-border: var(--brand-sidebar-border);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-hover: var(--brand-accent-hover);
+  --color-brand-accent-light: var(--brand-accent-light);
+  --color-brand-accent-glow: var(--brand-accent-glow);
 
-  /* [EN] Surfaces & Backgrounds / [BN] ব্যাকগ্রাউন্ড ও কার্ড সারফেস কালার */
-  --color-surface-base: #f8fafc;        /* Slate 50 */
-  --color-surface-card: #ffffff;        /* Pure White */
-  --color-surface-muted: #f1f5f9;       /* Slate 100 */
-  --color-surface-hover: #f8fafc;       /* Slate 50/70 */
+  --color-surface-base: var(--surface-base);
+  --color-surface-card: var(--surface-card);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-hover: var(--surface-hover);
 
-  /* [EN] Borders & Dividers / [BN] বর্ডার ও ডিভাইডার টোকেন */
-  --color-border-subtle: #e2e8f0;       /* Slate 200 */
-  --color-border-strong: #cbd5e1;       /* Slate 300 */
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
 
-  /* [EN] Status Semantic Tokens / [BN] স্ট্যাটাস সেমান্টিক টোকেন */
-  --color-status-success: #059669;      /* Emerald 600 */
-  --color-status-success-bg: #ecfdf5;   /* Emerald 50 */
-  --color-status-warning: #d97706;      /* Amber 600 */
-  --color-status-warning-bg: #fffbeb;   /* Amber 50 */
-  --color-status-danger: #e11d48;       /* Rose 600 */
-  --color-status-danger-bg: #fff1f2;    /* Rose 50 */
-  --color-status-info: #0284c7;         /* Sky 600 */
-  --color-status-info-bg: #f0f9ff;      /* Sky 50 */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
 
-  /* [EN] Typography / [BN] টাইপোগ্রাফি ফন্ট ফ্যামিলি */
+  /* Status Semantic Tokens */
+  --color-status-success: #059669;
+  --color-status-success-bg: #ecfdf5;
+  --color-status-warning: #d97706;
+  --color-status-warning-bg: #fffbeb;
+  --color-status-danger: #e11d48;
+  --color-status-danger-bg: #fff1f2;
+  --color-status-info: #0284c7;
+  --color-status-info-bg: #f0f9ff;
+
+  /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* [EN] Border Radii Scale / [BN] বর্ডার রেডিয়াস স্কেল */
-  --radius-subtle: 0.375rem;            /* 6px */
-  --radius-button: 0.5rem;              /* 8px */
-  --radius-card: 0.75rem;               /* 12px */
-  --radius-modal: 1rem;                 /* 16px */
+  /* Border Radii Scale */
+  --radius-subtle: 0.375rem;
+  --radius-button: 0.5rem;
+  --radius-card: 0.75rem;
+  --radius-modal: 1rem;
 }
 
-/* [EN] Custom Utility Classes for Enterprise Data Density */
-/* [BN] এন্টারপ্রাইজ ডেটা ডেনসিটির জন্য কাস্টম ইউটিলিটি ক্লাস */
+/* -----------------------------------------------------------------------------
+   3. Custom Utilities & Global Styles
+   ----------------------------------------------------------------------------- */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+body {
+  background-color: var(--surface-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
