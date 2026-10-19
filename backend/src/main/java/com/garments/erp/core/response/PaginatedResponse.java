@@ -16,7 +16,6 @@ import java.util.List;
  * @param <T> Content list element type
  */
 @Getter
-@Builder
 public class PaginatedResponse<T> {
 
     /**
@@ -54,6 +53,21 @@ public class PaginatedResponse<T> {
      * [BN] এটি সর্বশেষ পেজ কিনা তার ফ্ল্যাগ।
      */
     private final boolean last;
+
+    /**
+     * [EN] Explicit constructor annotated with @Builder for clean IDE AST compilation.
+     * [BN] এক্সপ্লিসিট কনস্ট্রাক্টরে @Builder ব্যবহার যা আইডিই কম্পাইলারের সিন্থেটিক কনস্ট্রাক্টর এরর প্রতিরোধ করে।
+     */
+    @Builder
+    public PaginatedResponse(List<T> content, int page, int size, long totalElements, int totalPages, boolean last) {
+        this.content = content != null ? content : List.of();
+        this.page = page;
+        this.size = size;
+        this.totalElements = totalElements;
+        this.totalPages = totalPages;
+        this.last = last;
+    }
+
 
     /**
      * [EN] Converts a Spring Data Page object into a standardized PaginatedResponse.

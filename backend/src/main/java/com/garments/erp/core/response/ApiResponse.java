@@ -16,7 +16,6 @@ import java.time.Instant;
  * @param <T> Payload data type
  */
 @Getter
-@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
 
@@ -42,8 +41,19 @@ public class ApiResponse<T> {
      * [EN] Timestamp when the response was generated (UTC).
      * [BN] রেসপন্স তৈরির সঠিক সময়কাল (UTC)।
      */
-    @Builder.Default
-    private final Instant timestamp = Instant.now();
+    private final Instant timestamp;
+
+    /**
+     * [EN] Explicit constructor with @Builder to prevent IDE false-positive ECJ compiler warnings.
+     * [BN] এক্সপ্লিসিট কনস্ট্রাক্টরে @Builder ব্যবহার যা আইডিই কম্পাইলারের সিন্থেটিক কনস্ট্রাক্টর এরর প্রতিরোধ করে।
+     */
+    @Builder
+    public ApiResponse(boolean success, String message, T data, Instant timestamp) {
+        this.success = success;
+        this.message = message;
+        this.data = data;
+        this.timestamp = timestamp != null ? timestamp : Instant.now();
+    }
 
     /**
      * [EN] Convenience static builder for successful response with data and message.
