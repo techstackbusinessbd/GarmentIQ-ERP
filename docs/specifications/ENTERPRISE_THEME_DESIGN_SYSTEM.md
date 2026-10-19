@@ -33,6 +33,7 @@ GarmentIQ-ERP-এর ডিজাইন সিস্টেম আন্তর্
 | **মডিউল ২: কালার প্যালেট** | [02_COLOR_PALETTES_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/02_COLOR_PALETTES_AND_VARIANTS.md) | ৪টি থিমের পূর্ণাঙ্গ ৫০-৯৫০ টোনাল স্কেল, ৪টি সেমান্টিক স্ট্যাটাস কালার, ৪টি কম্পোনেন্ট ভ্যারিয়েন্ট ও WCAG 2.1 AA/AAA অডিট। |
 | **মডিউল ৩: গ্রিড ও এলিভেশন**| [03_SPATIAL_GRID_AND_ELEVATION.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/03_SPATIAL_GRID_AND_ELEVATION.md) | ৪px/৮px বেসলাইন গ্রিড, ৬টি রেসপনসিভ ব্রেকপয়েন্ট, লেআউট ডাইমেনশনস, বর্ডার রেডিয়াস স্কেল ও জেড-ইনডেক্স লেয়ারিং। |
 | **মডিউল ৪: কম্পোনেন্ট অ্যানাটমি**| [04_COMPONENT_ANATOMY_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/04_COMPONENT_ANATOMY_AND_VARIANTS.md) | বাটন (৫ ভ্যারিয়েন্ট, ৪ সাইজ), স্ট্যাটাস ব্যাজ, ফর্ম কন্ট্রোলস, TanStack হাই-ডেনসিটি টেবিল ও মোডাল অ্যানাটমি। |
+| **মডিউল ৫: স্ক্রিন কালার রেশিও ও ম্যাপিং**| [05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md) | ৬০-৩০-১০ ব্যালেন্স রুল, আই-কমফোর্ট আরগোনোমিক্স এবং কম্পোনেন্ট-টু-কালার ডিটারমিনিস্টিক মাস্টার ম্যাপিং। |
 
 ---
 
