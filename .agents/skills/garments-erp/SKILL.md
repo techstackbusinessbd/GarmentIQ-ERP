@@ -33,6 +33,7 @@ This skill governs development and architecture for the Garments ERP platform co
 - 📏 **Rule 07**: File length under 300 lines.
 - ⚡ **Rule 08**: Sub-200ms API response, TanStack virtualized grids.
 - 🧩 **Rule 21**: 100% Component-based UI/UX architecture; zero monolith JSX.
+- 🚫 **Rule 03 (No Browser Verification)**: Never use browser subagents; verify via terminal, build & automated tests.
 
 ## 5. Master Documentation Links
 - Central Documentation: [docs/README.md](file:///g:/ERP-Software/Garments-ERP/docs/README.md)

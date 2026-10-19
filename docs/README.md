@@ -65,7 +65,7 @@
 - [00_virtual_team_os.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/00_virtual_team_os.md) — ভার্চুয়াল টিম অপারেটিং সিস্টেম ও ৬-ধাপের SDLC।
 - [01_backend_standards_java.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/01_backend_standards_java.md) — জাভা ও স্প্রিং বুট ক্লিন আর্কিটেকচার স্ট্যান্ডার্ড।
 - [02_frontend_standards_react.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/02_frontend_standards_react.md) — রিঅ্যাক্ট ও টেইলউইন্ড সিএসএস স্ট্যান্ডার্ড।
-- [03_qa_audit_and_gates.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/03_qa_audit_and_gates.md) — ফারহানার ১০-পয়েন্ট কিউএ গেটকিপার অডিট।
+- [03_qa_audit_and_gates.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/03_qa_audit_and_gates.md) — ফারহানার ১০-পয়েন্ট কিউএ অডিট ও ব্রাউজার ভেরিফিকেশন নিষিদ্ধ নীতি (No Browser Verification)।
 - [04_ui_copywriting_and_ux.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/04_ui_copywriting_and_ux.md) — **১০০% ইংরেজি ইউআই ও জিরো-বাংলা ইন্টারফেস নীতি** (100% English UI & Zero Bengali on Screen)।
 - [05_zero_hardcoding_and_dynamic_data.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/05_zero_hardcoding_and_dynamic_data.md) — ১০০% ডাইনামিক ডেটা ও জিরো হার্ডকোড।
 - [06_official_documentation_compliance.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/06_official_documentation_compliance.md) — অফিশিয়াল ডকুমেন্টেশন কমপ্লায়েন্স।
