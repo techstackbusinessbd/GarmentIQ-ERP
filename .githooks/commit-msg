@@ -1,0 +1,25 @@
+#!/bin/sh
+# -----------------------------------------------------------------------------
+# [EN] Git commit-msg hook enforcing Conventional Commits v1.0.0
+# [BN] কনভেনশনাল কমিট ফরম্যাট নিশ্চিত করার গিট হুক
+# -----------------------------------------------------------------------------
+
+commit_regex='^((feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\([a-zA-Z0-9_.-]+\))?: .{1,100})|(Merge .*)|(Initial commit)$'
+
+first_line=$(head -n 1 "$1")
+
+if ! echo "$first_line" | grep -Eq "$commit_regex"; then
+    echo "================================================================="
+    echo "[ERROR] Invalid Commit Message Format! (অকার্যকর কমিট ফরম্যাট)"
+    echo "-----------------------------------------------------------------"
+    echo "Your commit message was:"
+    echo "  \"$first_line\""
+    echo ""
+    echo "Please adhere to Conventional Commits standard (Rule REQ-VCS-02):"
+    echo "  <type>(<scope>): <imperative message in English>"
+    echo ""
+    echo "Allowed types: feat, fix, docs, style, refactor, perf, test, chore, build, ci"
+    echo "Example: feat(denim): add wash shrinkage calculation engine"
+    echo "================================================================="
+    exit 1
+fi

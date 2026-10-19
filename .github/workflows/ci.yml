@@ -1,0 +1,104 @@
+name: GarmentIQ-ERP Enterprise CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1. Commit Message & Conventional Commit Linting
+  # ---------------------------------------------------------------------------
+  commitlint:
+    name: Conventional Commits Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Commit Message Format
+        run: |
+          echo "Validating latest commit message against Conventional Commits..."
+          MSG=$(git log -1 --pretty=%B | head -n 1)
+          echo "Commit Subject: $MSG"
+          REGEX="^((feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\([a-zA-Z0-9_.-]+\))?: .{1,100})|(Merge .*)|(Initial commit)$"
+          if [[ ! "$MSG" =~ $REGEX ]]; then
+            echo "::error::Commit message does not adhere to Conventional Commits standard: $MSG"
+            exit 1
+          fi
+          echo "Commit message passed Conventional Commits validation!"
+
+  # ---------------------------------------------------------------------------
+  # 2. Rule 07: File Length Compliance Check (< 300 lines)
+  # ---------------------------------------------------------------------------
+  file-length-guard:
+    name: File Length Limit Guard (Rule 07)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Audit File Lengths (< 300 lines limit)
+        run: |
+          echo "Auditing source files for Rule 07 (<= 300 lines)..."
+          VIOLATIONS=0
+          while IFS= read -r file; do
+            LINES=$(wc -l < "$file")
+            if [ "$LINES" -gt 300 ]; then
+              echo "::error file=$file::File length ($LINES lines) exceeds 300 lines limit!"
+              VIOLATIONS=$((VIOLATIONS + 1))
+            fi
+          done < <(find backend/src frontend/src docs -type f \( -name "*.java" -o -name "*.jsx" -o -name "*.js" -o -name "*.md" \))
+          if [ "$VIOLATIONS" -gt 0 ]; then
+            echo "Found $VIOLATIONS files exceeding 300 lines!"
+            exit 1
+          fi
+          echo "All source files are strictly under 300 lines."
+
+  # ---------------------------------------------------------------------------
+  # 3. Java 21 Backend Build & Test
+  # ---------------------------------------------------------------------------
+  backend-build:
+    name: Java 21 & Spring Boot 3.3 Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Compile Backend & Run Unit Tests
+        run: |
+          cd backend
+          mvn -B clean test-compile test --no-transfer-progress
+
+  # ---------------------------------------------------------------------------
+  # 4. React 19 Frontend Build & Verification
+  # ---------------------------------------------------------------------------
+  frontend-build:
+    name: React 19 & Tailwind v4 Vite Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package.json
+
+      - name: Install Dependencies & Build Bundle
+        run: |
+          cd frontend
+          npm ci || npm install
+          npm run build

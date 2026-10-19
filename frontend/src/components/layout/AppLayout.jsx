@@ -117,9 +117,9 @@ export const AppLayout = () => {
           })}
         </nav>
 
-        {/* Tenant Footer Profile */}
+        {/* Tenant Footer Profile with SemVer Release Badge */}
         {isSidebarOpen && (
-          <div className="p-3 border-t border-slate-800 bg-slate-950/50">
+          <div className="p-3 border-t border-slate-800 bg-slate-950/50 space-y-2">
             <div className="flex items-center gap-3 p-2 rounded-lg bg-slate-900 border border-slate-800">
               <div className="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 shrink-0">
                 <User size={16} />
@@ -128,6 +128,12 @@ export const AppLayout = () => {
                 <span className="text-xs font-medium text-slate-200">Director / CTO</span>
                 <span className="text-[10px] text-slate-400">admin@garmentserp.com</span>
               </div>
+            </div>
+            <div className="flex items-center justify-between px-1 text-[10px] text-slate-500 font-mono">
+              <span>GarmentIQ-ERP</span>
+              <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+                v0.1.0-alpha
+              </span>
             </div>
           </div>
         )}
