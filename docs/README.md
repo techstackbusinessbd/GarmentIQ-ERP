@@ -25,6 +25,7 @@
   - [03_SPATIAL_GRID_AND_ELEVATION.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/03_SPATIAL_GRID_AND_ELEVATION.md) — ৪px/৮px বেসলাইন গ্রিড, ব্রেকপয়েন্টস, লেআউট ডাইমেনশনস, বর্ডার রেডিয়াস ও শ্যাডো এলিভেশন।
   - [04_COMPONENT_ANATOMY_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/04_COMPONENT_ANATOMY_AND_VARIANTS.md) — বাটন (৫ ভ্যারিয়েন্ট, ৪ সাইজ), ব্যাজ, ইনপুট, হাই-ডেনসিটি টেবিল ও মোডাল স্পেক্স।
   - [05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md) — ৬০-৩০-১০ কালার ব্যালেন্স রুল, আই-কমফোর্ট আরগোনোমিক্স এবং কম্পোনেন্ট কালার ম্যাপিং।
+  - [06_THEME_LAYOUT_ARCHITECTURE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/06_THEME_LAYOUT_ARCHITECTURE.md) — মাস্টার শেল DOM হায়ারার্কি, টপ হেডার (64px), কোল্যাপ্সিবল সাইডবার ও কিয়স্ক মোড।
 
 ### ৩. 👥 টিম ও প্রজেক্ট ম্যানেজমেন্ট ([docs/management/](file:///g:/ERP-Software/Garments-ERP/docs/management/))
 - [TASK_BOARD.md](file:///g:/ERP-Software/Garments-ERP/docs/management/TASK_BOARD.md) — লাইভ স্ক্রাম স্প্রিন্ট টাস্ক বোর্ড ও কাজের সামগ্রিক মাইলস্টোন।

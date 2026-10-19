@@ -34,6 +34,7 @@ GarmentIQ-ERP-এর ডিজাইন সিস্টেম আন্তর্
 | **মডিউল ৩: গ্রিড ও এলিভেশন**| [03_SPATIAL_GRID_AND_ELEVATION.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/03_SPATIAL_GRID_AND_ELEVATION.md) | ৪px/৮px বেসলাইন গ্রিড, ৬টি রেসপনসিভ ব্রেকপয়েন্ট, লেআউট ডাইমেনশনস, বর্ডার রেডিয়াস স্কেল ও জেড-ইনডেক্স লেয়ারিং। |
 | **মডিউল ৪: কম্পোনেন্ট অ্যানাটমি**| [04_COMPONENT_ANATOMY_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/04_COMPONENT_ANATOMY_AND_VARIANTS.md) | বাটন (৫ ভ্যারিয়েন্ট, ৪ সাইজ), স্ট্যাটাস ব্যাজ, ফর্ম কন্ট্রোলস, TanStack হাই-ডেনসিটি টেবিল ও মোডাল অ্যানাটমি। |
 | **মডিউল ৫: স্ক্রিন কালার রেশিও ও ম্যাপিং**| [05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md) | ৬০-৩০-১০ ব্যালেন্স রুল, আই-কমফোর্ট আরগোনোমিক্স এবং কম্পোনেন্ট-টু-কালার ডিটারমিনিস্টিক মাস্টার ম্যাপিং। |
+| **মডিউল ৬: থিম লেআউট আর্কিটেকচার**| [06_THEME_LAYOUT_ARCHITECTURE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/06_THEME_LAYOUT_ARCHITECTURE.md) | মাস্টার শেল DOM হায়ারার্কি, টপ হেডার (64px), কোল্যাপ্সিবল সাইডবার, স্টিকি পেজ অ্যাকশন বার ও শপ ফ্লোর কিয়স্ক মোড। |
 
 ---
 
