@@ -58,30 +58,56 @@ is_deleted    BOOLEAN NOT NULL DEFAULT FALSE  -- Soft Delete Support
 
 ## ৩. মাল্টি-টেন্যান্ট ডাইনামিক ফিল্ডস ও মেটাডাটা স্কিমা (Tenant Dynamic Fields & JSONB Engine - ADR-008)
 
-মাল্টি-টেন্যান্ট SaaS গ্রাহকদের ভিন্ন ভিন্ন তথ্যের চাহিদার জন্য কোর রিলেশনাল কলামের পাশাপাশি হাইব্রিড JSONB ইঞ্জিন ব্যবহৃত হবে:
+> 💡 **জিরো-কোড ক্লায়েন্ট কাস্টমাইজেশন নীতি**:  
+> কোনো ক্লায়েন্টের জন্য আমাদের এক লাইনের কোড বা ডেটাবেজ স্কিমা (DDL) পরিবর্তন করতে হবে না। ক্লায়েন্ট অ্যাডমিন নিজেই সিস্টেম সেটিংস থেকে তার কারখানার সুবিধামতো যত খুশি নতুন ফিল্ড যোগ বা বাদ দিতে পারবে; ব্যাকএন্ড ও ডেটাবেজ থাকবে সম্পূর্ণ সুরক্ষিত, দ্রুতগতির ও সুশৃঙ্খল।
 
+### ৩.১ মেটাডাটা ডেফিনিশন টেবিল (`tenant_custom_field_definitions`)
 ```sql
--- ১. ক্লায়েন্ট কাস্টম ফিল্ড মেটাডাটা ডেফিনিশন টেবিল
 CREATE TABLE tenant_custom_field_definitions (
     id                UUID PRIMARY KEY,               -- RFC 9562 UUIDv7
-    tenant_id         UUID NOT NULL,                  -- নির্দিষ্ট ক্লায়েন্ট
+    tenant_id         UUID NOT NULL,                  -- নির্দিষ্ট ফ্যাক্টরি ক্লায়েন্ট
     entity_name       VARCHAR(50) NOT NULL,           -- e.g. 'users', 'buyers', 'orders'
     field_name        VARCHAR(50) NOT NULL,           -- e.g. 'nid_number', 'blood_group'
-    field_label       VARCHAR(100) NOT NULL,          -- UI Label
+    field_label       VARCHAR(100) NOT NULL,          -- UI প্রদর্শিত নাম
     data_type         VARCHAR(20) NOT NULL,           -- STRING, NUMBER, DATE, BOOLEAN, SELECT
-    is_required       BOOLEAN NOT NULL DEFAULT FALSE,
-    validation_regex  VARCHAR(255),
-    dropdown_options  JSONB DEFAULT '[]'::jsonb,      -- ড্রপডাউন অপশনস
-    display_order     INT NOT NULL DEFAULT 0,
+    is_required       BOOLEAN NOT NULL DEFAULT FALSE, -- বাধ্যতামূলক কি না
+    validation_regex  VARCHAR(255),                   -- ঐচ্ছিক ভ্যালিডেশন প্যাটার্ন
+    dropdown_options  JSONB DEFAULT '[]'::jsonb,      -- SELECT হলে ড্রপডাউন অপশন তালিকা
+    display_order     INT NOT NULL DEFAULT 0,         -- ইউআই সর্টিং ক্রম
     created_at        TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by        VARCHAR(100) NOT NULL,
     version           BIGINT NOT NULL DEFAULT 0,
     CONSTRAINT uq_tenant_entity_field UNIQUE (tenant_id, entity_name, field_name)
 );
-
--- ২. ব্যবসায়িক টেবিলে কাস্টম অ্যাট্রিবিউটস JSONB কলামের প্রয়োগ (e.g. users / styles)
--- custom_attributes JSONB NOT NULL DEFAULT '{}'::jsonb
--- এবং উচ্চগতির ফিল্টারিং ও সার্চের জন্য GIN ইনডেক্স:
--- CREATE INDEX idx_users_custom_attrs ON users USING gin (custom_attributes jsonb_path_ops);
 ```
+
+### ৩.২ ব্যবসায়িক টেবিলে কাস্টম অ্যাট্রিবিউটস JSONB কলাম ও GIN ইনডেক্সিং
+প্রতিটি মূল ব্যবসায়িক টেবিলে (যেমন: `users`, `buyers`, `purchase_orders`) একটি `custom_attributes` কলাম থাকবে:
+```sql
+-- কাস্টম অ্যাট্রিবিউটস কলাম যুক্তকরণ
+ALTER TABLE users ADD COLUMN custom_attributes JSONB NOT NULL DEFAULT '{}'::jsonb;
+
+-- দ্রুতগতির সার্চ ও ফিল্টারিং নিশ্চিত করতে PostgreSQL GIN ইনডেক্স
+CREATE INDEX idx_users_custom_attrs ON users USING gin (custom_attributes jsonb_path_ops);
+```
+
+### ৩.৩ সংরক্ষিত ডেটার নমুনা ও উচ্চগতির কোয়েরি উদাহরণ
+```json
+// users.custom_attributes-এ সংরক্ষিত ডেটার বাস্তব রূপ
+{
+  "nid_number": "19941234567890123",
+  "blood_group": "B+",
+  "emergency_contact": "+8801712345678",
+  "rfid_wristband_id": "RFID-W-9901"
+}
+```
+
+```sql
+-- নির্দিষ্ট টেন্যান্টের অধীনে ব্লাড গ্রুপ 'B+' কর্মী খোঁজার সাব-মিলিসেকেন্ড কোয়েরি
+SELECT id, full_name, email, custom_attributes->>'blood_group' AS blood_group
+FROM users
+WHERE tenant_id = '0192a3b4-c5d6-7e8f-9a0b-1c2d3e4f5a6b'
+  AND custom_attributes @> '{"blood_group": "B+"}';
+```
+
 
