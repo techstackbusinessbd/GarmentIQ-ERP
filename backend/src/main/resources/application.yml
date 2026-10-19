@@ -1,0 +1,70 @@
+# ==============================================================================
+# [EN] Garments ERP Backend Configuration (Zero Hardcoding, Environment-Driven)
+# [BN] গার্মেন্টস ইআরপি ব্যাকএন্ড কনফিগারেশন (জিরো হার্ডকোড, শতভাগ ভ্যারিয়েবল ড্রিভেন)
+# ==============================================================================
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api/v1
+  compression:
+    enabled: true
+    mime-types: application/json,text/plain,text/xml,application/xml
+
+spring:
+  application:
+    name: garments-erp-backend
+
+  # [EN] Enable Java 21 Virtual Threads (Project Loom) / [BN] জাভা ২১ ভার্চুয়াল থ্রেডস সক্রিয়করণ
+  threads:
+    virtual:
+      enabled: true
+
+  # [EN] PostgreSQL Database Connection / [BN] পোস্টগ্রেসকিউএল ডেটাবেজ কানেকশন
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:garments_erp_db}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX:20}
+      minimum-idle: ${DB_POOL_MIN_IDLE:5}
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+
+  # [EN] JPA / Hibernate ORM Settings / [BN] হাইবারনেট ও জেপিএ ওআরএম কনফিগ
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+
+  # [EN] Flyway Database Schema Migration / [BN] ফ্লাইওয়ে স্বয়ংক্রিয় স্কিমা মাইগ্রেশন
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+
+# [EN] JWT Security Settings / [BN] জেডব্লিউটি সিকিউরিটি সেটিংস
+security:
+  jwt:
+    secret-key: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    access-token-expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
+
+# [EN] OpenAPI / Swagger Configuration / [BN] সোয়াগার ওপেনএপিআই ৩ কনফিগ
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

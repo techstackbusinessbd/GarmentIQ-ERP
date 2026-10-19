@@ -1,0 +1,15 @@
+# -----------------------------------------------------------------------------
+# Java 21 & Maven Development Dockerfile for Spring Boot
+# -----------------------------------------------------------------------------
+FROM eclipse-temurin:21-jdk-alpine
+
+WORKDIR /app
+
+# Install bash, curl and maven for Spring Boot development
+RUN apk add --no-cache bash curl maven
+
+# Port 8080 for Spring Boot REST API
+EXPOSE 8080
+
+# Start Spring Boot application
+CMD ["sh", "-c", "if [ -f ./mvnw ]; then ./mvnw spring-boot:run; else mvn spring-boot:run; fi"]
