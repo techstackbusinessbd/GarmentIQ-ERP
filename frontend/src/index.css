@@ -1,158 +1,267 @@
-/* ==============================================================================
-   [EN] Enterprise Garments ERP - Centralized Multi-Theme Design Tokens (Tailwind v4)
-   [BN] এন্টারপ্রাইজ গার্মেন্টস ইআরপি - সেন্ট্রালাইজড মাল্টি-থিম ডিজাইন টোকেনস
-   Rule 20: 100% centralized design tokens.
-   Rule 21: 100% component-based UI/UX.
-   ============================================================================== */
+/**
+ * =============================================================================
+ * [EN] Garments ERP - Enterprise Design System Stylesheet (Tailwind CSS v4)
+ * [BN] গার্মেন্টস ইআরপি - এন্টারপ্রাইজ ডিজাইন সিস্টেম স্টাইলশিট (Tailwind CSS v4)
+ * =============================================================================
+ * [EN] Reference: docs/specifications/design-system/ (01 to 06)
+ * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens), Rule 25 (Validation)
+ * [BN] ৪টি চোখের স্বাচ্ছন্দ্যময় থিম, ৬০-৩০-১০ অনুপাত, শার্প মাইক্রো-রেডিয়াস ও সার্ভার ভ্যালিডেশন
+ */
 
 @import "tailwindcss";
 
-/* -----------------------------------------------------------------------------
-   1. Multi-Theme CSS Custom Properties (:root & [data-theme])
-   ----------------------------------------------------------------------------- */
-:root,
-[data-theme="sapphire"] {
-  /* [EN] Theme 1: Sapphire Corporate & Pure Steel (Default Flagship) */
-  /* [BN] থিম ১: স্যাফায়ার কর্পোরেট ও পিওর স্টিল (ডিফল্ট ফ্ল্যাগশিপ) */
-  --brand-sidebar: #0f172a;
-  --brand-sidebar-header: #020617;
-  --brand-sidebar-border: #1e293b;
-  --brand-accent: #2563eb;
-  --brand-accent-hover: #1d4ed8;
-  --brand-accent-light: #dbeafe;
-  --brand-accent-glow: rgba(37, 99, 235, 0.2);
-  --surface-base: #f8fafc;
-  --surface-card: #ffffff;
-  --surface-muted: #f1f5f9;
-  --surface-hover: #f8fafc;
-  --border-subtle: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-}
-
-[data-theme="nordic"] {
-  /* [EN] Theme 2: Nordic Mist & Ocean Steel (Scandinavian High-Clarity) */
-  /* [BN] থিম ২: নরডিক মিস্ট ও ওশান স্টিল (স্ক্যান্ডিনেভিয়ান হাই-ক্ল্যারিটি) */
-  --brand-sidebar: #0a192f;
-  --brand-sidebar-header: #040d1a;
-  --brand-sidebar-border: #132644;
-  --brand-accent: #0284c7;
-  --brand-accent-hover: #0369a1;
-  --brand-accent-light: #e0f2fe;
-  --brand-accent-glow: rgba(2, 132, 199, 0.2);
-  --surface-base: #f1f5f9;
-  --surface-card: #ffffff;
-  --surface-muted: #e2e8f0;
-  --surface-hover: #f8fafc;
-  --border-subtle: #cbd5e1;
-  --border-strong: #94a3b8;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #475569;
-}
-
-[data-theme="cashmere"] {
-  /* [EN] Theme 3: Cashmere Alabaster & Warm Slate (Paper Finish, Zero Eye Fatigue) */
-  /* [BN] থিম ৩: কাশ্মির অ্যালাবাস্টার ও ওয়ার্ম স্লেট (সফট পেপার ফিনিশ, জিরো আই-স্ট্রেন) */
-  --brand-sidebar: #1c1917;
-  --brand-sidebar-header: #0c0a09;
-  --brand-sidebar-border: #292524;
-  --brand-accent: #2563eb;
-  --brand-accent-hover: #1d4ed8;
-  --brand-accent-light: #e0e7ff;
-  --brand-accent-glow: rgba(37, 99, 235, 0.2);
-  --surface-base: #f7f7f5;
-  --surface-card: #ffffff;
-  --surface-muted: #e7e5e4;
-  --surface-hover: #f5f5f4;
-  --border-subtle: #e7e5e4;
-  --border-strong: #d6d3d1;
-  --text-primary: #1c1917;
-  --text-secondary: #44403c;
-  --text-muted: #57534e;
-}
-
-[data-theme="charcoal"] {
-  /* [EN] Theme 4: Charcoal Dim & Glacier Glow (Velvety Soft Dark Mode) */
-  /* [BN] থিম ৪: চারকোল ডিম ও গ্লেসিয়ার গ্লো (ভেলভেটি সফট ডার্ক মোড) */
-  --brand-sidebar: #0d1117;
-  --brand-sidebar-header: #010409;
-  --brand-sidebar-border: #21262d;
-  --brand-accent: #58a6ff;
-  --brand-accent-hover: #79b8ff;
-  --brand-accent-light: #1f2937;
-  --brand-accent-glow: rgba(88, 166, 255, 0.25);
-  --surface-base: #161b22;
-  --surface-card: #21262d;
-  --surface-muted: #30363d;
-  --surface-hover: #282e37;
-  --border-subtle: #30363d;
-  --border-strong: #484f58;
-  --text-primary: #f0f6fc;
-  --text-secondary: #c9d1d9;
-  --text-muted: #8b949e;
-}
-
-/* -----------------------------------------------------------------------------
-   2. Tailwind CSS v4 @theme Token Registration
-   ----------------------------------------------------------------------------- */
 @theme {
-  /* Dynamic Theme Tokens */
-  --color-brand-sidebar: var(--brand-sidebar);
-  --color-brand-sidebar-header: var(--brand-sidebar-header);
-  --color-brand-sidebar-border: var(--brand-sidebar-border);
-  --color-brand-accent: var(--brand-accent);
-  --color-brand-accent-hover: var(--brand-accent-hover);
-  --color-brand-accent-light: var(--brand-accent-light);
-  --color-brand-accent-glow: var(--brand-accent-glow);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 
+  /* [EN] Sharp Enterprise Micro-Radius Ramp / [BN] শার্প মাইক্রো-রেডিয়াস স্কেল */
+  --radius-xs: 2px;
+  --radius-subtle: 3px;
+  --radius-sm: 4px;
+  --radius-card: 6px;
+  --radius-modal: 8px;
+
+  /* [EN] Dynamic Surface Tokens / [BN] ডাইনামিক সারফেস টোকেনসমূহ */
   --color-surface-base: var(--surface-base);
   --color-surface-card: var(--surface-card);
   --color-surface-muted: var(--surface-muted);
   --color-surface-hover: var(--surface-hover);
 
+  /* [EN] Master Sidebar Scaffolding / [BN] মাস্টার সাইডবার স্ট্রাকচারাল কালার */
+  --color-brand-sidebar: var(--brand-sidebar);
+  --color-brand-sidebar-header: var(--brand-sidebar-header);
+  --color-brand-sidebar-border: var(--brand-sidebar-border);
+
+  /* [EN] Brand Focal Accents (10% Ratio) / [BN] ব্র্যান্ড অ্যাকসেন্ট কালার (১০% রেশিও) */
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-hover: var(--brand-accent-hover);
+  --color-brand-accent-light: var(--brand-accent-light);
+
+  /* [EN] Borders & Dividers / [BN] বর্ডার ও ডিভাইডার টোকেনসমূহ */
   --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
 
+  /* [EN] Semantic Text Hierarchy / [BN] টেক্সট হায়ারার্কি */
   --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
 
-  /* Status Semantic Tokens */
-  --color-status-success: #059669;
-  --color-status-success-bg: #ecfdf5;
-  --color-status-warning: #d97706;
-  --color-status-warning-bg: #fffbeb;
-  --color-status-danger: #e11d48;
-  --color-status-danger-bg: #fff1f2;
-  --color-status-info: #0284c7;
-  --color-status-info-bg: #f0f9ff;
+  /* [EN] RMG Domain Status Tokens / [BN] আরএমজি ডোমেন স্ট্যাটাস টোকেনসমূহ */
+  --color-status-success: var(--status-success);
+  --color-status-success-bg: var(--status-success-bg);
+  --color-status-success-border: var(--status-success-border);
 
-  /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-bg: var(--status-warning-bg);
+  --color-status-warning-border: var(--status-warning-border);
 
-  /* Sharp Enterprise Micro-Radius Scale (Rule: Very Small Corner Radius) */
-  --radius-xs: 0.125rem;      /* 2px - sharp micro-tags & badges */
-  --radius-sm: 0.25rem;       /* 4px - sharp buttons & inputs */
-  --radius-subtle: 0.1875rem; /* 3px - precision dropdowns */
-  --radius-button: 0.25rem;   /* 4px - action buttons */
-  --radius-card: 0.375rem;    /* 6px - sharp cards & table wrappers */
-  --radius-modal: 0.375rem;   /* 6px - sharp modal dialogs */
+  --color-status-danger: var(--status-danger);
+  --color-status-danger-bg: var(--status-danger-bg);
+  --color-status-danger-border: var(--status-danger-border);
+
+  --color-status-info: var(--status-info);
+  --color-status-info-bg: var(--status-info-bg);
+  --color-status-info-border: var(--status-info-border);
 }
 
-/* -----------------------------------------------------------------------------
-   3. Custom Utilities & Global Styles
-   ----------------------------------------------------------------------------- */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+/* =============================================================================
+ * [EN] Universal Base Tokens & Default Theme: Royal Indigo & Raw Denim
+ * [BN] সর্বজনীন বেস টোকেন ও ডিফল্ট থিম: রয়্যাল ইন্ডিগো ও র-ডেনিম
+ * ============================================================================= */
+:root,
+[data-theme="indigo"] {
+  color-scheme: light;
+
+  /* [EN] Sidebar (30% Scaffolding) / [BN] সাইডবার */
+  --brand-sidebar: #0f172a;
+  --brand-sidebar-header: #0b1120;
+  --brand-sidebar-border: #1e293b;
+
+  /* [EN] Accent (10% Focal) / [BN] অ্যাকসেন্ট */
+  --brand-accent: #4f46e5;
+  --brand-accent-hover: #4338ca;
+  --brand-accent-light: #eef2ff;
+
+  /* [EN] Surfaces (60% Neutral) / [BN] সারফেস */
+  --surface-base: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-muted: #f1f5f9;
+  --surface-hover: #f1f5f9;
+
+  /* [EN] Borders & Lines / [BN] বর্ডার */
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  /* [EN] Typography / [BN] টাইপোগ্রাফি */
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+
+  /* [EN] Universal Status Tokens / [BN] স্ট্যাটাস টোকেন */
+  --status-success: #059669;
+  --status-success-bg: #ecfdf5;
+  --status-success-border: #a7f3d0;
+
+  --status-warning: #d97706;
+  --status-warning-bg: #fffbeb;
+  --status-warning-border: #fde68a;
+
+  --status-danger: #e11d48;
+  --status-danger-bg: #fff1f2;
+  --status-danger-border: #fecdd3;
+
+  --status-info: #0284c7;
+  --status-info-bg: #f0f9ff;
+  --status-info-border: #bae6fd;
 }
 
+/* =============================================================================
+ * [EN] Theme 2: Sapphire Corporate & Pure Steel (Commercial & Executive)
+ * [BN] থিম ২: স্যাফায়ার কর্পোরেট ও পিওর স্টিল (কমার্শিয়াল ও এক্সিকিউটিভ)
+ * ============================================================================= */
+[data-theme="sapphire"] {
+  color-scheme: light;
+  --brand-sidebar: #0f172a;
+  --brand-sidebar-header: #0b1120;
+  --brand-sidebar-border: #1e293b;
+
+  --brand-accent: #2563eb;
+  --brand-accent-hover: #1d4ed8;
+  --brand-accent-light: #eff6ff;
+
+  --surface-base: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-muted: #f1f5f9;
+  --surface-hover: #f1f5f9;
+
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+}
+
+/* =============================================================================
+ * [EN] Theme 3: Emerald Sustainable & Green Factory (Eco & Compliance Audit)
+ * [BN] থিম ৩: এমারেল্ড সাসটেইনেবল ও গ্রিন ফ্যাক্টরি (পরিবেশবান্ধব ও অডিট)
+ * ============================================================================= */
+[data-theme="emerald"] {
+  color-scheme: light;
+  --brand-sidebar: #022c22;
+  --brand-sidebar-header: #011f18;
+  --brand-sidebar-border: #064e3b;
+
+  --brand-accent: #059669;
+  --brand-accent-hover: #047857;
+  --brand-accent-light: #ecfdf5;
+
+  --surface-base: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-muted: #f0fdf4;
+  --surface-hover: #f0fdf4;
+
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+}
+
+/* =============================================================================
+ * [EN] Theme 4: Midnight Obsidian (High-Contrast Shop Floor Dark Mode)
+ * [BN] থিম ৪: মিডনাইট অবসিডিয়ান (হাই-কনট্রাস্ট শপ ফ্লোর ডার্ক মোড)
+ * ============================================================================= */
+[data-theme="obsidian"] {
+  color-scheme: dark;
+  --brand-sidebar: #0b0f19;
+  --brand-sidebar-header: #070a12;
+  --brand-sidebar-border: #1e293b;
+
+  --brand-accent: #6366f1;
+  --brand-accent-hover: #818cf8;
+  --brand-accent-light: #1e293b;
+
+  --surface-base: #0b0f19;
+  --surface-card: #151c2c;
+  --surface-muted: #1e293b;
+  --surface-hover: #222d42;
+
+  --border-subtle: #252f44;
+  --border-strong: #334155;
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+
+  /* [EN] High-Contrast Status Glows for Shop Floor Terminals */
+  --status-success-bg: rgba(5, 150, 105, 0.15);
+  --status-success-border: rgba(5, 150, 105, 0.4);
+
+  --status-warning-bg: rgba(217, 119, 6, 0.15);
+  --status-warning-border: rgba(217, 119, 6, 0.4);
+
+  --status-danger-bg: rgba(225, 29, 72, 0.15);
+  --status-danger-border: rgba(225, 29, 72, 0.4);
+
+  --status-info-bg: rgba(2, 132, 199, 0.15);
+  --status-info-border: rgba(2, 132, 199, 0.4);
+}
+
+/* =============================================================================
+ * [EN] Foundational Body & Canvas Reset
+ * [BN] মূল বডি ও ক্যানভাস রিসেট
+ * ============================================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
 body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
   background-color: var(--surface-base);
   color: var(--text-primary);
-  font-family: var(--font-sans);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =============================================================================
+ * [EN] Rule 25 Compliant Server-Side Validation Visual Utility Classes
+ * [BN] রুল ২৫ অনুবর্তী সার্ভার-সাইড ভ্যালিডেশন এরর ভিজ্যুয়াল ক্লাসসমূহ
+ * ============================================================================= */
+.erp-input-error {
+  border-color: var(--status-danger) !important;
+  box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.18) !important;
+}
+
+.erp-error-message {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--status-danger);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* =============================================================================
+ * [EN] Enterprise Slim Scrollbar (High-Density Grids & Sidebars)
+ * [BN] এন্টারপ্রাইজ স্লিম স্ক্রলবার (হাই-ডেনসিটি টেবিল ও সাইডবারের জন্য)
+ * ============================================================================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border-radius: var(--radius-xs);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
 }

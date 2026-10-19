@@ -1,0 +1,31 @@
+# [EN] Dependencies / [BN] ডিপেন্ডেন্সিজ
+node_modules
+.pnp
+.pnp.js
+
+# [EN] Production build output / [BN] প্রোডাকশন বিল্ড আউটপুট
+dist
+dist-ssr
+*.local
+
+# [EN] TypeScript build artifacts / [BN] টাইপস্ক্রিপ্ট বিল্ড আর্টিফ্যাক্ট
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+
+# [EN] Editor and OS files / [BN] এডিটর ও ওএস ফাইল
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# [EN] Log files / [BN] লগ ফাইল
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

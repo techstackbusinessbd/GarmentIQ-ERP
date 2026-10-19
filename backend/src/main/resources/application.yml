@@ -1,70 +1,90 @@
 # ==============================================================================
-# [EN] Garments ERP Backend Configuration (Zero Hardcoding, Environment-Driven)
-# [BN] গার্মেন্টস ইআরপি ব্যাকএন্ড কনফিগারেশন (জিরো হার্ডকোড, শতভাগ ভ্যারিয়েবল ড্রিভেন)
+# [EN] Garments ERP Backend Configuration (Production-Ready Dev Profile)
+# [BN] গার্মেন্টস ইআরপি ব্যাকএন্ড কনফিগারেশন
 # ==============================================================================
-
 server:
-  port: ${SERVER_PORT:8080}
+  port: 8080
   servlet:
-    context-path: /api/v1
-  compression:
-    enabled: true
-    mime-types: application/json,text/plain,text/xml,application/xml
+    context-path: /
+  shutdown: graceful
 
 spring:
   application:
     name: garments-erp-backend
+  profiles:
+    active: dev
 
-  # [EN] Enable Java 21 Virtual Threads (Project Loom) / [BN] জাভা ২১ ভার্চুয়াল থ্রেডস সক্রিয়করণ
+  # [EN] Enable Java 21 Virtual Threads (Project Loom) for ultra-high throughput
+  # [BN] উচ্চ কর্মক্ষমতা ও থ্রুপুটের জন্য জাভা ২১ ভার্চুয়াল থ্রেডস সক্রিয়করণ
   threads:
     virtual:
       enabled: true
 
-  # [EN] PostgreSQL Database Connection / [BN] পোস্টগ্রেসকিউএল ডেটাবেজ কানেকশন
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:garments_erp_db}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/garments_erp_db}
+    username: ${SPRING_DATASOURCE_USERNAME:erp_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:erp_password_secure123}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: ${DB_POOL_MAX:20}
-      minimum-idle: ${DB_POOL_MIN_IDLE:5}
+      pool-name: GarmentsErpHikariPool
+      maximum-pool-size: 20
+      minimum-idle: 5
       idle-timeout: 300000
       connection-timeout: 20000
       max-lifetime: 1200000
 
-  # [EN] JPA / Hibernate ORM Settings / [BN] হাইবারনেট ও জেপিএ ওআরএম কনফিগ
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    show-sql: false
     hibernate:
       ddl-auto: validate
-    open-in-view: false
-    show-sql: ${SHOW_SQL:false}
     properties:
       hibernate:
         format_sql: false
+        default_schema: public
         jdbc:
-          batch_size: 50
+          time_zone: UTC
         order_inserts: true
         order_updates: true
 
-  # [EN] Flyway Database Schema Migration / [BN] ফ্লাইওয়ে স্বয়ংক্রিয় স্কিমা মাইগ্রেশন
   flyway:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
     locations: classpath:db/migration
 
-# [EN] JWT Security Settings / [BN] জেডব্লিউটি সিকিউরিটি সেটিংস
-security:
-  jwt:
-    secret-key: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
-    access-token-expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
 
-# [EN] OpenAPI / Swagger Configuration / [BN] সোয়াগার ওপেনএপিআই ৩ কনফিগ
 springdoc:
   api-docs:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    com.garments.erp: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+
+# ==============================================================================
+# [EN] JWT Stateless Security Token Configuration
+# [BN] জেডব্লিউটি স্টেটলেস সিকিউরিটি টোকেন কনফিগারেশন
+# ==============================================================================
+app:
+  jwt:
+    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    expiration-ms: ${JWT_EXPIRATION_MS:28800000} # 8 Hours (কর্মঘণ্টা)
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000} # 7 Days (৭ দিন)
+

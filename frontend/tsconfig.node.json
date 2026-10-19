@@ -1,0 +1,13 @@
+{
+  // [EN] TypeScript configuration for Vite build configuration and node environment
+  // [BN] Vite বিল্ড কনফিগারেশন ও নোড এনভায়রনমেন্টের জন্য টাইপস্ক্রিপ্ট কনফিগারেশন
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "strict": true
+  },
+  "include": ["vite.config.ts"]
+}

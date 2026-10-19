@@ -1,132 +1,125 @@
 package com.garments.erp.core.entity;
 
 import com.garments.erp.core.utils.UuidV7Generator;
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
 /**
- * [EN] Base Auditable JPA Entity providing RFC 9562 UUIDv7 Primary Key, Tenant Isolation, Audit Trails, and Optimistic Locking.
- * Every domain entity across Merchandising, Cutting, Sewing, Wash, Embellishment must extend this base class.
- *
- * [BN] বেস অডিটেবল জেপিএ এন্টিটি যা প্রতিটি ডোমেন টেবিলে RFC 9562 UUIDv7 প্রাইমারি কি, মাল্টি-টেন্যান্ট আইসোলেশন,
- * অডিট ট্রেইল এবং অপটিমিস্টিক লকিং (@Version) নিশ্চিত করে।
+ * =============================================================================
+ * [EN] Multi-Tenant Auditable Base Entity with Optimistic Concurrency Control
+ * [BN] মাল্টি-টেন্যান্ট অডিটেবল বেস এন্টিটি ও অপটিমিস্টিক কনকারেন্সি কন্ট্রোল
+ * =============================================================================
+ * [EN] Serves as the base mapped superclass for all domain entities across the ERP.
+ *      Provides RFC 9562 UUIDv7 primary keys, multi-tenant organization isolation,
+ *      factory unit scoping, audit trail timestamps, soft deletion, and JPA @Version
+ *      optimistic locking to eliminate lost-update anomalies in fast-paced production.
+ * [BN] ইআরপি-র সকল ডোমেন এন্টিটির জন্য বেস সুপারক্লাস হিসেবে কাজ করে। এটি RFC 9562
+ *      টাইম-অর্ডারড UUIDv7 প্রাইমারি কি, মাল্টি-টেন্যান্ট অর্গানাইজেশন আইসোলেশন,
+ *      ফ্যাক্টরি ইউনিট স্কোপিং, অডিট ট্রেইল টাইমস্ট্যাম্প, সফট ডিলিট এবং একই সাথে
+ *      একাধিক ব্যবহারকারীর কনকারেন্ট এডিটিং রোধে JPA @Version অপটিমিস্টিক লকিং প্রদান করে।
  */
 @Getter
 @Setter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
 public abstract class AuditableBaseEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
-     * [EN] Time-Ordered Unique Identifier (RFC 9562 UUIDv7) ensuring high-performance B-Tree insertions and distributed uniqueness (ADR-007).
-     * [BN] প্রতিটি রেকর্ডের জন্য টাইম-অর্ডারড অনন্য গ্লোবাল আইডেন্টিফায়ার (UUIDv7) যা পোস্টগ্রেসকিউএল বি-ট্রি পারফরম্যান্স সর্বোচ্চ রাখে।
+     * [EN] Unique primary key generated via RFC 9562 UUIDv7 (Time-ordered 64-bit millisecond prefix)
+     * [BN] RFC 9562 UUIDv7 দ্বারা জেনারেটকৃত অনন্য প্রাইমারি কি (টাইম-অর্ডারড ইনডেক্সিং বান্ধব)
      */
     @Id
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     /**
-     * [EN] Tenant ID for Multi-Tenant SaaS isolation (ADR-003).
-     * [BN] মাল্টি-টেন্যান্ট SaaS আইসোলেশনের জন্য নির্দিষ্ট কোম্পানি/টেন্যান্ট আইডি।
+     * [EN] Multi-tenant organization identifier ensuring complete data isolation
+     * [BN] মাল্টি-টেন্যান্ট অর্গানাইজেশন আইডি, যা এক কারখানার ডেটা অন্য কারখানা থেকে আলাদা রাখে
      */
-    @Column(name = "tenant_id", nullable = false, updatable = false, length = 64)
-    private String tenantId;
+    @Column(name = "tenant_id", nullable = false, updatable = false)
+    private UUID tenantId;
 
     /**
-     * [EN] Factory Unit ID for large group conglomerates (e.g. Wash Unit, Sewing Unit).
-     * [BN] বৃহৎ গ্রুপের আওতাধীন নির্দিষ্ট ফ্যাক্টরি ইউনিট আইডি (যেমন: ওয়াশিং ইউনিট, সুইং ইউনিট)।
+     * [EN] Specific factory unit or production compound under the tenant group
+     * [BN] সংশ্লিষ্ট গ্রুপের অধীনে নির্দিষ্ট কারখানা ইউনিট বা উৎপাদন শেডের আইডি
      */
-    @Column(name = "factory_unit_id", length = 64)
-    private String factoryUnitId;
+    @Column(name = "factory_unit_id")
+    private UUID factoryUnitId;
 
     /**
-     * [EN] Record creation timestamp.
-     * [BN] রেকর্ড তৈরির সঠিক সময়কাল (UTC)।
+     * [EN] UTC timestamp recording the exact instant when this record was persisted
+     * [BN] রেকর্ডটি ডেটাবেজে প্রথম সংরক্ষিত হওয়ার সুনির্দিষ্ট UTC টাইমস্ট্যাম্প
      */
-    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
 
     /**
-     * [EN] Record last modification timestamp.
-     * [BN] রেকর্ড সর্বশেষ পরিবর্তনের সময়কাল (UTC)।
+     * [EN] UTC timestamp capturing the latest modification instant of this record
+     * [BN] রেকর্ডটি সর্বশেষ পরিমার্জিত হওয়ার সুনির্দিষ্ট UTC টাইমস্ট্যাম্প
      */
-    @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt = Instant.now();
+    private Instant updatedAt;
 
     /**
-     * [EN] User username or ID who created the record.
-     * [BN] যে ইউজার এই রেকর্ডটি তৈরি করেছেন তাঁর ইউজারনেম বা আইডি।
+     * [EN] Username, employee code, or system process that created the entity
+     * [BN] যে ইউজার, কর্মকর্তা বা সিস্টেম প্রসেস রেকর্ডটি তৈরি করেছে তার নাম/কোড
      */
-    @CreatedBy
     @Column(name = "created_by", updatable = false, length = 100)
     private String createdBy;
 
     /**
-     * [EN] User username or ID who last modified the record.
-     * [BN] যে ইউজার এই রেকর্ডটি সর্বশেষ পরিবর্তন করেছেন।
+     * [EN] Username, employee code, or system process that performed the last update
+     * [BN] সর্বশেষ যে কর্মকর্তা বা সিস্টেম প্রসেস রেকর্ডটি আপডেট করেছে তার নাম/কোড
      */
-    @LastModifiedBy
     @Column(name = "updated_by", length = 100)
     private String updatedBy;
 
     /**
-     * [EN] Optimistic locking version preventing concurrent overwrite anomalies.
-     * [BN] অপটিমিস্টিক লকিং ভার্সন যা একসাথে একাধিক ইউজারের কনকারেন্ট ওভাররাইট রোধ করে।
+     * [EN] Soft deletion indicator (false = active, true = soft-deleted in trash bin)
+     * [BN] সফট ডিলিট নির্দেশক ফ্ল্যাগ (false = সক্রিয়, true = ট্র্যাশ বিনে স্থানান্তরিত)
+     */
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
+    /**
+     * [EN] Concurrency control version number automatically incremented by JPA on every update
+     * [BN] কনকারেন্সি কন্ট্রোল ভার্সন নম্বর, যা প্রতি আপডেটে স্বয়ংক্রিয়ভাবে বৃদ্ধি পেয়ে ওভাররাইট রোধ করে
      */
     @Version
     @Column(name = "version", nullable = false)
-    private Long version = 0L;
+    private Long version;
 
     /**
-     * [EN] Soft deletion flag preserving historical compliance and audit trails.
-     * [BN] সফট ডিলিট ফ্ল্যাগ যা হিস্টোরিক্যাল ডেটা মুছে না ফেলে অডিট ট্রেইল সুরক্ষিত রাখে।
-     */
-    @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted = false;
-
-    /**
-     * [EN] Lifecycle callback automatically generating time-ordered UUIDv7 and initializing timestamps before insert.
-     * [BN] ইনসার্টের পূর্বে স্বয়ংক্রিয়ভাবে টাইম-অর্ডারড UUIDv7 তৈরি ও টাইমস্ট্যাম্প ইনিশিয়ালাইজ করে।
+     * [EN] JPA pre-persist lifecycle hook: Auto-populates UUIDv7, timestamps, and default actor
+     * [BN] ডেটাবেজে ইনসার্ট হওয়ার পূর্ববর্তী লাইফসাইকেল হুক: UUIDv7 ও অডিট মেটাডেটা সেট করে
      */
     @PrePersist
     protected void onCreate() {
         if (this.id == null) {
             this.id = UuidV7Generator.generate();
         }
-        if (this.createdAt == null) {
-            this.createdAt = Instant.now();
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+        if (this.createdBy == null) {
+            this.createdBy = "SYSTEM";
         }
-        if (this.updatedAt == null) {
-            this.updatedAt = Instant.now();
+        if (this.updatedBy == null) {
+            this.updatedBy = "SYSTEM";
         }
     }
 
     /**
-     * [EN] Lifecycle callback updating timestamp before entity update.
-     * [BN] রেকর্ড পরিবর্তনের পূর্বে সর্বশেষ আপডেটের সময় স্বয়ংক্রিয়ভাবে হালনাগাদ করে।
+     * [EN] JPA pre-update lifecycle hook: Auto-refreshes updatedAt to current UTC instant
+     * [BN] ডেটাবেজে প্রতিবার আপডেট হওয়ার পূর্ববর্তী লাইফসাইকেল হুক: updatedAt টাইমস্ট্যাম্প রিফ্রেশ করে
      */
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = Instant.now();
     }
 }
+

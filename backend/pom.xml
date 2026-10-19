@@ -1,91 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  [EN] Enterprise Garments ERP Backend - Maven Project Object Model (POM)
-  [BN] এন্টারপ্রাইজ গার্মেন্টস ইআরপি ব্যাকএন্ড - ম্যাভেন প্রজেক্ট অবজেক্ট মডেল কনফিগারেশন
-  Project: RMG Woven, Denim & Non-Denim ERP + Traceability + RFID Platform
-  Java Runtime: Java 21 (LTS)
-  Framework: Spring Boot 3.3.4
+  =============================================================================
+  [EN] Garments ERP Backend Maven Project Object Model (POM)
+  [BN] গার্মেন্টস ইআরপি ব্যাকএন্ড ম্যাভেন প্রোজেক্ট অবজেক্ট মডেল
+  =============================================================================
+  Core Tech Stack: Java 21 LTS, Spring Boot 3.3.4, PostgreSQL, Spring Security 6
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.4</version>
-        <relativePath/>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.garments</groupId>
-    <artifactId>erp-backend</artifactId>
-    <version>1.0.0</version>
+    <groupId>com.garments.erp</groupId>
+    <artifactId>garments-erp-backend</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
     <name>garments-erp-backend</name>
-    <description>RMG Woven, Denim and Non-Denim Enterprise ERP + Traceability + RFID Platform</description>
+    <description>Enterprise ERP Platform for RMG Woven, Denim and Non-Denim Manufacturing</description>
 
     <properties>
-        <!-- [EN] Target Java 21 LTS runtime / [BN] জাভা ২১ এলটিএস রানটাইম -->
         <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-        <!-- [EN] Third-party library versions / [BN] থার্ড-পার্টি লাইব্রেরি সংস্করণ -->
-        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <lombok.version>1.18.34</lombok.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <lombok.version>1.18.36</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <jjwt.version>0.12.6</jjwt.version>
         <springdoc.version>2.6.0</springdoc.version>
-        <zxing.version>3.5.3</zxing.version>
-        <poi.version>5.3.0</poi.version>
     </properties>
 
     <dependencies>
-        <!-- [EN] Spring Boot Web Starter for RESTful APIs / [BN] রেস্ট এপিআই তৈরির জন্য স্প্রিং ওয়েব -->
+        <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- [EN] Spring Data JPA with Hibernate for PostgreSQL / [BN] পোস্টগ্রেসকিউএল ডেটাবেজের জন্য জেপিএ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- [EN] Spring Boot Starter Validation (Jakarta Validation) / [BN] ইনপুট ডেটা ভ্যালিডেশন -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <!-- [EN] Spring Security for Stateless Authentication / [BN] স্টেটলেস অথেনটিকেশন ও পারমিশন গার্ড -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- [EN] PostgreSQL JDBC Driver / [BN] পোস্টগ্রেসকিউএল ডেটাবেজ ড্রাইভার -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Database & Flyway Migration -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- [EN] Flyway Core & PostgreSQL Database Migration / [BN] ডেটাবেজ স্কিমা ভার্সন মাইগ্রেশন -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
-        <!-- [EN] JJWT for Stateless JWT Bearer Tokens / [BN] নিরাপদ অ্যাক্সেস টোকেন ম্যানেজমেন্ট -->
+        <!-- JJWT for Stateless Authentication -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -104,53 +99,33 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- [EN] MapStruct for high-speed DTO-Entity mapping / [BN] ডিটিও এবং এন্টিটি ম্যাপিং লাইব্রেরি -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${org.mapstruct.version}</version>
-        </dependency>
-
-        <!-- [EN] Project Lombok for reducing boilerplate code / [BN] লম্বক লাইব্রেরি -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- [EN] ZXing for Barcode and QR Code Generation / [BN] বান্ডিল বারকোড ও কিউআর কোড তৈরি -->
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>${zxing.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-            <version>${zxing.version}</version>
-        </dependency>
-
-        <!-- [EN] OpenAPI 3 / Swagger Documentation / [BN] লাইভ এপিআই ডকুমেন্টেশন পোর্টাল -->
+        <!-- OpenAPI / Swagger 3 Specification UI -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
 
-        <!-- [EN] Apache POI for Excel Import & Export / [BN] মার্চেন্ডাইজিং ও বিওএম এক্সেল ইমপোর্ট-এক্সপোর্ট -->
+        <!-- Developer Tooling -->
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>${poi.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
 
-        <!-- [EN] Spring Boot Starter Test for JUnit 5 & Mockito / [BN] ব্যাকএন্ড ইউনিট ও ইন্টিগ্রেশন টেস্ট -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+
+        <!-- Testing Framework -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
@@ -160,11 +135,9 @@
 
     <build>
         <plugins>
-            <!-- [EN] Compiler Plugin with MapStruct & Lombok Annotation Processors / [BN] অ্যানোটেশন প্রসেসর কনফিগ -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -182,13 +155,12 @@
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
+                            <version>${mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
-            <!-- [EN] Spring Boot Maven Plugin for Executable Fat JAR / [BN] রানযোগ্য জার তৈরির প্লাগিন -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

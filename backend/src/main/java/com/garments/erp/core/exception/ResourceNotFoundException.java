@@ -1,24 +1,38 @@
 package com.garments.erp.core.exception;
 
-/**
- * [EN] Exception thrown when an expected entity or resource is not found in the database.
- * [BN] ডেটাবেজে কোনো রেকর্ড বা রিসোর্স খুঁজে না পাওয়া গেলে এই এক্সেপশনটি নিক্ষেপ করা হয়।
- */
-public class ResourceNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    private static final long serialVersionUID = 1L;
+/**
+ * =============================================================================
+ * [EN] Entity / Resource Not Found Exception (404 Not Found)
+ * [BN] ডেটাবেজে কোনো রেকর্ড না পাওয়া গেলে নট ফাউন্ড এক্সেপশন (৪০৪)
+ * =============================================================================
+ * [EN] Thrown when a queried entity (e.g. style, PO, marker, fabric roll) cannot
+ *      be located in the database for the given tenant ID.
+ * [BN] ডেটাবেজে সংশ্লিষ্ট টেন্যান্টের অধীনে কাঙ্ক্ষিত রেকর্ড (যেমন: স্টাইল, অর্ডার,
+ *      মার্কার বা ফেব্রিক রোল) খুঁজে পাওয়া না গেলে এই এক্সেপশন থ্রো করা হয়।
+ */
+public class ResourceNotFoundException extends BusinessException {
 
     /**
-     * [EN] Constructor with a clean, human-readable error description.
-     * [BN] সহজ মানবিক ইংরেজি বার্তা সহ কনস্ট্রাক্টর।
+     * [EN] Formats structured not-found message using entity name and lookup identifier
+     * [BN] রিসোর্সের নাম ও আইডি ব্যবহার করে সুনির্দিষ্ট নট-ফাউন্ড মেসেজ তৈরি করে
      *
-     * @param message User-friendly explanation of what was not found
+     * @param resourceName [EN] Name of the entity / [BN] রিসোর্সের নাম (যেমন: Style, Buyer)
+     * @param identifier   [EN] ID or lookup key / [BN] আইডি বা সার্চ কি
      */
-    public ResourceNotFoundException(String message) {
-        super(message);
+    public ResourceNotFoundException(String resourceName, Object identifier) {
+        super(String.format("%s with identifier '%s' was not found", resourceName, identifier), HttpStatus.NOT_FOUND);
     }
 
-    public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
-        super(String.format("%s was not found with %s: '%s'", resourceName, fieldName, fieldValue));
+    /**
+     * [EN] Constructor with explicit customized not-found message
+     * [BN] স্পষ্ট কাস্টম বার্তাসহ নট-ফাউন্ড এক্সেপশন তৈরির কনস্ট্রাক্টর
+     *
+     * @param message [EN] Explicit error message / [BN] সুনির্দিষ্ট এরর বার্তা
+     */
+    public ResourceNotFoundException(String message) {
+        super(message, HttpStatus.NOT_FOUND);
     }
 }
+

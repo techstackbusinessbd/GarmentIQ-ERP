@@ -1,72 +1,41 @@
-# লাইভ স্প্রিন্ট মাইক্রো-স্টেপ ট্র্যাকার (Sprint Micro-Step Tracker)
+# মাস্টার ডোমেন স্টেপ ট্র্যাকার ইনডেক্স (Master Step Tracker Index)
 
 *সর্বশেষ আপডেট: ১৯ অক্টোবর ২০২৬*  
 *তত্ত্বাবধায়ক: তানভীর আহমেদ (Chief Solutions Architect) ও ফারহানা চৌধুরী (QA Lead)*  
-*নীতিমালা: [.agents/rules/14_granular_task_decomposition_and_step_tracking.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/14_granular_task_decomposition_and_step_tracking.md)*
+*নীতিমালা: [.agents/rules/14_granular_task_decomposition_and_step_tracking.md](file:///g:/ERP-Software/Garments-ERP/.agents/rules/14_granular_task_decomposition_and_step_tracking.md) ও [রুল ২২ (জিরো স্টেপ-স্কিপিং)](file:///g:/ERP-Software/Garments-ERP/.agents/rules/22_strict_sequential_step_execution_and_zero_skipping.md)*
 
 ---
 
-## 📋 স্ট্যাটাস নির্দেশিকা
-- `[ ]` বাকি আছে (Pending - স্যারের অনুমোদনের অপেক্ষায়)
-- `[/]` কাজ চলছে (In Progress)
-- `[x]` সম্পন্ন এবং কিউএ অডিটর দ্বারা ভেরিফাইড (Done & Verified)
+## 🔒 ডোমেন-ভিত্তিক ট্র্যাকার ও লকিং পলিসি (Domain Tracking & Lock Policy)
+1. **ডোমেন-নির্দিষ্ট ফাইল**: প্রতিটি ডোমেনের জন্য পৃথক স্টেপ ট্র্যাকার ফাইল থাকবে:  
+   `docs/management/step-tracking/STEP_TRACKER_DOMAIN_XX_*.md`
+2. **ডোমেন লকিং প্রোটোকল**: যখন একটি ডোমেন ১০০% কিউএ-ভেরিফাইড ও সিটিও অনুমোদিত হবে, তখন সেই ডোমেনের ফাইলটি 🔒 **LOCKED & ARCHIVED** হিসেবে সিলগালা করা হবে (আর কোনো এডিট করা যাবে না)।
+3. **পরবর্তী ডোমেন অ্যাক্টিভেশন**: পূর্ববর্তী ডোমেন লক হওয়ার পরেই কেবল পরবর্তী ডোমেনের জন্য নতুন ট্র্যাকার ফাইল সক্রিয় হবে।
 
 ---
 
-## 🚀 স্প্রিন্ট ০: এন্টারপ্রাইজ কোর স্কাফোল্ডিং (Sprint 0 Micro-Steps)
+## 🎯 বর্তমান সক্রিয় ডোমেন (Current Active Domain)
 
-| স্টেপ আইডি | ওনার | টাস্কের সংক্ষিপ্ত বিবরণ | টার্গেট ফাইল(সমূহ) | গ্রহণযোগ্যতার মাপকাঠি (Acceptance Criteria) | স্ট্যাটাস |
-| :--- | :--- | :--- | :--- | :--- | :---: |
-| **`S0-00`** | তানভীর | ফাউন্ডেশন ও টেক স্ট্যাক এসআরএস স্পেসিফিকেশন | `docs/requirements/srs/SRS_00_FOUNDATION.md` | IEEE 830 ফ্রেমওয়ার্ক, ডকার, জাভা ২১, রিঅ্যাক্ট ১৯ স্পেক্স রেডি | `[x]` |
-| **`S0-01`** | তানভীর | আর্কিটেকচার ও রুলস ডিরেক্টরি সেটআপ | `AGENTS.md`, `.agents/rules/` | সমস্ত কোর নিয়মাবলি (০-২০) ও পলিসি ডকুমেন্টেড | `[x]` |
-| **`S0-01B`** | তানভীর | Antigravity পার্মানেন্ট মেমোরি ও KI ইন্টিগ্রেশন | `knowledge/`, `~/.gemini/config/rules/` | গ্লোবাল রুলস, নলেজ আইটেমস ও স্কিল মেমোরিতে পার্মানেন্ট সেভড | `[x]` |
-| **`S0-01C`** | তানভীর | গিট ইনিশিয়ালাইজেশন ও গিটহাব রিমোট সিঙ্ক | `https://github.com/techstackbusinessbd/GarmentIQ-ERP.git` | মেইন ব্রাঞ্চে সফল ইনিশিয়াল কমিট ও পুশ সম্পন্ন | `[x]` |
-| **`S0-01D`** | তানভীর | ভার্সন কন্ট্রোল ও রিলিজ ম্যানেজমেন্ট স্পেসিফিকেশন | `docs/specifications/VERSION_CONTROL_AND_RELEASE_MANAGEMENT.md`, `SRS_06` | গিট ব্রাঞ্চিং, কনভেনশনাল কমিটস, সেমভার ২.০ ও ফ্লাইওয়ে স্ট্যান্ডার্ড ডকুমেন্টেড | `[x]` |
-| **`S0-01E`** | তানভীর | অবজেক্ট স্টোরেজ (MinIO/S3) ও ৩-স্তরের ক্যাশ স্পেক | `docs/specifications/STORAGE_AND_CACHING_ARCHITECTURE.md`, `ADR-009` | MinIO/S3 পাথ আইসোলেশন ও L1/L2/L3 ক্যাশ আর্কিটেকচার ডকুমেন্টেড | `[x]` |
-| **`S0-01F`** | সাদিয়া | এন্টারপ্রাইজ মাল্টি-থিম ও ডিজাইন সিস্টেম স্পেসিফিকেশন স্যুট | `docs/specifications/design-system/`, `SRS_07` | টাইপোগ্রাফি (10px-36px), ৫০-৯৫০ কালার স্কেল, ৪px গ্রিড, লাইন-হাইট, কম্পোনেন্ট অ্যানাটমি ও IEEE 830 SRS | `[x]` |
-| **`S0-01G`** | তানভীর+সাদিয়া| ১০০% কম্পোনেন্ট-ভিত্তিক UI/UX আর্কিটেকচার নীতি (Rule 21) | `.agents/rules/21_component_based_ui_ux_architecture.md` | ৪-স্তরের কম্পোনেন্ট হায়ারার্কি, জিরো ইনলাইন মনোলিথ জেএসএক্স ও কিউএ চেকলিস্ট | `[x]` |
-| **`S0-01H`** | সাদিয়া+তানভীর| ৬০-৩০-১০ কালার রেশিও ও কম্পোনেন্ট কালার ম্যাপিং স্পেক | `docs/specifications/design-system/05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md` | ৬০% বেস, ৩০% স্ট্রাকচার, ১০% অ্যাকসেন্ট ও প্রতিটি কম্পোনেন্টের ডিটারমিনিস্টিক ম্যাপিং | `[x]` |
-| **`S0-01I`** | সাদিয়া+তানভীর| থিম লেআউট ও মাস্টার শেল আর্কিটেকচার স্পেসিফিকেশন | `docs/specifications/design-system/06_THEME_LAYOUT_ARCHITECTURE.md` | মাস্টার শেল DOM হায়ারার্কি, টপ হেডার (64px), কোল্যাপ্সিবল সাইডবার, স্টিকি পেজ অ্যাকশন বার ও কিয়স্ক মোড | `[x]` |
-| **`S0-02`** | তানভীর | সেন্ট্রাল ডকুমেন্টেশন পোর্টাল ও ইনডেক্সিং | `docs/README.md`, `docs/architecture/` | সিস্টেমের সমস্ত রেফারেন্স লিঙ্ক ভ্যালিড ও সিঙ্কড | `[x]` |
-| **`S0-03`** | আরিফ | ডকারাইজড পোস্টগ্রেসকিউএল ও মাস্টার সিড স্ক্রিপ্ট | `docker/docker-compose.yml`, `scripts/` | পোস্টগ্রেসকিউএল কন্টেইনার ও মাস্টার টেবিল সিড স্ক্রিপ্ট রেডি | `[x]` |
-| **`S0-04`** | আরিফ | ১-ক্লিক ডেমো ডেটা পার্জ মেকানিজম | `scripts/purge-demo-data.sql`, রুল ১৩ | ১-ক্লিকে নমুনা ডেটা মুছে ফেলার কার্যকর স্ক্রিপ্ট রেডি | `[x]` |
-| **`S0-05`** | আরিফ | ব্যাকএন্ড ম্যাভেন ডিপেন্ডেন্সি ম্যানিফেস্ট ভেরিফিকেশন | `backend/pom.xml` | জাভা ২১, স্প্রিং বুট ৩.৩.৪, জেপিএ, সিকিউরিটি ও লম্বক রেজল্ভড | `[x]` |
-| **`S0-06`** | আরিফ | ব্যাকএন্ড এনভায়রনমেন্ট কনফিগারেশন | `backend/src/main/resources/application.yml` | ডকার ডিবি ভ্যারিয়েবল, হাইবারনেট ভ্যালিডেট, হিকারিপুল ২০ | `[x]` |
-| **`S0-07`** | আরিফ | বেস অডিট এন্টিটি ও মাল্টি-টেন্যান্ট ফিল্ডস | `backend/.../core/entity/AuditableBaseEntity.java` | RFC 9562 UUIDv7 জেনারেটর, টেন্যান্ট আইডি, টাইমস্ট্যাম্প ও `@Version` অপটিমিস্টিক লক | `[x]` |
-| **`S0-08`** | আরিফ | সেন্ট্রাল রেসপন্স এনভেলপ অবজেক্টস | `backend/.../core/response/ApiResponse.java`, `PaginatedResponse.java` | ইউনিফাইড JSON রেসপন্স এনভেলপ ও পেজিনেশন মেটাডাটা | `[x]` |
-| **`S0-09`** | আরিফ | গ্লোবাল এক্সেপশন ও মানবিক এরর হ্যান্ডলার | `backend/.../core/exception/GlobalExceptionHandler.java` | রোবোটিক ট্রেস屏蔽 করে RFC 7807 ফ্রেন্ডলি হিউম্যান এরর প্রদান | `[x]` |
-| **`S0-10`** | আরিফ | স্প্রিং বুট মূল অ্যাপ্লিকেশন এন্ট্রি ক্লাস | `backend/.../ErpApplication.java` | ভার্চুয়াল থ্রেডস ও কমপোনেন্ট স্ক্যানিং সচল | `[x]` |
-| **`S0-11`** | সাদিয়া | ফ্রন্টএন্ড প্যাকেজ ম্যানিফেস্ট ও রাউটিং প্লাগইন | `frontend/package.json` | `react-router-dom@7`, `zustand`, `zod`, `lucide` ইত্যাদি অন্তর্ভুক্ত | `[x]` |
-| **`S0-12`** | সাদিয়া | Vite ৬ ও HTML অ্যাপ্লিকেশন এন্ট্রি কনফিগ | `frontend/vite.config.js`, `frontend/index.html` | React ও Tailwind v4 প্লাগইন, পোর্ট ৫১৭৩, Inter ফন্ট লিঙ্কড | `[x]` |
-| **`S0-13`** | সাদিয়া | সেন্ট্রালাইজড ডিজাইন টোকেনস ও থিমিং (@theme) | `frontend/src/index.css` | Indigo `#4f46e5`, Slate ব্যাকগ্রাউন্ড ও ৪টি সেমান্টিক ব্যাজ কালার | `[x]` |
-| **`S0-13B`** | সাদিয়া | ৪টি আই-কমফোর্ট থিম (Sapphire, Nordic, Cashmere, Charcoal) ও শার্প মাইক্রো-রেডিয়াস | `frontend/src/index.css`, `store/themeStore.js` | Sapphire ডিফল্ট, ৩টি অপছন্দনীয় থিম রিপ্লেসড এবং ২px-৪px শার্প রেডিয়াস কার্যকর | `[x]` |
-| **`S0-13C`** | সাদিয়া | Zustand থিম স্টোর ও লোকালস্টোরেজ পারসিসটেন্স | `frontend/src/store/themeStore.js` | রিঅ্যাক্টিভ থিম সুইচার স্টেট ও data-theme সেট | `[x]` |
-| **`S0-13D`** | সাদিয়া | রিইউজেবল ThemeSwitcher পপওভার কম্পোনেন্ট ও হেডার মাউন্ট | `frontend/src/components/ui/ThemeSwitcher.jsx` | ৪টি কালার সোয়াচ ড্রপডাউন ও লাইভ প্রভিউ ভেরিফাইড | `[x]` |
-| **`S0-14`** | সাদিয়া | সেন্ট্রালাইজড ইউআই কনস্ট্যান্টস ও নেভিগেশন ডেটা | `frontend/src/constants/navigationConstants.js` | জিরো ইনলাইন ডেটা (রুল ১৯); সেন্ট্রাল মেনু ও সেটিংস অ্যারে | `[x]` |
-| **`S0-15`** | সাদিয়া | সেন্ট্রাল এপিআই ক্লায়েন্ট ও এরর ইন্টারসেপ্টর | `frontend/src/services/apiClient.js` | Axios `/api/v1` বেস, টোকেন ইন্টারসেপ্টর ও Sonner টোস্ট হ্যান্ডলার | `[x]` |
-| **`S0-16`** | সাদিয়া | মাস্টার লেআউট শেল ও ইউনিফাইড সাইডবার/হেডার | `frontend/src/components/layout/AppLayout.jsx` | একক সাইডবার (`w-64`), টপ হেডার (`h-16`), টেন্যান্ট/ইউনিট সিলেক্টর | `[x]` |
-| **`S0-17`** | সাদিয়া | মাস্টার পেজ ফ্রেমওয়ার্ক ও পেজ হেডার কম্পোনেন্ট | `frontend/src/components/layout/PageHeader.jsx`, `PageShell.jsx` | ব্রেডক্রাম্ব, পেজ টাইটেল ও স্ট্যান্ডার্ড অ্যাকশন বাটন গ্রুপ | `[x]` |
-| **`S0-18`** | সাদিয়া | মাস্টার ডেটা টেবিল রি-ইউজেবল গ্রিড | `frontend/src/components/ui/DataTable.jsx` | ভার্চুয়ালাইজড TanStack Table, ইউনিফাইড হেডার ও পেজিনেশন | `[x]` |
-| **`S0-19`** | সাদিয়া | পেজ-ড্রিভেন রাউটার ও ডিফল্ট ড্যাশবোর্ড পেজ | `frontend/src/App.jsx`, `frontend/src/main.jsx` | BrowserRouter, React Query Provider ও Sonner Toaster মাউন্ট | `[x]` |
-| **`S0-20`** | আরিফ+সাদিয়া| ডকার কম্পোজ মাল্টি-সার্ভিসেস বিল্ড ও রান | `docker/docker-compose.yml` | ৪টি কন্টেইনার (DB, Backend, Frontend, pgAdmin) গ্রিন ও হেলদি | `[x]` |
-| **`S0-21`** | আরিফ | ১-ক্লিক ডেমো ডেটা পার্জ স্ক্রিপ্ট লাইভ টেস্ট | `scripts/purge-demo-data.sql` | টেস্ট ডেটা ডিলিট ভেরিফাইড (রুল ১৩) | `[ ]` |
-| **`S0-22`** | ফারহানা | স্প্রিন্ট ০ এন্ড-টু-এন্ড কিউএ অডিট ও সাইন-অফ | `docs/management/TASK_BOARD.md` | ১০-পয়েন্ট কিউএ চেকলিস্ট পাস ও ফারহানার সাইন-অফ রিপোর্ট | `[ ]` |
+| সক্রিয় ডোমেন | ডোমেন নাম | ডেডিকেটেড ট্র্যাকার ফাইল | বর্তমান স্ট্যাটাস |
+| :---: | :--- | :--- | :---: |
+| **Domain 0** | **Foundation & Core Platform** | 👉 **[STEP_TRACKER_DOMAIN_00_FOUNDATION.md](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_00_FOUNDATION.md)** | 🟢 **ACTIVE (চলমান)** |
 
 ---
 
-## 🚀 স্প্রিন্ট ১: ওভেন ও ডেনিম স্টাইল মাস্টার, বায়ার অর্ডার ও ট্রেসেবিলিটি ডিকম্পোজিশন (Sprint 1 Preview)
+## 📋 এন্টারপ্রাইজ ডোমেন পাইপলাইন মাস্টার ইনডেক্স (All ERP Domains)
 
-| স্টেপ আইডি | ওনার | টাস্কের সংক্ষিপ্ত বিবরণ | টার্গেট ফাইল(সমূহ) | স্ট্যাটাস |
-| :--- | :--- | :--- | :--- | :---: |
-| **`S1-01`** | তানভীর | ডেনিম/ওভেন বায়ার অর্ডার, টেক-প্যাক ও শ্রিংকেজ স্পেক ড্রাফট | `docs/requirements/srs/SRS_01_MERCHANDISING.md` | `[ ]` |
-| **`S1-02`** | আরিফ | বায়ার, ডেনিম স্টাইল, BOM ও ট্রেসেবিলিটি টেবিল কলাম তালিকা পেশ | চ্যাটে উপস্থাপিত ছক (বসের রিভিউর জন্য) | `[ ]` |
-| **`S1-03`** | আরিফ | বসের অনুমোদিত কলাম দিয়ে Flyway V1 মাইগ্রেশন তৈরি | `backend/.../db/migration/V1__create_buyer_style_denim.sql` | `[ ]` |
-| **`S1-04`** | আরিফ | Buyer, DenimStyle, BOM ও Traceability JPA Entity ও Repository | `backend/.../entity/` | `[ ]` |
-| **`S1-05`** | আরিফ | DTO ও MapStruct Mapper লেয়ার (শ্রিংকেজ ও ওয়াশ স্পেক্স সহ) | `backend/.../dto/`, `backend/.../mapper/` | `[ ]` |
-| **`S1-06`** | আরিফ | ডেনিম কস্টিং, কনজাম্পশন ও অর্ডার সার্ভিস লজিক | `backend/.../service/` | `[ ]` |
-| **`S1-07`** | আরিফ | REST Controller ও OpenAPI ৩ স্পেক | `backend/.../controller/` | `[ ]` |
-| **`S1-08`** | সাদিয়া | বায়ার ও ডেনিম স্টাইল TanStack Query হুকস | `frontend/src/features/merchandising/api/` | `[ ]` |
-| **`S1-09`** | সাদিয়া | হাই-ডেনসিটি ভার্চুয়ালাইজড অর্ডার টেবিল গ্রিড (O2S ট্র্যাকার) | `frontend/src/features/merchandising/components/` | `[ ]` |
-| **`S1-10`** | সাদিয়া | ডেনিম সাইজ-কালার ও ইনসিম ব্রেকডাউন ম্যাট্রিক্স ফর্ম | `frontend/src/features/merchandising/components/` | `[ ]` |
-| **`S1-11`** | আরিফ | RFID ট্যাগ ডেটা স্ট্রাকচার ও এনকোডিং সার্ভিস (UHF SGTIN-96) | `backend/.../rfid/service/` | `[ ]` |
-| **`S1-12`** | ফারহানা | স্প্রিন্ট ১ এন্ড-টু-এন্ড কিউএ সাইন-অফ রিপোর্ট | কিউএ সাইন-অফ রিপোর্ট | `[ ]` |
+| ডোমেন আইডি | ডোমেনের নাম ও মূল ফোকাস | ডেডিকেটেড ট্র্যাকার পাথ | স্ট্যাটাস | লকিং স্টেট |
+| :---: | :--- | :--- | :---: | :---: |
+| **`Domain 0`** | **Foundation, Master Data & IAM** | [STEP_TRACKER_DOMAIN_00_FOUNDATION.md](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_00_FOUNDATION.md) | 🟢 **ACTIVE** | 🔓 উন্মুক্ত (চলমান) |
+| **`Domain 1`** | **Merchandising & Style Master** | `docs/.../STEP_TRACKER_DOMAIN_01_MERCHANDISING.md` | ⚪ QUEUED | 🔒 লকড (Domain 0-এর অপেক্ষায়) |
+| **`Domain 2`** | **Fabric Sourcing & Raw Material** | `docs/.../STEP_TRACKER_DOMAIN_02_FABRIC.md` | ⚪ QUEUED | 🔒 লকড |
+| **`Domain 3`** | **Cutting Room & Marker Planning** | `docs/.../STEP_TRACKER_DOMAIN_03_CUTTING.md` | ⚪ QUEUED | 🔒 লকড |
+| **`Domain 4`** | **Sewing Floor & RFID Tracking** | `docs/.../STEP_TRACKER_DOMAIN_04_SEWING.md` | ⚪ QUEUED | 🔒 লকড |
+| **`Domain 5`** | **Laundry & Denim Washing Plant** | `docs/.../STEP_TRACKER_DOMAIN_05_WASHING.md` | ⚪ QUEUED | 🔒 লকড |
+| **`Domain 6`** | **Finishing, QC & Cartoning** | `docs/.../STEP_TRACKER_DOMAIN_06_FINISHING.md` | ⚪ QUEUED | 🔒 লকড |
+| **`Domain 7`** | **Commercial Shipment & Export** | `docs/.../STEP_TRACKER_DOMAIN_07_COMMERCIAL.md` | ⚪ QUEUED | 🔒 লকড |
+
+---
+
+> 💡 **নোট**: বর্তমানে চলমান কাজের ক্ষুদ্র ক্ষুদ্র মাইক্রো-স্টেপ দেখতে সরাসরি প্রবেশ করুন:  
+> 👉 **[ডোমেন ০ স্টেপ ট্র্যাকার (STEP_TRACKER_DOMAIN_00_FOUNDATION.md)](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_00_FOUNDATION.md)**
