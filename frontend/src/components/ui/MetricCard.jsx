@@ -31,13 +31,13 @@ export const MetricCard = ({
   const iconClass = variantStyles[variant] || variantStyles.brand;
 
   return (
-    <div className="bg-surface-card border border-border-subtle rounded-xl p-5 shadow-xs transition-all duration-200 hover:border-brand-accent/40">
+    <div className="bg-surface-card border border-border-subtle rounded-card p-5 shadow-xs transition-all duration-200 hover:border-brand-accent/40">
       <div className="flex items-center justify-between text-text-muted mb-2">
         <span className="text-xs font-semibold uppercase tracking-wider">
           {title}
         </span>
         {Icon && (
-          <div className={`p-2 rounded-lg ${iconClass}`}>
+          <div className={`p-2 rounded-xs ${iconClass}`}>
             <Icon size={18} />
           </div>
         )}

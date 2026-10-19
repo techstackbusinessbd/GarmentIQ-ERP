@@ -59,14 +59,14 @@ export const ThemeSwitcher = () => {
         aria-haspopup="true"
         aria-expanded={isOpen}
         title={`Active Theme: ${currentThemeObj.name}`}
-        className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-border-subtle bg-surface-muted hover:bg-surface-hover text-text-primary transition-all duration-200 cursor-pointer shadow-xs focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20"
+        className="flex items-center gap-2 px-2.5 py-1.5 rounded-sm text-xs font-medium border border-border-subtle bg-surface-muted hover:bg-surface-hover text-text-primary transition-all duration-200 cursor-pointer shadow-xs focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20"
       >
         <Palette size={16} className="text-brand-accent shrink-0" />
         <span className="hidden sm:inline-block font-medium truncate max-w-[110px]">
           {currentThemeObj.name.split(' ')[0]}
         </span>
         <span
-          className="h-2.5 w-2.5 rounded-full shrink-0 ring-1 ring-border-subtle"
+          className="h-2.5 w-2.5 rounded-xs shrink-0 ring-1 ring-border-subtle"
           style={{ backgroundColor: currentThemeObj.accentColor }}
         />
       </button>
@@ -76,7 +76,7 @@ export const ThemeSwitcher = () => {
         <div
           role="menu"
           aria-orientation="vertical"
-          className="absolute right-0 mt-2 w-72 rounded-xl bg-surface-card border border-border-subtle shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150"
+          className="absolute right-0 mt-2 w-72 rounded-card bg-surface-card border border-border-subtle shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150"
         >
           {/* Header */}
           <div className="px-3.5 py-2 border-b border-border-subtle flex items-center justify-between">
@@ -84,7 +84,7 @@ export const ThemeSwitcher = () => {
               <Sparkles size={14} className="text-brand-accent" />
               <span>Enterprise Theme System</span>
             </div>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-muted text-text-muted">
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-xs bg-surface-muted text-text-muted">
               4 Palettes
             </span>
           </div>
@@ -102,20 +102,20 @@ export const ThemeSwitcher = () => {
                     setTheme(theme.id);
                     setIsOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-sm text-left transition-all cursor-pointer ${
                     isActive
                       ? 'bg-brand-accent-light/40 border border-brand-accent/30 text-text-primary'
                       : 'hover:bg-surface-muted text-text-primary'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    {/* Swatch circle with dual tone preview */}
+                    {/* Swatch box with dual tone preview */}
                     <div
-                      className="h-7 w-7 rounded-full flex items-center justify-center shrink-0 shadow-xs ring-2 ring-border-subtle relative overflow-hidden"
+                      className="h-7 w-7 rounded-xs flex items-center justify-center shrink-0 shadow-xs ring-1 ring-border-subtle relative overflow-hidden"
                       style={{ backgroundColor: theme.sidebarColor }}
                     >
                       <div
-                        className="absolute right-0 bottom-0 h-4 w-4 rounded-tl-full shadow-inner"
+                        className="absolute right-0 bottom-0 h-3.5 w-3.5 rounded-tl-xs shadow-inner"
                         style={{ backgroundColor: theme.accentColor }}
                       />
                     </div>
@@ -131,8 +131,8 @@ export const ThemeSwitcher = () => {
                   </div>
 
                   {isActive && (
-                    <div className="h-5 w-5 rounded-full bg-brand-accent text-white flex items-center justify-center shrink-0 shadow-xs">
-                      <Check size={12} strokeWidth={3} />
+                    <div className="h-4.5 w-4.5 rounded-xs bg-brand-accent text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <Check size={11} strokeWidth={3} />
                     </div>
                   )}
                 </button>

@@ -11,16 +11,16 @@
    1. Multi-Theme CSS Custom Properties (:root & [data-theme])
    ----------------------------------------------------------------------------- */
 :root,
-[data-theme="indigo"] {
-  /* [EN] Theme 1: Royal Indigo & Raw Denim (Default) */
-  /* [BN] থিম ১: রয়্যাল ইন্ডিগো ও র-ডেনিম (ডিফল্ট) */
+[data-theme="sapphire"] {
+  /* [EN] Theme 1: Sapphire Corporate & Pure Steel (Default Flagship) */
+  /* [BN] থিম ১: স্যাফায়ার কর্পোরেট ও পিওর স্টিল (ডিফল্ট ফ্ল্যাগশিপ) */
   --brand-sidebar: #0f172a;
   --brand-sidebar-header: #020617;
   --brand-sidebar-border: #1e293b;
-  --brand-accent: #4f46e5;
-  --brand-accent-hover: #4338ca;
-  --brand-accent-light: #e0e7ff;
-  --brand-accent-glow: rgba(79, 70, 229, 0.2);
+  --brand-accent: #2563eb;
+  --brand-accent-hover: #1d4ed8;
+  --brand-accent-light: #dbeafe;
+  --brand-accent-glow: rgba(37, 99, 235, 0.2);
   --surface-base: #f8fafc;
   --surface-card: #ffffff;
   --surface-muted: #f1f5f9;
@@ -32,67 +32,67 @@
   --text-muted: #64748b;
 }
 
-[data-theme="sapphire"] {
-  /* [EN] Theme 2: Sapphire Corporate & Pure Steel */
-  /* [BN] থিম ২: স্যাফায়ার কর্পোরেট ও পিওর স্টিল */
-  --brand-sidebar: #111827;
-  --brand-sidebar-header: #030712;
-  --brand-sidebar-border: #1f2937;
+[data-theme="nordic"] {
+  /* [EN] Theme 2: Nordic Mist & Ocean Steel (Scandinavian High-Clarity) */
+  /* [BN] থিম ২: নরডিক মিস্ট ও ওশান স্টিল (স্ক্যান্ডিনেভিয়ান হাই-ক্ল্যারিটি) */
+  --brand-sidebar: #0a192f;
+  --brand-sidebar-header: #040d1a;
+  --brand-sidebar-border: #132644;
+  --brand-accent: #0284c7;
+  --brand-accent-hover: #0369a1;
+  --brand-accent-light: #e0f2fe;
+  --brand-accent-glow: rgba(2, 132, 199, 0.2);
+  --surface-base: #f1f5f9;
+  --surface-card: #ffffff;
+  --surface-muted: #e2e8f0;
+  --surface-hover: #f8fafc;
+  --border-subtle: #cbd5e1;
+  --border-strong: #94a3b8;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+}
+
+[data-theme="cashmere"] {
+  /* [EN] Theme 3: Cashmere Alabaster & Warm Slate (Paper Finish, Zero Eye Fatigue) */
+  /* [BN] থিম ৩: কাশ্মির অ্যালাবাস্টার ও ওয়ার্ম স্লেট (সফট পেপার ফিনিশ, জিরো আই-স্ট্রেন) */
+  --brand-sidebar: #1c1917;
+  --brand-sidebar-header: #0c0a09;
+  --brand-sidebar-border: #292524;
   --brand-accent: #2563eb;
   --brand-accent-hover: #1d4ed8;
-  --brand-accent-light: #dbeafe;
+  --brand-accent-light: #e0e7ff;
   --brand-accent-glow: rgba(37, 99, 235, 0.2);
-  --surface-base: #f9fafb;
+  --surface-base: #f7f7f5;
   --surface-card: #ffffff;
-  --surface-muted: #f3f4f6;
-  --surface-hover: #f9fafb;
-  --border-subtle: #e5e7eb;
-  --border-strong: #d1d5db;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-muted: #6b7280;
+  --surface-muted: #e7e5e4;
+  --surface-hover: #f5f5f4;
+  --border-subtle: #e7e5e4;
+  --border-strong: #d6d3d1;
+  --text-primary: #1c1917;
+  --text-secondary: #44403c;
+  --text-muted: #57534e;
 }
 
-[data-theme="emerald"] {
-  /* [EN] Theme 3: Emerald Sustainable & Green Factory */
-  /* [BN] থিম ৩: এমারেল্ড সাসটেইনেবল ও গ্রিন ফ্যাক্টরি */
-  --brand-sidebar: #064e3b;
-  --brand-sidebar-header: #022c22;
-  --brand-sidebar-border: #065f46;
-  --brand-accent: #059669;
-  --brand-accent-hover: #047857;
-  --brand-accent-light: #d1fae5;
-  --brand-accent-glow: rgba(5, 150, 105, 0.2);
-  --surface-base: #fafafa;
-  --surface-card: #ffffff;
-  --surface-muted: #f4f4f5;
-  --surface-hover: #f4f4f5;
-  --border-subtle: #e4e4e7;
-  --border-strong: #d4d4d8;
-  --text-primary: #18181b;
-  --text-secondary: #52525b;
-  --text-muted: #71717a;
-}
-
-[data-theme="obsidian"] {
-  /* [EN] Theme 4: Midnight Obsidian & Cyber Neon (Dark Mode) */
-  /* [BN] থিম ৪: মিডনাইট অবসিডিয়ান ও সাইবার নিয়ন (ডার্ক মোড) */
-  --brand-sidebar: #090d16;
-  --brand-sidebar-header: #05070c;
-  --brand-sidebar-border: #161e30;
-  --brand-accent: #6366f1;
-  --brand-accent-hover: #818cf8;
-  --brand-accent-light: #1e1b4b;
-  --brand-accent-glow: rgba(99, 102, 241, 0.25);
-  --surface-base: #0b0f19;
-  --surface-card: #151c2c;
-  --surface-muted: #1e293b;
-  --surface-hover: #1b2438;
-  --border-subtle: #252f44;
-  --border-strong: #334155;
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
+[data-theme="charcoal"] {
+  /* [EN] Theme 4: Charcoal Dim & Glacier Glow (Velvety Soft Dark Mode) */
+  /* [BN] থিম ৪: চারকোল ডিম ও গ্লেসিয়ার গ্লো (ভেলভেটি সফট ডার্ক মোড) */
+  --brand-sidebar: #0d1117;
+  --brand-sidebar-header: #010409;
+  --brand-sidebar-border: #21262d;
+  --brand-accent: #58a6ff;
+  --brand-accent-hover: #79b8ff;
+  --brand-accent-light: #1f2937;
+  --brand-accent-glow: rgba(88, 166, 255, 0.25);
+  --surface-base: #161b22;
+  --surface-card: #21262d;
+  --surface-muted: #30363d;
+  --surface-hover: #282e37;
+  --border-subtle: #30363d;
+  --border-strong: #484f58;
+  --text-primary: #f0f6fc;
+  --text-secondary: #c9d1d9;
+  --text-muted: #8b949e;
 }
 
 /* -----------------------------------------------------------------------------
@@ -134,11 +134,13 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Border Radii Scale */
-  --radius-subtle: 0.375rem;
-  --radius-button: 0.5rem;
-  --radius-card: 0.75rem;
-  --radius-modal: 1rem;
+  /* Sharp Enterprise Micro-Radius Scale (Rule: Very Small Corner Radius) */
+  --radius-xs: 0.125rem;      /* 2px - sharp micro-tags & badges */
+  --radius-sm: 0.25rem;       /* 4px - sharp buttons & inputs */
+  --radius-subtle: 0.1875rem; /* 3px - precision dropdowns */
+  --radius-button: 0.25rem;   /* 4px - action buttons */
+  --radius-card: 0.375rem;    /* 6px - sharp cards & table wrappers */
+  --radius-modal: 0.375rem;   /* 6px - sharp modal dialogs */
 }
 
 /* -----------------------------------------------------------------------------

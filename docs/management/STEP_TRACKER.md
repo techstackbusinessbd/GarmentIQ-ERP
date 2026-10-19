@@ -39,7 +39,7 @@
 | **`S0-11`** | সাদিয়া | ফ্রন্টএন্ড প্যাকেজ ম্যানিফেস্ট ও রাউটিং প্লাগইন | `frontend/package.json` | `react-router-dom@7`, `zustand`, `zod`, `lucide` ইত্যাদি অন্তর্ভুক্ত | `[x]` |
 | **`S0-12`** | সাদিয়া | Vite ৬ ও HTML অ্যাপ্লিকেশন এন্ট্রি কনফিগ | `frontend/vite.config.js`, `frontend/index.html` | React ও Tailwind v4 প্লাগইন, পোর্ট ৫১৭৩, Inter ফন্ট লিঙ্কড | `[x]` |
 | **`S0-13`** | সাদিয়া | সেন্ট্রালাইজড ডিজাইন টোকেনস ও থিমিং (@theme) | `frontend/src/index.css` | Indigo `#4f46e5`, Slate ব্যাকগ্রাউন্ড ও ৪টি সেমান্টিক ব্যাজ কালার | `[x]` |
-| **`S0-13B`** | সাদিয়া | ৪টি থিমের CSS ভ্যারিয়েবল ও Tailwind v4 @theme ম্যাপিং | `frontend/src/index.css` | Indigo, Sapphire, Emerald, Obsidian ডাটাসেট টোকেন | `[x]` |
+| **`S0-13B`** | সাদিয়া | ৪টি আই-কমফোর্ট থিম (Sapphire, Nordic, Cashmere, Charcoal) ও শার্প মাইক্রো-রেডিয়াস | `frontend/src/index.css`, `store/themeStore.js` | Sapphire ডিফল্ট, ৩টি অপছন্দনীয় থিম রিপ্লেসড এবং ২px-৪px শার্প রেডিয়াস কার্যকর | `[x]` |
 | **`S0-13C`** | সাদিয়া | Zustand থিম স্টোর ও লোকালস্টোরেজ পারসিসটেন্স | `frontend/src/store/themeStore.js` | রিঅ্যাক্টিভ থিম সুইচার স্টেট ও data-theme সেট | `[x]` |
 | **`S0-13D`** | সাদিয়া | রিইউজেবল ThemeSwitcher পপওভার কম্পোনেন্ট ও হেডার মাউন্ট | `frontend/src/components/ui/ThemeSwitcher.jsx` | ৪টি কালার সোয়াচ ড্রপডাউন ও লাইভ প্রভিউ ভেরিফাইড | `[x]` |
 | **`S0-14`** | সাদিয়া | সেন্ট্রালাইজড ইউআই কনস্ট্যান্টস ও নেভিগেশন ডেটা | `frontend/src/constants/navigationConstants.js` | জিরো ইনলাইন ডেটা (রুল ১৯); সেন্ট্রাল মেনু ও সেটিংস অ্যারে | `[x]` |

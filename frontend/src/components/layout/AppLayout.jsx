@@ -64,7 +64,7 @@ export const AppLayout = () => {
         {/* Brand Header */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-brand-sidebar-border bg-brand-sidebar-header">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="h-9 w-9 rounded-lg bg-brand-accent flex items-center justify-center font-bold text-white shrink-0 shadow-xs">
+            <div className="h-9 w-9 rounded-sm bg-brand-accent flex items-center justify-center font-bold text-white shrink-0 shadow-xs">
               R
             </div>
             {isSidebarOpen && (
@@ -80,7 +80,7 @@ export const AppLayout = () => {
           </div>
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="text-slate-400 hover:text-white p-1 rounded-md transition-colors"
+            className="text-slate-400 hover:text-white p-1 rounded-xs transition-colors"
             title="Toggle Sidebar"
           >
             {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
@@ -97,7 +97,7 @@ export const AppLayout = () => {
               <NavLink
                 key={item.id}
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-xs font-medium transition-all ${
                   isActive
                     ? 'bg-brand-accent text-white shadow-xs font-semibold'
                     : 'text-slate-300 hover:text-white hover:bg-white/10'
@@ -109,7 +109,7 @@ export const AppLayout = () => {
                   <span className="truncate flex-1">{item.label}</span>
                 )}
                 {isSidebarOpen && item.badge && (
-                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-md bg-brand-accent/20 text-brand-accent-light font-semibold border border-brand-accent/30">
+                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-brand-accent/20 text-brand-accent-light font-semibold border border-brand-accent/30">
                     {item.badge}
                   </span>
                 )}
@@ -121,8 +121,8 @@ export const AppLayout = () => {
         {/* Tenant Footer Profile with SemVer Release Badge */}
         {isSidebarOpen && (
           <div className="p-3 border-t border-brand-sidebar-border bg-brand-sidebar-header/60 space-y-2">
-            <div className="flex items-center gap-3 p-2 rounded-lg bg-white/5 border border-white/10">
-              <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300 shrink-0">
+            <div className="flex items-center gap-3 p-2 rounded-sm bg-white/5 border border-white/10">
+              <div className="h-8 w-8 rounded-sm bg-white/10 flex items-center justify-center text-slate-300 shrink-0">
                 <User size={16} />
               </div>
               <div className="flex flex-col truncate">
@@ -132,7 +132,7 @@ export const AppLayout = () => {
             </div>
             <div className="flex items-center justify-between px-1 text-[10px] text-slate-400 font-mono">
               <span>GarmentIQ-ERP</span>
-              <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+              <span className="px-1.5 py-0.5 rounded-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
                 v0.1.0-alpha
               </span>
             </div>
@@ -152,7 +152,7 @@ export const AppLayout = () => {
             <select
               value={selectedUnit}
               onChange={(e) => setSelectedUnit(e.target.value)}
-              className="text-xs font-medium bg-surface-muted border border-border-subtle rounded-lg px-3 py-1.5 text-text-primary focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors cursor-pointer"
+              className="text-xs font-medium bg-surface-muted border border-border-subtle rounded-sm px-3 py-1.5 text-text-primary focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors cursor-pointer"
             >
               {FACTORY_UNITS.map((unit) => (
                 <option key={unit.id} value={unit.id}>
@@ -169,7 +169,7 @@ export const AppLayout = () => {
               <input
                 type="text"
                 placeholder="Search styles, PO, roll barcode..."
-                className="pl-9 pr-4 py-1.5 text-xs bg-surface-muted border border-border-subtle rounded-lg w-64 text-text-primary placeholder:text-text-muted focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors"
+                className="pl-9 pr-4 py-1.5 text-xs bg-surface-muted border border-border-subtle rounded-sm w-64 text-text-primary placeholder:text-text-muted focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors"
               />
             </div>
 
@@ -177,7 +177,7 @@ export const AppLayout = () => {
             <ThemeSwitcher />
 
             <button
-              className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-muted transition-colors relative"
+              className="p-2 rounded-sm text-text-muted hover:text-text-primary hover:bg-surface-muted transition-colors relative"
               title="System Alerts"
             >
               <Bell size={18} />

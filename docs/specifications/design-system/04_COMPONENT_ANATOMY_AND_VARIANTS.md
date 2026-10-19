@@ -29,13 +29,13 @@
 
 ---
 
-## ২. স্ট্যাটাস ব্যাজ কম্পোনেন্ট ম্যাট্রিক্স (Status Badge & Pill Specs)
+## ২. স্ট্যাটাস ব্যাজ কম্পোনেন্ট ম্যাট্রিক্স (Status Badge & Tag Specs)
 
 | ভ্যারিয়েন্ট টাইপ | রেডিয়াস | প্যাডিং | টাইপোগ্রাফি | ব্যবহারের ক্ষেত্র |
 | :--- | :--- | :--- | :--- | :--- |
-| **`pill` (ডিফল্ট)**| `rounded-full` | `px-2.5 py-0.5` | `text-micro font-semibold` | স্ট্যান্ডার্ড ডেটা টেবিল স্ট্যাটাস (Active, Pending, Rejected) |
-| **`badge`** | `rounded-subtle`| `px-2 py-0.5` | `text-micro font-medium` | ফেব্রিক টাইপ, বায়ার কোড, সাইজ ট্যাগ |
-| **`pulse-dot`** | `rounded-full` | `px-2 py-0.5` | টেক্সট + 6px লাইভ ডট | সুইং লাইন রানিং স্ট্যাটাস, লাইভ RFID রিডার লিসেনিং |
+| **`tag` (ডিফল্ট)** | `rounded-xs` (2px) | `px-2 py-0.5` | `text-micro font-semibold` | স্ট্যান্ডার্ড ডেটা টেবিল স্ট্যাটাস (Active, Pending, Rejected) |
+| **`badge`** | `rounded-xs` (2px) | `px-2 py-0.5` | `text-micro font-medium` | ফেব্রিক টাইপ, বায়ার কোড, সাইজ ট্যাগ |
+| **`pulse-dot`** | `rounded-xs` (2px) | `px-2 py-0.5` | টেক্সট + 6px লাইভ ডট | সুইং লাইন রানিং স্ট্যাটাস, লাইভ RFID রিডার লিসেনিং |
 
 ---
 
@@ -80,7 +80,7 @@
 | 48 Styles          [text-display font-mono tabular-nums]     |
 | 1.2M Pcs Pipeline  [text-caption text-status-success mt-1]   |
 +-------------------------------------------------------------+
-Border: 1px border-border-subtle | Radius: 12px rounded-card | Padding: 20px (p-5)
+Border: 1px border-border-subtle | Radius: 6px rounded-card | Padding: 20px (p-5)
 ```
 
 ---

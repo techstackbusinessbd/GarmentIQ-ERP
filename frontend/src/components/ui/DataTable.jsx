@@ -42,7 +42,7 @@ export const DataTable = ({
   });
 
   return (
-    <div className="bg-surface-card border border-border-subtle rounded-xl shadow-xs overflow-hidden transition-colors duration-200">
+    <div className="bg-surface-card border border-border-subtle rounded-card shadow-xs overflow-hidden transition-colors duration-200">
       {/* 1. Table Top Controls Bar (Search + Custom Filter Slot) */}
       <div className="p-4 border-b border-border-subtle flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-surface-muted/50">
         <div className="relative w-full sm:w-72">
@@ -52,7 +52,7 @@ export const DataTable = ({
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder={searchPlaceholder}
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-surface-card border border-border-subtle rounded-lg text-text-primary placeholder:text-text-muted focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors"
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-surface-card border border-border-subtle rounded-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors"
           />
         </div>
 
@@ -120,7 +120,7 @@ export const DataTable = ({
           <select
             value={table.getState().pagination.pageSize}
             onChange={(e) => table.setPageSize(Number(e.target.value))}
-            className="border border-border-subtle rounded-md px-2 py-1 bg-surface-card text-xs text-text-primary focus:outline-hidden focus:ring-1 focus:ring-brand-accent cursor-pointer"
+            className="border border-border-subtle rounded-xs px-2 py-1 bg-surface-card text-xs text-text-primary focus:outline-hidden focus:ring-1 focus:ring-brand-accent cursor-pointer"
           >
             {DEFAULT_PAGE_SIZE_OPTIONS.map((pageSize) => (
               <option key={pageSize} value={pageSize}>
@@ -141,28 +141,28 @@ export const DataTable = ({
             <button
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
-              className="p-1.5 rounded-md border border-border-subtle hover:bg-surface-muted text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="p-1.5 rounded-xs border border-border-subtle hover:bg-surface-muted text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               <ChevronsLeft size={14} />
             </button>
             <button
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="p-1.5 rounded-md border border-border-subtle hover:bg-surface-muted text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="p-1.5 rounded-xs border border-border-subtle hover:bg-surface-muted text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               <ChevronLeft size={14} />
             </button>
             <button
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="p-1.5 rounded-md border border-border-subtle hover:bg-surface-muted text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="p-1.5 rounded-xs border border-border-subtle hover:bg-surface-muted text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               <ChevronRight size={14} />
             </button>
             <button
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
-              className="p-1.5 rounded-md border border-border-subtle hover:bg-surface-muted text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="p-1.5 rounded-xs border border-border-subtle hover:bg-surface-muted text-text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               <ChevronsRight size={14} />
             </button>

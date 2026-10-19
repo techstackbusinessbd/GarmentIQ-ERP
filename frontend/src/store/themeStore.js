@@ -22,43 +22,43 @@ export const THEME_STORAGE_KEY = 'garments_erp_theme';
  * [EN] Default theme identifier for Garments ERP.
  * [BN] সিস্টেমের ডিফল্ট থিম আইডেন্টিফায়ার।
  */
-export const DEFAULT_THEME = 'indigo';
+export const DEFAULT_THEME = 'sapphire';
 
 /**
- * [EN] Metadata for 4 Enterprise Themes.
- * [BN] ৪টি এন্টারপ্রাইজ থিমের সম্পূর্ণ মেটাডাটা ও প্রিভিউ স্পেক্স।
+ * [EN] Metadata for 4 Eye-Comfort Enterprise Themes.
+ * [BN] ৪টি চোখের স্বাচ্ছন্দ্যপূর্ণ এন্টারপ্রাইজ থিমের সম্পূর্ণ মেটাডাটা ও প্রিভিউ স্পেক্স।
  */
 export const AVAILABLE_THEMES = [
   {
-    id: 'indigo',
-    name: 'Royal Indigo & Denim',
-    subtitle: 'Merchandising & Core Denim O2S',
-    accentColor: '#4f46e5',
+    id: 'sapphire',
+    name: 'Sapphire Corporate',
+    subtitle: 'Executive & Merchandising Standard',
+    accentColor: '#2563eb',
     sidebarColor: '#0f172a',
     isDark: false,
   },
   {
-    id: 'sapphire',
-    name: 'Sapphire Corporate',
-    subtitle: 'Commercial, Finance & Executive',
+    id: 'nordic',
+    name: 'Nordic Mist & Steel',
+    subtitle: 'Cool Scandinavian High-Clarity',
+    accentColor: '#0284c7',
+    sidebarColor: '#0a192f',
+    isDark: false,
+  },
+  {
+    id: 'cashmere',
+    name: 'Cashmere Alabaster',
+    subtitle: 'Warm Paper Finish, Zero Eye Fatigue',
     accentColor: '#2563eb',
-    sidebarColor: '#111827',
+    sidebarColor: '#1c1917',
     isDark: false,
   },
   {
-    id: 'emerald',
-    name: 'Emerald Sustainable',
-    subtitle: 'Eco-Audit, GOTS & Green Factory',
-    accentColor: '#059669',
-    sidebarColor: '#064e3b',
-    isDark: false,
-  },
-  {
-    id: 'obsidian',
-    name: 'Midnight Obsidian',
-    subtitle: 'Floor Touchscreens & Night Shift',
-    accentColor: '#6366f1',
-    sidebarColor: '#090d16',
+    id: 'charcoal',
+    name: 'Charcoal Dimmed',
+    subtitle: 'Velvety Soft Dark Workspace',
+    accentColor: '#58a6ff',
+    sidebarColor: '#0d1117',
     isDark: true,
   },
 ];
@@ -74,7 +74,7 @@ export const applyThemeToDom = (themeId) => {
   const root = document.documentElement;
   root.setAttribute('data-theme', themeId);
 
-  if (themeId === 'obsidian') {
+  if (themeId === 'charcoal') {
     root.classList.add('dark');
   } else {
     root.classList.remove('dark');

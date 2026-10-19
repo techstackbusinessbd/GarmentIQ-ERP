@@ -19,7 +19,7 @@ export const DashboardOverviewPage = () => {
         subtitle="Real-time Order-to-Shipment (O2S) tracking and shop floor performance across units."
         breadcrumbs={[{ label: 'Executive Dashboard' }]}
         actionSlot={
-          <button className="bg-brand-accent hover:bg-brand-accent-hover text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors shadow-xs flex items-center gap-2 cursor-pointer">
+          <button className="bg-brand-accent hover:bg-brand-accent-hover text-white text-xs font-semibold px-4 py-2 rounded-sm transition-colors shadow-xs flex items-center gap-2 cursor-pointer">
             <TrendingUp size={14} />
             <span>Generate Shift Report</span>
           </button>
@@ -62,7 +62,7 @@ export const DashboardOverviewPage = () => {
       </div>
 
       {/* 2. Welcome State Card */}
-      <div className="bg-surface-card border border-border-subtle rounded-xl p-6 shadow-xs transition-colors duration-200">
+      <div className="bg-surface-card border border-border-subtle rounded-card p-6 shadow-xs transition-colors duration-200">
         <h2 className="text-base font-bold text-text-primary mb-2">
           Enterprise RMG Platform Foundation Ready
         </h2>
