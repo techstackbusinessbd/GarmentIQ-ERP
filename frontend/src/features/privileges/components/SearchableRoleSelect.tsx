@@ -75,11 +75,11 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="h-8 px-2.5 text-xs font-semibold bg-surface-base hover:bg-surface-muted border border-border-subtle hover:border-brand-accent/50 rounded-[4px] text-text-primary inline-flex items-center justify-between gap-2 transition-all shadow-2xs cursor-pointer min-w-[200px] max-w-[320px] focus:outline-none focus:border-brand-accent"
+        className="h-8 px-2.5 text-xs font-semibold bg-surface-base hover:bg-surface-muted border border-border-subtle hover:border-accent/50 rounded-[4px] text-text-primary inline-flex items-center justify-between gap-2 transition-all shadow-2xs cursor-pointer min-w-[200px] max-w-[320px] focus:outline-none focus:border-accent"
         title="Search and select factory role"
       >
         <div className="flex items-center gap-1.5 truncate">
-          <div className="text-brand-accent shrink-0">
+          <div className="text-accent shrink-0">
             {isCurrentSuper ? <Lock size={13} /> : <Shield size={13} />}
           </div>
           <span className="font-bold text-text-primary truncate">
@@ -94,7 +94,7 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
         <ChevronDown
           size={13}
           className={`text-text-muted shrink-0 transition-transform ${
-            isOpen ? 'rotate-180 text-brand-accent' : ''
+            isOpen ? 'rotate-180 text-accent' : ''
           }`}
         />
       </button>
@@ -104,7 +104,7 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
         <div className="absolute left-0 top-full mt-1.5 w-72 sm:w-80 bg-surface-card border border-border-subtle rounded-[6px] shadow-lg z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
           {/* Live Search Input */}
           <div className="p-2 bg-surface-muted/60 border-b border-border-subtle flex items-center gap-2">
-            <Search size={13} className="text-brand-accent shrink-0" />
+            <Search size={13} className="text-accent shrink-0" />
             <input
               ref={inputRef}
               type="text"
@@ -130,12 +130,12 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
               {filteredRoles.length} of {roles.length} Roles
             </span>
             {searchQuery && (
-              <span className="text-brand-accent font-semibold">Filtering</span>
+              <span className="text-accent font-semibold">Filtering</span>
             )}
           </div>
 
           {/* Filtered Roles List */}
-          <div className="max-h-60 overflow-y-auto divide-y divide-border-subtle/40 scrollbar-thin">
+          <div className="max-h-60 overflow-y-auto divide-y border-border-subtle/40 scrollbar-thin">
             {filteredRoles.length === 0 ? (
               <div className="p-4 text-center text-xs text-text-muted">
                 No roles found matching &ldquo;<span className="text-text-primary font-semibold">{searchQuery}</span>&rdquo;
@@ -153,7 +153,7 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
                     onClick={() => handleSelect(r.roleCode)}
                     className={`w-full p-2.5 text-left flex items-center justify-between gap-2 transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-brand-accent/10 text-text-primary'
+                        ? 'bg-accent/10 text-text-primary'
                         : 'hover:bg-surface-muted/70 text-text-primary'
                     }`}
                   >
@@ -161,8 +161,8 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
                       <div
                         className={`w-6 h-6 rounded flex items-center justify-center shrink-0 ${
                           isSelected
-                            ? 'bg-brand-accent text-white shadow-2xs'
-                            : 'bg-surface-muted text-brand-accent border border-border-subtle'
+                            ? 'bg-accent text-white shadow-2xs'
+                            : 'bg-surface-muted text-accent border border-border-subtle'
                         }`}
                       >
                         {isSuper ? <Lock size={12} /> : <Shield size={12} />}
@@ -178,7 +178,7 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
                           </span>
                           {isDirty && (
                             <span
-                              className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0"
+                              className="w-2 h-2 rounded-full bg-warning animate-pulse shrink-0"
                               title="Unsaved changes"
                             />
                           )}
@@ -192,7 +192,7 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
                     </div>
 
                     {isSelected && (
-                      <div className="shrink-0 text-brand-accent">
+                      <div className="shrink-0 text-accent">
                         <Check size={14} strokeWidth={2.5} />
                       </div>
                     )}

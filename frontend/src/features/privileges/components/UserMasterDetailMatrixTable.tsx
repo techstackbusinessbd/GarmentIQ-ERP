@@ -114,34 +114,22 @@ export const UserMasterDetailMatrixTable: React.FC<UserMasterDetailMatrixTablePr
       <div className="px-3 py-2 bg-surface-muted/30 border-t border-border-subtle/60 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-surface-muted text-text-secondary border border-border-subtle">
-              <Lock size={9} className="text-text-muted" /> Lock
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-primary/10 text-primary border border-primary/20">
+              <Lock size={9} className="text-primary/70" /> Baseline
             </span>
-            <span className="text-[11px] text-text-muted">Role baseline</span>
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[3px] text-[10px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
-              <Check size={9} strokeWidth={2.5} /> Active
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[3px] text-[10px] font-semibold bg-accent/15 text-accent border border-accent/30">
+              <Check size={9} strokeWidth={2.5} /> Override
             </span>
-            <span className="text-[11px] text-text-muted">Override</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[3px] text-[10px] text-text-muted border border-dashed border-border-subtle">
-              + Action
+              + Unassigned
             </span>
-            <span className="text-[11px] text-text-muted">Unassigned</span>
           </div>
-        </div>
-
-        {/* Action color indicators */}
-        <div className="flex items-center gap-2.5 text-[10px] font-mono text-text-muted flex-wrap">
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-sky-500" /> View</span>
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Create</span>
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" /> Edit</span>
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-rose-500" /> Delete</span>
-          <span className="inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-indigo-500" /> Special</span>
         </div>
       </div>
     </div>

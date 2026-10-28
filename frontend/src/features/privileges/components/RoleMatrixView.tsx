@@ -218,7 +218,7 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
   if (isLoading || isCatalogLoading) {
     return (
       <div className="flex items-center justify-center py-20 text-xs text-text-muted">
-        <Loader2 className="w-5 h-5 animate-spin mr-2 text-brand-accent" />
+        <Loader2 className="w-5 h-5 animate-spin mr-2 text-accent" />
         <span>Loading permissions...</span>
       </div>
     );
@@ -268,7 +268,7 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
         {displayedDomains.map((domain) => (
           <div key={domain.id} className="space-y-2">
             <div className="flex items-center gap-2 px-1 pt-1">
-              <span className="font-mono text-brand-accent uppercase tracking-wider text-[10px] bg-brand-accent/10 px-2 py-0.5 rounded font-bold border border-brand-accent/20">
+              <span className="font-mono text-accent uppercase tracking-wider text-[10px] bg-accent/10 px-2 py-0.5 rounded font-bold border border-accent/20">
                 {domain.id.toUpperCase()}
               </span>
               <span className="text-xs font-bold text-text-primary">{domain.title}</span>

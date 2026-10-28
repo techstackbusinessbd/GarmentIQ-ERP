@@ -49,7 +49,7 @@ export const MasterDetailUserList: React.FC<MasterDetailUserListProps> = ({
       <div className="p-3 border-b border-border-subtle space-y-2 bg-surface-muted/20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Users size={14} className="text-brand-accent" />
+            <Users size={14} className="text-accent" />
             <span className="text-xs font-bold text-text-primary tracking-tight">
               Accounts
             </span>
@@ -96,7 +96,7 @@ export const MasterDetailUserList: React.FC<MasterDetailUserListProps> = ({
                 onClick={() => onSelectUserId(user.id)}
                 className={`w-full text-left px-2.5 py-2 rounded-[4px] transition-all flex items-center justify-between gap-2 cursor-pointer border ${
                   isSelected
-                    ? 'bg-brand-accent/10 border-brand-accent/40 shadow-2xs text-text-primary'
+                    ? 'bg-accent/10 border-accent/40 shadow-2xs text-text-primary'
                     : 'bg-transparent hover:bg-surface-muted/60 border-transparent text-text-secondary hover:text-text-primary'
                 }`}
               >
@@ -104,7 +104,7 @@ export const MasterDetailUserList: React.FC<MasterDetailUserListProps> = ({
                   <div
                     className={`w-7 h-7 rounded-[4px] flex items-center justify-center shrink-0 font-bold text-xs transition-colors ${
                       isSelected
-                        ? 'bg-brand-accent text-white shadow-2xs'
+                        ? 'bg-accent text-white shadow-2xs'
                         : 'bg-surface-muted text-text-secondary border border-border-subtle/60'
                     }`}
                   >
@@ -117,7 +117,7 @@ export const MasterDetailUserList: React.FC<MasterDetailUserListProps> = ({
                         {user.fullName || user.username}
                       </span>
                       {isDirty && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" title="Unsaved changes" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse shrink-0" title="Unsaved changes" />
                       )}
                       {primaryRole && (
                         <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-surface-muted text-text-muted border border-border-subtle/50 uppercase shrink-0">
@@ -134,11 +134,11 @@ export const MasterDetailUserList: React.FC<MasterDetailUserListProps> = ({
                 {/* Right Status Badge */}
                 <div className="shrink-0">
                   {isSuperAdmin ? (
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-600 border border-rose-500/20">
+                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-danger/10 text-danger border border-danger/20">
                       Root
                     </span>
                   ) : hasOverrides ? (
-                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
+                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-accent/10 text-accent border border-accent/30">
                       +{grantCount}
                     </span>
                   ) : null}

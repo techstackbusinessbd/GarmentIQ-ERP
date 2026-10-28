@@ -125,7 +125,7 @@ export const MasterDetailActionHeader: React.FC<MasterDetailActionHeaderProps> =
           <Button
             variant="outline"
             size="xs"
-            icon={<Eye size={11} className="text-sky-600" />}
+            icon={<Eye size={11} className="text-info" />}
             onClick={onReadOnly}
             disabled={isSuperAdmin}
           >
@@ -135,7 +135,7 @@ export const MasterDetailActionHeader: React.FC<MasterDetailActionHeaderProps> =
           <Button
             variant="outline"
             size="xs"
-            icon={<Sparkles size={11} className="text-emerald-600" />}
+            icon={<Sparkles size={11} className="text-accent" />}
             onClick={onFullAccess}
             disabled={isSuperAdmin}
           >
@@ -155,7 +155,7 @@ export const MasterDetailActionHeader: React.FC<MasterDetailActionHeaderProps> =
           <Button
             variant="outline"
             size="xs"
-            icon={<Ban size={10} className="text-rose-500" />}
+            icon={<Ban size={10} className="text-danger" />}
             onClick={onClearAll}
             disabled={isSuperAdmin}
           >

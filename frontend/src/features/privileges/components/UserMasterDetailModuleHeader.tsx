@@ -66,7 +66,7 @@ export const UserMasterDetailModuleHeader: React.FC<UserMasterDetailModuleHeader
   return (
     <tr
       onClick={() => onToggleCollapse?.(module.id)}
-      className="bg-surface-muted/70 hover:bg-surface-muted border-t-2 border-b border-border-subtle/80 text-text-primary border-l-4 border-l-brand-accent cursor-pointer transition-colors select-none"
+      className="bg-surface-muted/70 hover:bg-surface-muted border-t-2 border-b border-border-subtle/80 text-text-primary border-l-4 border-l-accent cursor-pointer transition-colors select-none"
     >
       <td colSpan={3} className="p-2 px-3 align-middle">
         <div className="flex items-center gap-2">
@@ -79,7 +79,7 @@ export const UserMasterDetailModuleHeader: React.FC<UserMasterDetailModuleHeader
             />
           )}
 
-          <div className="w-6 h-6 rounded-[4px] bg-brand-accent/15 border border-brand-accent/30 flex items-center justify-center text-brand-accent shrink-0">
+          <div className="w-6 h-6 rounded-[4px] bg-accent/15 border border-accent/30 flex items-center justify-center text-accent shrink-0">
             {getModuleIcon(module.id)}
           </div>
 
@@ -97,14 +97,14 @@ export const UserMasterDetailModuleHeader: React.FC<UserMasterDetailModuleHeader
         <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
           {moduleOverrideCount > 0 ? (
             <div className="inline-flex items-center gap-2">
-              <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
+              <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-accent/10 text-accent border border-accent/25">
                 +{moduleOverrideCount}
               </span>
               <button
                 type="button"
                 disabled={isSuperAdmin}
                 onClick={() => onResetModule(allModuleCodes)}
-                className="text-[10px] font-semibold text-amber-700 dark:text-amber-400 hover:underline inline-flex items-center gap-0.5 cursor-pointer disabled:opacity-40"
+                className="text-[10px] font-semibold text-warning hover:underline inline-flex items-center gap-0.5 cursor-pointer disabled:opacity-40"
                 title="Reset overrides"
               >
                 <RotateCcw size={9} />

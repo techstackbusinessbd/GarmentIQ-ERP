@@ -57,7 +57,7 @@ export const UserDetailActionHeader: React.FC<UserDetailActionHeaderProps> = ({
       {/* Sleek Integrated Strip */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-[4px] bg-brand-accent/15 text-brand-accent border border-brand-accent/25 flex items-center justify-center font-bold text-xs shrink-0">
+          <div className="w-8 h-8 rounded-[4px] bg-accent/15 text-accent border border-accent/25 flex items-center justify-center font-bold text-xs shrink-0">
             {isSuperAdmin ? <Shield size={14} /> : initial}
           </div>
 
@@ -84,7 +84,7 @@ export const UserDetailActionHeader: React.FC<UserDetailActionHeaderProps> = ({
               <span>{roleBaseCount} base</span>
               <span>•</span>
               {customGrantsCount > 0 ? (
-                <span className="text-emerald-700 dark:text-emerald-400 font-medium inline-flex items-center gap-1">
+                <span className="text-accent font-medium inline-flex items-center gap-1">
                   <Sparkles size={10} />
                   <span>+{customGrantsCount} custom</span>
                 </span>
@@ -92,7 +92,7 @@ export const UserDetailActionHeader: React.FC<UserDetailActionHeaderProps> = ({
                 <span>0 custom</span>
               )}
               <span>•</span>
-              <span><strong className="text-brand-accent font-sans">{effectiveCount}/{totalCatalogCount}</strong> total</span>
+              <span><strong className="text-accent font-sans">{effectiveCount}/{totalCatalogCount}</strong> total</span>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@ export const UserDetailActionHeader: React.FC<UserDetailActionHeaderProps> = ({
 
       {/* Super Admin Notice (Only when superadmin) */}
       {isSuperAdmin && (
-        <div className="p-2 rounded-[3px] bg-brand-accent/10 border border-brand-accent/20 flex items-center gap-2 text-[11px] text-brand-accent">
+        <div className="p-2 rounded-[3px] bg-accent/10 border border-accent/20 flex items-center gap-2 text-[11px] text-accent">
           <ShieldAlert size={13} className="shrink-0" />
           <span>Super Admin has permanent full clearances.</span>
         </div>

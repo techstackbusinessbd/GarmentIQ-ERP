@@ -109,7 +109,7 @@ export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
       {/* Filter Ribbon Header */}
       <div className="flex items-center justify-between pb-1.5 border-b border-border-subtle/60">
         <div className="flex items-center gap-1.5 text-text-primary text-xs font-bold tracking-tight">
-          <Filter size={12} className="text-brand-accent" />
+          <Filter size={12} className="text-accent" />
           <span>Filters</span>
         </div>
 
@@ -119,7 +119,7 @@ export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
             size="xs"
             icon={<RotateCcw size={11} />}
             onClick={onResetFilters}
-            className="text-text-muted hover:text-rose-600"
+            className="text-text-muted hover:text-danger"
           >
             Reset
           </Button>
@@ -131,7 +131,7 @@ export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
         {/* Tier 1: Searchable Domain Combobox */}
         <div className="space-y-1">
           <label className="text-[10px] font-mono font-bold uppercase text-text-muted flex items-center gap-1">
-            <Layers size={10} className="text-brand-accent" />
+            <Layers size={10} className="text-accent" />
             <span>Domain</span>
           </label>
           <SearchableSelect
@@ -150,7 +150,7 @@ export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
         {/* Tier 2: Searchable Module Combobox */}
         <div className="space-y-1">
           <label className="text-[10px] font-mono font-bold uppercase text-text-muted flex items-center gap-1">
-            <Boxes size={10} className="text-brand-accent" />
+            <Boxes size={10} className="text-accent" />
             <span>Module</span>
           </label>
           <SearchableSelect
@@ -168,7 +168,7 @@ export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
         {/* Tier 3: Searchable Submodule / Feature Combobox */}
         <div className="space-y-1">
           <label className="text-[10px] font-mono font-bold uppercase text-text-muted flex items-center gap-1">
-            <Compass size={10} className="text-brand-accent" />
+            <Compass size={10} className="text-accent" />
             <span>Screen</span>
           </label>
           <SearchableSelect
@@ -183,7 +183,7 @@ export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
         {/* Tier 4: Keyword Search Input & Collapse/Expand Action */}
         <div className="space-y-1">
           <label className="text-[10px] font-mono font-bold uppercase text-text-muted flex items-center gap-1">
-            <Search size={10} className="text-brand-accent" />
+            <Search size={10} className="text-accent" />
             <span>Search</span>
           </label>
           <div className="flex items-center gap-1.5">

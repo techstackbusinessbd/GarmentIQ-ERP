@@ -97,7 +97,7 @@ export const MasterDetailModuleHeader: React.FC<MasterDetailModuleHeaderProps> =
   return (
     <tr
       onClick={() => onToggleCollapse?.(module.id)}
-      className="bg-surface-muted/70 hover:bg-surface-muted border-t-2 border-b border-border-subtle/80 text-text-primary border-l-4 border-l-brand-accent cursor-pointer transition-colors select-none"
+      className="bg-surface-muted/70 hover:bg-surface-muted border-t-2 border-b border-border-subtle/80 text-text-primary border-l-4 border-l-accent cursor-pointer transition-colors select-none"
     >
       {/* Module Title & Chevron */}
       <td colSpan={3} className="p-2 px-3 align-middle">
@@ -111,7 +111,7 @@ export const MasterDetailModuleHeader: React.FC<MasterDetailModuleHeaderProps> =
             />
           )}
 
-          <div className="w-6 h-6 rounded-[4px] bg-brand-accent/15 border border-brand-accent/30 flex items-center justify-center text-brand-accent shrink-0">
+          <div className="w-6 h-6 rounded-[4px] bg-accent/15 border border-accent/30 flex items-center justify-center text-accent shrink-0">
             {getModuleIcon(module.id)}
           </div>
 
@@ -135,7 +135,7 @@ export const MasterDetailModuleHeader: React.FC<MasterDetailModuleHeaderProps> =
               onClick={handleApplyFull}
               className="px-2 py-0.5 rounded-[4px] text-[10px] font-semibold text-text-secondary hover:text-text-primary bg-surface-card border border-border-subtle transition-all cursor-pointer disabled:opacity-50 inline-flex items-center gap-0.5 shadow-2xs"
             >
-              <Sparkles size={9} className="text-emerald-600" />
+              <Sparkles size={9} className="text-accent" />
               <span>Full</span>
             </button>
 
@@ -145,7 +145,7 @@ export const MasterDetailModuleHeader: React.FC<MasterDetailModuleHeaderProps> =
               onClick={handleApplyReadOnly}
               className="px-2 py-0.5 rounded-[4px] text-[10px] font-semibold text-text-secondary hover:text-text-primary bg-surface-card border border-border-subtle transition-all cursor-pointer disabled:opacity-50 inline-flex items-center gap-0.5 shadow-2xs"
             >
-              <Eye size={9} className="text-sky-600" />
+              <Eye size={9} className="text-info" />
               <span>Read</span>
             </button>
 
@@ -153,7 +153,7 @@ export const MasterDetailModuleHeader: React.FC<MasterDetailModuleHeaderProps> =
               type="button"
               disabled={isSuperAdmin}
               onClick={handleApplyNone}
-              className="px-2 py-0.5 rounded-[4px] text-[10px] font-semibold text-text-secondary hover:text-rose-600 bg-surface-card border border-border-subtle transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
+              className="px-2 py-0.5 rounded-[4px] text-[10px] font-semibold text-text-secondary hover:text-danger bg-surface-card border border-border-subtle transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
             >
               None
             </button>

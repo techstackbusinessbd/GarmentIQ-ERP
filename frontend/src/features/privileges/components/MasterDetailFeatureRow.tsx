@@ -114,7 +114,7 @@ export const MasterDetailFeatureRow: React.FC<MasterDetailFeatureRowProps> = ({
       {/* 1. Feature / Screen Info */}
       <td className="p-3 align-middle min-w-[220px] max-w-[260px]">
         <div className="flex items-start gap-2.5">
-          <div className="w-7 h-7 rounded-[4px] bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center text-brand-accent shrink-0 mt-0.5">
+          <div className="w-7 h-7 rounded-[4px] bg-accent/10 border border-accent/20 flex items-center justify-center text-accent shrink-0 mt-0.5">
             {getFeatureIcon(feature.id)}
           </div>
           <div className="min-w-0">
@@ -129,40 +129,40 @@ export const MasterDetailFeatureRow: React.FC<MasterDetailFeatureRowProps> = ({
       </td>
 
       {/* 2. Sidebar Menu Navigation */}
-      <td className="p-3 align-middle text-center min-w-[120px]">
+      <td className="p-2.5 align-middle text-center min-w-[100px]">
         {menuAction ? (
           <button
             type="button"
             disabled={isSuperAdmin}
             onClick={() => onToggleMenu([menuAction.code], !isMenuGranted)}
-            className={`w-full py-1 px-2 rounded-[4px] text-xs font-semibold border transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold border transition-all inline-flex items-center justify-center gap-1 cursor-pointer ${
               isMenuGranted
-                ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 shadow-2xs'
-                : 'bg-surface-muted text-text-muted border-border-subtle hover:text-text-primary hover:bg-surface-muted/80'
+                ? 'bg-accent/10 text-accent border-accent/30 shadow-2xs'
+                : 'bg-surface-card text-text-muted border-border-subtle hover:text-text-primary hover:bg-surface-muted/60'
             } ${isSuperAdmin ? 'cursor-not-allowed opacity-80' : ''}`}
             title={menuAction.code}
           >
             {isMenuGranted ? (
               <>
-                <Check size={12} strokeWidth={2.5} className="text-emerald-600 dark:text-emerald-400" />
+                <Check size={10} strokeWidth={2.5} className="text-accent" />
                 <span>Visible</span>
               </>
             ) : (
               <>
-                <Ban size={12} className="text-text-muted" />
+                <Ban size={10} className="text-text-muted" />
                 <span>Hidden</span>
               </>
             )}
           </button>
         ) : (
-          <span className="text-[10px] text-text-muted/40 font-mono px-2 py-1">—</span>
+          <span className="text-[10px] text-text-muted/40 font-mono px-2 py-0.5">—</span>
         )}
       </td>
 
       {/* 3. Standard CRUD Actions */}
-      <td className="p-3 align-middle min-w-[240px]">
+      <td className="p-2.5 align-middle min-w-[220px]">
         {!hasCrudActions ? (
-          <span className="text-[10px] text-text-muted/40 font-mono px-2 py-1">—</span>
+          <span className="text-[10px] text-text-muted/40 font-mono px-2 py-0.5">—</span>
         ) : (
           <div className="flex items-center gap-1.5 flex-wrap">
             {CRUD_SPECS.map(({ key, label, isDanger }) => {
@@ -176,20 +176,20 @@ export const MasterDetailFeatureRow: React.FC<MasterDetailFeatureRowProps> = ({
                   type="button"
                   disabled={isSuperAdmin}
                   onClick={() => onToggleAction(act.code)}
-                  className={`px-2 py-1 rounded-[4px] text-[11px] font-semibold border transition-all inline-flex items-center gap-1 cursor-pointer ${
+                  className={`px-2 py-0.5 rounded text-[10px] font-semibold border transition-all inline-flex items-center gap-1 cursor-pointer ${
                     isGranted
                       ? isDanger
-                        ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30'
-                        : 'bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/30'
-                      : 'bg-surface-card text-text-muted border-border-subtle hover:text-text-primary'
+                        ? 'bg-danger/10 text-danger border-danger/30 shadow-2xs'
+                        : 'bg-accent/10 text-accent border-accent/30 shadow-2xs'
+                      : 'bg-surface-card text-text-muted border-border-subtle hover:text-text-primary hover:bg-surface-muted/60'
                   }`}
                   title={act.code}
                 >
                   {isGranted && (
                     <Check
                       size={10}
-                      strokeWidth={3}
-                      className={isDanger ? 'text-rose-600' : 'text-sky-600'}
+                      strokeWidth={2.5}
+                      className={isDanger ? 'text-danger' : 'text-accent'}
                     />
                   )}
                   <span>{label}</span>
@@ -201,7 +201,7 @@ export const MasterDetailFeatureRow: React.FC<MasterDetailFeatureRowProps> = ({
       </td>
 
       {/* 4. Special Operations / Advanced Actions */}
-      <td className="p-3 align-middle min-w-[210px]">
+      <td className="p-2.5 align-middle min-w-[200px]">
         {specialActions.length > 0 ? (
           <div className="flex items-center gap-1.5 flex-wrap">
             {specialActions.map((special) => {
@@ -212,21 +212,21 @@ export const MasterDetailFeatureRow: React.FC<MasterDetailFeatureRowProps> = ({
                   type="button"
                   disabled={isSuperAdmin}
                   onClick={() => onToggleAction(special.code)}
-                  className={`px-2 py-1 rounded-[4px] text-[10px] font-semibold border transition-all inline-flex items-center gap-1 cursor-pointer ${
+                  className={`px-2 py-0.5 rounded text-[10px] font-semibold border transition-all inline-flex items-center gap-1 cursor-pointer ${
                     isGranted
-                      ? 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 shadow-2xs font-bold'
-                      : 'bg-surface-card text-text-muted border-border-subtle hover:text-text-primary'
+                      ? 'bg-primary/10 text-primary border-primary/25 shadow-2xs font-semibold'
+                      : 'bg-surface-card text-text-muted border-border-subtle hover:text-text-primary hover:bg-surface-muted/60'
                   }`}
                   title={special.code}
                 >
-                  {isGranted && <Check size={10} strokeWidth={3} className="text-purple-600" />}
+                  {isGranted && <Check size={10} strokeWidth={2.5} className="text-primary" />}
                   <span>{special.label}</span>
                 </button>
               );
             })}
           </div>
         ) : (
-          <span className="text-[10px] text-text-muted/40 font-mono px-2 py-1">—</span>
+          <span className="text-[10px] text-text-muted/40 font-mono px-2 py-0.5">—</span>
         )}
       </td>
 

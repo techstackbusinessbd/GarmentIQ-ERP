@@ -68,29 +68,29 @@ interface PillTheme {
 
 const THEMES: Record<string, PillTheme> = {
   view: {
-    baseline: 'bg-sky-500/10 text-sky-800 dark:text-sky-300 border-sky-400/30',
-    unassigned: 'text-sky-700 dark:text-sky-400 border-sky-400/35 hover:bg-sky-500/10',
-    granted: 'bg-sky-500/20 text-sky-900 dark:text-sky-200 border-sky-500/40 hover:bg-sky-500/30',
+    baseline: 'bg-primary/10 text-primary border-primary/20',
+    unassigned: 'text-text-muted border-border-subtle hover:text-text-primary hover:bg-surface-muted/50',
+    granted: 'bg-accent/15 text-accent border-accent/30 hover:bg-accent/25',
   },
   create: {
-    baseline: 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-400/30',
-    unassigned: 'text-emerald-700 dark:text-emerald-400 border-emerald-400/35 hover:bg-emerald-500/10',
-    granted: 'bg-emerald-500/20 text-emerald-900 dark:text-emerald-200 border-emerald-500/40 hover:bg-emerald-500/30',
+    baseline: 'bg-primary/10 text-primary border-primary/20',
+    unassigned: 'text-text-muted border-border-subtle hover:text-text-primary hover:bg-surface-muted/50',
+    granted: 'bg-accent/15 text-accent border-accent/30 hover:bg-accent/25',
   },
   edit: {
-    baseline: 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-400/30',
-    unassigned: 'text-amber-700 dark:text-amber-400 border-amber-400/35 hover:bg-amber-500/10',
-    granted: 'bg-amber-500/20 text-amber-900 dark:text-amber-200 border-amber-500/40 hover:bg-amber-500/30',
+    baseline: 'bg-primary/10 text-primary border-primary/20',
+    unassigned: 'text-text-muted border-border-subtle hover:text-text-primary hover:bg-surface-muted/50',
+    granted: 'bg-accent/15 text-accent border-accent/30 hover:bg-accent/25',
   },
   delete: {
-    baseline: 'bg-rose-500/10 text-rose-800 dark:text-rose-300 border-rose-400/30',
-    unassigned: 'text-rose-700 dark:text-rose-400 border-rose-400/35 hover:bg-rose-500/10',
-    granted: 'bg-rose-500/20 text-rose-900 dark:text-rose-200 border-rose-500/40 hover:bg-rose-500/30',
+    baseline: 'bg-danger/10 text-danger border-danger/25',
+    unassigned: 'text-text-muted border-border-subtle hover:text-danger hover:bg-danger/5',
+    granted: 'bg-danger/15 text-danger border-danger/30 hover:bg-danger/25',
   },
   special: {
-    baseline: 'bg-indigo-500/10 text-indigo-800 dark:text-indigo-300 border-indigo-400/30',
-    unassigned: 'text-indigo-700 dark:text-indigo-400 border-indigo-400/35 hover:bg-indigo-500/10',
-    granted: 'bg-indigo-500/20 text-indigo-900 dark:text-indigo-200 border-indigo-500/40 hover:bg-indigo-500/30',
+    baseline: 'bg-primary/10 text-primary border-primary/25',
+    unassigned: 'text-text-muted border-border-subtle hover:text-text-primary hover:bg-surface-muted/50',
+    granted: 'bg-primary/20 text-primary border-primary/30 hover:bg-primary/25',
   },
 };
 
@@ -181,7 +181,7 @@ export const UserMasterDetailFeatureRow: React.FC<UserMasterDetailFeatureRowProp
       {/* 1. Feature Info */}
       <td className="p-2.5 align-middle min-w-[200px] max-w-[240px]">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-[4px] bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center text-brand-accent shrink-0">
+          <div className="w-7 h-7 rounded-[4px] bg-accent/10 border border-accent/20 flex items-center justify-center text-accent shrink-0">
             {getFeatureIcon(feature.id)}
           </div>
           <div className="min-w-0">
@@ -200,30 +200,30 @@ export const UserMasterDetailFeatureRow: React.FC<UserMasterDetailFeatureRowProp
         {menuCode ? (
           isSuperAdmin || isMenuRoleInherited ? (
             <div
-              className="w-full py-1 px-2 rounded-[4px] text-[11px] font-medium bg-teal-500/10 text-teal-800 dark:text-teal-300 border border-teal-500/25 inline-flex items-center justify-center gap-1 shadow-2xs"
+              className="px-2 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-primary border border-primary/20 inline-flex items-center justify-center gap-1 shadow-2xs"
               title="Role baseline"
             >
-              <Lock size={10} className="text-teal-600 dark:text-teal-400" />
+              <Lock size={9} className="text-primary/70" />
               <span>Visible</span>
             </div>
           ) : isMenuCustomGranted ? (
             <button
               type="button"
               onClick={() => onToggleMenu([menuCode], false)}
-              className="w-full py-1 px-2 rounded-[4px] text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 inline-flex items-center justify-center gap-1 hover:bg-emerald-500/20 cursor-pointer shadow-2xs transition-all"
+              className="px-2 py-0.5 rounded text-[10px] font-semibold bg-accent/15 text-accent border border-accent/30 inline-flex items-center justify-center gap-1 hover:bg-accent/25 cursor-pointer shadow-2xs transition-all"
               title="Override active"
             >
-              <Check size={11} strokeWidth={2.5} className="text-emerald-600 dark:text-emerald-400" />
+              <Check size={10} strokeWidth={2.5} className="text-accent" />
               <span>Visible</span>
             </button>
           ) : (
             <button
               type="button"
               onClick={() => onToggleMenu([menuCode], true)}
-              className="w-full py-1 px-2 rounded-[4px] text-[11px] font-medium bg-surface-muted/60 text-text-muted border border-border-subtle hover:text-text-primary hover:border-brand-accent/40 inline-flex items-center justify-center gap-1 cursor-pointer transition-all"
-              title="Hidden"
+              className="px-2 py-0.5 rounded text-[10px] font-medium bg-surface-card hover:bg-surface-muted text-text-muted hover:text-text-primary border border-border-subtle inline-flex items-center justify-center gap-1 cursor-pointer transition-all"
+              title="Grant menu visibility"
             >
-              <Ban size={10} className="text-text-muted" />
+              <Ban size={9} className="text-text-muted" />
               <span>Hidden</span>
             </button>
           )
@@ -262,14 +262,14 @@ export const UserMasterDetailFeatureRow: React.FC<UserMasterDetailFeatureRowProp
       <td className="p-2.5 align-middle text-right min-w-[120px]">
         {featureCustomGrantsCount > 0 ? (
           <div className="inline-flex items-center justify-end gap-1.5">
-            <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
+            <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-accent/10 text-accent border border-accent/25">
               +{featureCustomGrantsCount}
             </span>
             <button
               type="button"
               disabled={isSuperAdmin}
               onClick={() => onResetFeature(allCodes)}
-              className="text-[10px] text-amber-700 dark:text-amber-400 hover:underline inline-flex items-center gap-0.5 cursor-pointer disabled:opacity-40"
+              className="text-[10px] text-warning hover:underline inline-flex items-center gap-0.5 cursor-pointer disabled:opacity-40"
               title="Reset"
             >
               <RotateCcw size={9} />
