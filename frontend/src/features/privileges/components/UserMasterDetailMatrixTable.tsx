@@ -9,7 +9,7 @@
  */
 
 import React, { useState } from 'react';
-import { Lock, Check, ChevronsDown, ChevronsUp } from 'lucide-react';
+import { Lock, Check } from 'lucide-react';
 import type { MatrixModuleDef } from '../constants/accessMatrixTypes';
 import { UserMasterDetailModuleHeader } from './UserMasterDetailModuleHeader';
 import { UserMasterDetailFeatureRow } from './UserMasterDetailFeatureRow';
@@ -35,16 +35,6 @@ export const UserMasterDetailMatrixTable: React.FC<UserMasterDetailMatrixTablePr
 }) => {
   const [collapsedModuleIds, setCollapsedModuleIds] = useState<Set<string>>(new Set());
 
-  const isAllExpanded = collapsedModuleIds.size === 0;
-
-  const toggleAllCollapse = () => {
-    if (isAllExpanded) {
-      setCollapsedModuleIds(new Set(modules.map((m) => m.id)));
-    } else {
-      setCollapsedModuleIds(new Set());
-    }
-  };
-
   const toggleModuleCollapse = (moduleId: string) => {
     setCollapsedModuleIds((prev) => {
       const next = new Set(prev);
@@ -61,18 +51,7 @@ export const UserMasterDetailMatrixTable: React.FC<UserMasterDetailMatrixTablePr
           <thead>
             <tr className="bg-surface-muted/60 border-b border-border-subtle text-[11px] font-mono uppercase tracking-wider text-text-muted">
               <th className="p-2.5 font-bold min-w-[200px]">
-                <div className="flex items-center justify-between gap-2">
-                  <span>Feature</span>
-                  <button
-                    type="button"
-                    onClick={toggleAllCollapse}
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-mono font-medium rounded text-text-secondary hover:text-text-primary hover:bg-surface-card border border-border-subtle cursor-pointer transition-all"
-                    title={isAllExpanded ? 'Collapse all modules' : 'Expand all modules'}
-                  >
-                    {isAllExpanded ? <ChevronsUp size={11} /> : <ChevronsDown size={11} />}
-                    <span>{isAllExpanded ? 'Collapse' : 'Expand'}</span>
-                  </button>
-                </div>
+                Feature
               </th>
               <th className="p-2.5 font-bold text-center min-w-[100px]">
                 Menu

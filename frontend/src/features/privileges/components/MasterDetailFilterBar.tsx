@@ -9,7 +9,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { Layers, Boxes, Compass, Search, RotateCcw, Filter } from 'lucide-react';
+import { Layers, Boxes, Compass, Search, RotateCcw, Filter, ChevronsDown, ChevronsUp } from 'lucide-react';
 import type { MatrixDomainDef } from '../constants/accessMatrixTypes';
 import { TextInput } from '@/components/ui/TextInput';
 import { Button } from '@/components/ui/Button';
@@ -26,6 +26,8 @@ export interface MasterDetailFilterBarProps {
   readonly searchQuery: string;
   readonly onSearchChange: (query: string) => void;
   readonly onResetFilters: () => void;
+  readonly isAllExpanded?: boolean;
+  readonly onToggleAllCollapse?: () => void;
 }
 
 export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
@@ -39,6 +41,8 @@ export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
   searchQuery,
   onSearchChange,
   onResetFilters,
+  isAllExpanded = true,
+  onToggleAllCollapse,
 }) => {
   // Cascading available modules based on selected domain
   const availableModules = useMemo(() => {
@@ -176,18 +180,34 @@ export const MasterDetailFilterBar: React.FC<MasterDetailFilterBarProps> = ({
           />
         </div>
 
-        {/* Tier 4: Keyword Search Input */}
+        {/* Tier 4: Keyword Search Input & Collapse/Expand Action */}
         <div className="space-y-1">
           <label className="text-[10px] font-mono font-bold uppercase text-text-muted flex items-center gap-1">
             <Search size={10} className="text-brand-accent" />
             <span>Search</span>
           </label>
-          <TextInput
-            leftIcon={<Search size={12} />}
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search actions..."
-          />
+          <div className="flex items-center gap-1.5">
+            <div className="flex-1">
+              <TextInput
+                leftIcon={<Search size={12} />}
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Search actions..."
+              />
+            </div>
+            {onToggleAllCollapse && (
+              <Button
+                variant="outline"
+                size="sm"
+                icon={isAllExpanded ? <ChevronsUp size={12} /> : <ChevronsDown size={12} />}
+                onClick={onToggleAllCollapse}
+                className="h-[34px] px-2.5 text-xs font-medium shrink-0"
+                title={isAllExpanded ? 'Collapse all modules' : 'Expand all modules'}
+              >
+                {isAllExpanded ? 'Collapse' : 'Expand'}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

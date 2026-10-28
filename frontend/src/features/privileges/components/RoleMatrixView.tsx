@@ -27,7 +27,6 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
   const { isSuperAdmin: isCallerSuperAdmin } = usePermission();
   const { data: rawCatalog = [], isLoading: isCatalogLoading } = usePermissionCatalog('admin');
 
-  // Filter out platform root modules (client_mgmt) for tenant administrators
   const catalogDomains = useMemo(() => {
     if (isCallerSuperAdmin) return rawCatalog;
     return rawCatalog.map((d) => ({ ...d, modules: d.modules.filter((m) => m.id !== 'client_mgmt') }));
@@ -43,32 +42,27 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
   const [rolePermissions, setRolePermissions] = useState<Record<string, string[]>>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-
-  // 3-Tier Cascading Filter States
   const [selectedDomainId, setSelectedDomainId] = useState<string>('all');
   const [selectedModuleId, setSelectedModuleId] = useState<string>('all');
   const [selectedFeatureId, setSelectedFeatureId] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [collapsedModuleIds, setCollapsedModuleIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setIsLoading(true);
-    roleService.getRoles()
-      .then((data) => {
-        setRoles(data);
-        const map: Record<string, string[]> = {};
-        data.forEach((r) => { map[r.roleCode] = Array.from(r.permissions || []); });
-        setPristinePermissions(map);
-        setRolePermissions(JSON.parse(JSON.stringify(map)));
-        const availableRoles = isCallerSuperAdmin ? data : data.filter((r) => r.roleCode !== 'ROLE_SUPER_ADMIN');
-        if (!selectedRoleCode && availableRoles.length > 0) setSelectedRoleCode(availableRoles[0]!.roleCode);
-      })
-      .catch(() => toast.error('Failed to load roles from database.'))
-      .finally(() => setIsLoading(false));
+    roleService.getRoles().then((data) => {
+      setRoles(data);
+      const map: Record<string, string[]> = {};
+      data.forEach((r) => { map[r.roleCode] = Array.from(r.permissions || []); });
+      setPristinePermissions(map);
+      setRolePermissions(JSON.parse(JSON.stringify(map)));
+      const avail = isCallerSuperAdmin ? data : data.filter((r) => r.roleCode !== 'ROLE_SUPER_ADMIN');
+      if (!selectedRoleCode && avail.length > 0) setSelectedRoleCode(avail[0]!.roleCode);
+    }).catch(() => toast.error('Failed to load roles from database.')).finally(() => setIsLoading(false));
   }, [isCallerSuperAdmin]);
 
   const visibleRoles = useMemo(() => {
-    if (isCallerSuperAdmin) return roles;
-    return roles.filter((r) => r.roleCode !== 'ROLE_SUPER_ADMIN');
+    return isCallerSuperAdmin ? roles : roles.filter((r) => r.roleCode !== 'ROLE_SUPER_ADMIN');
   }, [roles, isCallerSuperAdmin]);
 
   const isSuperAdmin = selectedRoleCode === 'ROLE_SUPER_ADMIN';
@@ -96,14 +90,12 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
     return diff;
   }, [rolePermissions, pristinePermissions, selectedRoleCode]);
 
-  // Handlers
   const handleToggleAction = useCallback((code: string) => {
     if (isSuperAdmin) return;
     setRolePermissions((prev) => {
       const current = new Set(prev[selectedRoleCode] || []);
-      if (current.has(code)) {
-        current.delete(code);
-      } else {
+      if (current.has(code)) current.delete(code);
+      else {
         current.add(code);
         const prefix = code.split(':')[0];
         if (prefix && !current.has(`${prefix}:MENU`)) current.add(`${prefix}:MENU`);
@@ -140,11 +132,9 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
 
   const handleReadOnly = () => {
     if (isSuperAdmin) return;
-    const viewCodes = catalogDomains.flatMap((d) =>
-      d.modules.flatMap((m) =>
-        m.features.flatMap((f) => [f.actions.view?.code, f.actions.profile?.code, f.actions.menu?.code]).filter((c): c is string => Boolean(c))
-      )
-    );
+    const viewCodes = catalogDomains.flatMap((d) => d.modules.flatMap((m) =>
+      m.features.flatMap((f) => [f.actions.view?.code, f.actions.profile?.code, f.actions.menu?.code]).filter((c): c is string => Boolean(c))
+    ));
     setRolePermissions((prev) => ({ ...prev, [selectedRoleCode]: viewCodes }));
     toast.info(`Set ${roleName} to View Only clearance.`);
   };
@@ -185,9 +175,7 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
       toast.success(`Access clearances saved successfully for ${roleName}.`);
     } catch {
       toast.error('Failed to save role permissions in database.');
-    } finally {
-      setIsSaving(false);
-    }
+    } finally { setIsSaving(false); }
   };
 
   // 3-Tier Filter Pipeline: Domain ➔ Module ➔ Submodule ➔ Keyword
@@ -195,24 +183,37 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
     const q = searchQuery.trim().toLowerCase();
     return catalogDomains
       .filter((d) => selectedDomainId === 'all' || d.id === selectedDomainId)
-      .map((d) => {
-        const modules = d.modules
+      .map((d) => ({
+        ...d,
+        modules: d.modules
           .filter((m) => selectedModuleId === 'all' || m.id === selectedModuleId)
-          .map((m) => {
-            const features = m.features.filter((f) => {
-              const matches = selectedFeatureId === 'all' || f.id === selectedFeatureId;
-              if (!matches) return false;
+          .map((m) => ({
+            ...m,
+            features: m.features.filter((f) => {
+              if (selectedFeatureId !== 'all' && f.id !== selectedFeatureId) return false;
               if (!q) return true;
               return f.name.toLowerCase().includes(q) || m.name.toLowerCase().includes(q) ||
                 Object.values(f.actions).some((a) => a && (a.code.toLowerCase().includes(q) || a.label.toLowerCase().includes(q)));
-            });
-            return { ...m, features };
-          })
-          .filter((m) => m.features.length > 0);
-        return { ...d, modules };
-      })
-      .filter((d) => d.modules.length > 0);
+            }),
+          }))
+          .filter((m) => m.features.length > 0),
+      })).filter((d) => d.modules.length > 0);
   }, [catalogDomains, selectedDomainId, selectedModuleId, selectedFeatureId, searchQuery]);
+
+  const allDisplayedModuleIds = useMemo(() => displayedDomains.flatMap((d) => d.modules.map((m) => m.id)), [displayedDomains]);
+  const isAllExpanded = collapsedModuleIds.size === 0;
+
+  const handleToggleAllCollapse = useCallback(() => {
+    setCollapsedModuleIds(isAllExpanded ? new Set(allDisplayedModuleIds) : new Set());
+  }, [isAllExpanded, allDisplayedModuleIds]);
+
+  const handleToggleModuleCollapse = useCallback((moduleId: string) => {
+    setCollapsedModuleIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(moduleId)) next.delete(moduleId); else next.add(moduleId);
+      return next;
+    });
+  }, []);
 
   if (isLoading || isCatalogLoading) {
     return (
@@ -258,6 +259,8 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onResetFilters={handleResetFilters}
+        isAllExpanded={isAllExpanded}
+        onToggleAllCollapse={handleToggleAllCollapse}
       />
 
       {/* 3. Full-Width Smart Group Banner Matrix Table */}
@@ -268,9 +271,7 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
               <span className="font-mono text-brand-accent uppercase tracking-wider text-[10px] bg-brand-accent/10 px-2 py-0.5 rounded font-bold border border-brand-accent/20">
                 {domain.id.toUpperCase()}
               </span>
-              <span className="text-xs font-bold text-text-primary">
-                {domain.title}
-              </span>
+              <span className="text-xs font-bold text-text-primary">{domain.title}</span>
               <span className="text-[10px] font-mono text-text-muted">
                 ({domain.modules.reduce((acc, m) => acc + m.features.length, 0)})
               </span>
@@ -279,6 +280,8 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
               modules={domain.modules}
               activePermissions={activePermsSet}
               isSuperAdmin={isSuperAdmin}
+              collapsedModuleIds={collapsedModuleIds}
+              onToggleModuleCollapse={handleToggleModuleCollapse}
               onToggleAction={handleToggleAction}
               onToggleModuleMenu={handleToggleModuleMenu}
               onSetModulePermissions={handleSetModulePermissions}
@@ -287,9 +290,7 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
         ))}
 
         {displayedDomains.length === 0 && (
-          <div className="p-12 text-center text-xs text-text-muted bg-surface-card border border-border-subtle rounded-[4px]">
-            No matching modules or actions found.
-          </div>
+          <div className="p-12 text-center text-xs text-text-muted bg-surface-card border border-border-subtle rounded-[4px]">No matching modules or actions found.</div>
         )}
       </div>
     </div>

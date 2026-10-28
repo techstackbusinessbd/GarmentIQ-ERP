@@ -9,7 +9,6 @@
  */
 
 import React, { useState } from 'react';
-import { ChevronsDown, ChevronsUp } from 'lucide-react';
 import type { MatrixModuleDef } from '../constants/accessMatrixTypes';
 import { MasterDetailModuleHeader } from './MasterDetailModuleHeader';
 import { MasterDetailFeatureRow } from './MasterDetailFeatureRow';
@@ -18,6 +17,8 @@ export interface MasterDetailMatrixTableProps {
   readonly modules: readonly MatrixModuleDef[];
   readonly activePermissions: ReadonlySet<string>;
   readonly isSuperAdmin: boolean;
+  readonly collapsedModuleIds?: ReadonlySet<string>;
+  readonly onToggleModuleCollapse?: (moduleId: string) => void;
   readonly onToggleAction: (code: string) => void;
   readonly onToggleModuleMenu: (menuCodes: readonly string[], shouldEnable: boolean) => void;
   readonly onSetModulePermissions: (allCodes: readonly string[], grantCodes: readonly string[]) => void;
@@ -27,29 +28,26 @@ export const MasterDetailMatrixTable: React.FC<MasterDetailMatrixTableProps> = (
   modules,
   activePermissions,
   isSuperAdmin,
+  collapsedModuleIds: externalCollapsedIds,
+  onToggleModuleCollapse: externalToggleCollapse,
   onToggleAction,
   onToggleModuleMenu,
   onSetModulePermissions,
 }) => {
-  const [collapsedModuleIds, setCollapsedModuleIds] = useState<Set<string>>(new Set());
-
-  const isAllExpanded = collapsedModuleIds.size === 0;
-
-  const toggleAllCollapse = () => {
-    if (isAllExpanded) {
-      setCollapsedModuleIds(new Set(modules.map((m) => m.id)));
-    } else {
-      setCollapsedModuleIds(new Set());
-    }
-  };
+  const [internalCollapsedIds, setInternalCollapsedIds] = useState<Set<string>>(new Set());
+  const collapsedIds = externalCollapsedIds || internalCollapsedIds;
 
   const toggleModuleCollapse = (moduleId: string) => {
-    setCollapsedModuleIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(moduleId)) next.delete(moduleId);
-      else next.add(moduleId);
-      return next;
-    });
+    if (externalToggleCollapse) {
+      externalToggleCollapse(moduleId);
+    } else {
+      setInternalCollapsedIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(moduleId)) next.delete(moduleId);
+        else next.add(moduleId);
+        return next;
+      });
+    }
   };
 
   return (
@@ -59,18 +57,7 @@ export const MasterDetailMatrixTable: React.FC<MasterDetailMatrixTableProps> = (
           <thead>
             <tr className="bg-surface-muted/80 border-b border-border-subtle text-[11px] font-mono uppercase tracking-wider text-text-muted">
               <th className="p-3 font-bold min-w-[220px]">
-                <div className="flex items-center justify-between gap-2">
-                  <span>Feature</span>
-                  <button
-                    type="button"
-                    onClick={toggleAllCollapse}
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-mono font-medium rounded text-text-secondary hover:text-text-primary hover:bg-surface-card border border-border-subtle cursor-pointer transition-all"
-                    title={isAllExpanded ? 'Collapse all modules' : 'Expand all modules'}
-                  >
-                    {isAllExpanded ? <ChevronsUp size={11} /> : <ChevronsDown size={11} />}
-                    <span>{isAllExpanded ? 'Collapse' : 'Expand'}</span>
-                  </button>
-                </div>
+                Feature
               </th>
               <th className="p-3 font-bold text-center min-w-[120px]">
                 Menu
@@ -88,7 +75,7 @@ export const MasterDetailMatrixTable: React.FC<MasterDetailMatrixTableProps> = (
           </thead>
           <tbody className="divide-y divide-border-subtle/50 text-xs">
             {modules.map((module) => {
-              const isCollapsed = collapsedModuleIds.has(module.id);
+              const isCollapsed = collapsedIds.has(module.id);
               return (
                 <React.Fragment key={module.id}>
                   {/* 1. Parent Module Grouping Header */}
