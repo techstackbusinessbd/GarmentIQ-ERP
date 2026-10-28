@@ -115,12 +115,12 @@ export const renderAdminRoutes = (): React.ReactNode => (
     {/* =====================================================================
      * Module 4: Global Library (মাস্টার লাইব্রেরি স্বতন্ত্র পেজসমূহ)
      * ===================================================================== */}
-    <Route path="/app/admin/library/units" element={<ProtectedRoute requiredPermission="LIBRARY:MENU"><MasterUnitsPage /></ProtectedRoute>} />
-    <Route path="/app/admin/library/sizes" element={<ProtectedRoute requiredPermission="LIBRARY:MENU"><MasterSizesPage /></ProtectedRoute>} />
-    <Route path="/app/admin/library/items" element={<ProtectedRoute requiredPermission="LIBRARY:MENU"><MasterGarmentItemsPage /></ProtectedRoute>} />
-    <Route path="/app/admin/library/colors" element={<ProtectedRoute requiredPermission="LIBRARY:MENU"><MasterColorsPage /></ProtectedRoute>} />
-    <Route path="/app/admin/library/seasons" element={<ProtectedRoute requiredPermission="LIBRARY:MENU"><MasterSeasonsPage /></ProtectedRoute>} />
-    <Route path="/app/admin/library/defects" element={<ProtectedRoute requiredPermission="LIBRARY:MENU"><MasterDefectsPage /></ProtectedRoute>} />
+    <Route path="/app/admin/library/units" element={<ProtectedRoute requiredPermission={['UNIT:MENU', 'UNIT:VIEW', 'LIBRARY:MENU']}><MasterUnitsPage /></ProtectedRoute>} />
+    <Route path="/app/admin/library/sizes" element={<ProtectedRoute requiredPermission={['SIZE:MENU', 'SIZE:VIEW', 'LIBRARY:MENU']}><MasterSizesPage /></ProtectedRoute>} />
+    <Route path="/app/admin/library/items" element={<ProtectedRoute requiredPermission={['ITEM:MENU', 'ITEM:VIEW', 'LIBRARY:MENU']}><MasterGarmentItemsPage /></ProtectedRoute>} />
+    <Route path="/app/admin/library/colors" element={<ProtectedRoute requiredPermission={['COLOR:MENU', 'COLOR:VIEW', 'LIBRARY:MENU']}><MasterColorsPage /></ProtectedRoute>} />
+    <Route path="/app/admin/library/seasons" element={<ProtectedRoute requiredPermission={['SEASON:MENU', 'SEASON:VIEW', 'LIBRARY:MENU']}><MasterSeasonsPage /></ProtectedRoute>} />
+    <Route path="/app/admin/library/defects" element={<ProtectedRoute requiredPermission={['DEFECT:MENU', 'DEFECT:VIEW', 'LIBRARY:MENU']}><MasterDefectsPage /></ProtectedRoute>} />
     <Route path="/app/admin/library" element={<Navigate to="/app/admin/library/units" replace />} />
 
     {/* =====================================================================

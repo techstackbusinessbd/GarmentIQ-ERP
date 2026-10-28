@@ -45,7 +45,13 @@ export const isNavPathPermitted = (
   if (path.includes('/admin/settings/security')) return hasPermission('SECURITY:MENU') || hasPermission('SECURITY:VIEW') || hasPermission('SETTINGS:MENU');
   if (path.includes('/admin/settings')) return hasPermission('SETTINGS:MENU') || hasPermission('AUTO_CODE:MENU') || hasPermission('SHIFT:MENU') || hasPermission('CURRENCY:MENU') || hasPermission('SECURITY:MENU') || hasPermission('AUDIT_LOG:MENU');
   if (path.includes('/admin/audit')) return hasPermission('AUDIT_LOG:MENU') || hasPermission('AUDIT_LOG:VIEW') || hasPermission('SETTINGS:MENU');
-  if (path.includes('/admin/library')) return hasPermission('LIBRARY:MENU');
+  if (path.includes('/admin/library/units')) return hasPermission('UNIT:MENU') || hasPermission('UNIT:VIEW') || hasPermission('LIBRARY:MENU');
+  if (path.includes('/admin/library/sizes')) return hasPermission('SIZE:MENU') || hasPermission('SIZE:VIEW') || hasPermission('LIBRARY:MENU');
+  if (path.includes('/admin/library/items')) return hasPermission('ITEM:MENU') || hasPermission('ITEM:VIEW') || hasPermission('LIBRARY:MENU');
+  if (path.includes('/admin/library/colors')) return hasPermission('COLOR:MENU') || hasPermission('COLOR:VIEW') || hasPermission('LIBRARY:MENU');
+  if (path.includes('/admin/library/seasons')) return hasPermission('SEASON:MENU') || hasPermission('SEASON:VIEW') || hasPermission('LIBRARY:MENU');
+  if (path.includes('/admin/library/defects')) return hasPermission('DEFECT:MENU') || hasPermission('DEFECT:VIEW') || hasPermission('LIBRARY:MENU');
+  if (path.includes('/admin/library')) return hasPermission('UNIT:MENU') || hasPermission('SIZE:MENU') || hasPermission('ITEM:MENU') || hasPermission('COLOR:MENU') || hasPermission('SEASON:MENU') || hasPermission('DEFECT:MENU') || hasPermission('LIBRARY:MENU');
 
   // Merchandising Domain Modules
   if (path.includes('/merchandising/orders')) return hasPermission('ORDER:MENU');

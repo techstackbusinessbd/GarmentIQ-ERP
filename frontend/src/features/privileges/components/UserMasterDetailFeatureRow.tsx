@@ -12,6 +12,7 @@ import React, { useMemo } from 'react';
 import {
   Binary, Clock, Coins, ShieldAlert, History, Users, User,
   KeyRound, ShieldCheck, Building2, BookOpen, Layers, Lock, Check, Ban, RotateCcw,
+  Ruler, Tag, Shirt, Palette, Calendar, AlertTriangle,
 } from 'lucide-react';
 import type { MatrixFeatureDef } from '../constants/accessMatrixTypes';
 
@@ -40,6 +41,12 @@ const getFeatureIcon = (featureId: string) => {
     case 'role_mgmt': return <ShieldCheck size={14} />;
     case 'client_mgmt': return <Building2 size={14} />;
     case 'library_mgmt': return <BookOpen size={14} />;
+    case 'library_units': return <Ruler size={14} />;
+    case 'library_sizes': return <Tag size={14} />;
+    case 'library_items': return <Shirt size={14} />;
+    case 'library_colors': return <Palette size={14} />;
+    case 'library_seasons': return <Calendar size={14} />;
+    case 'library_defects': return <AlertTriangle size={14} />;
     default: return <Layers size={14} />;
   }
 };
