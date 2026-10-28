@@ -1,11 +1,10 @@
 /**
  * =============================================================================
- * [EN] User Password Reset Workspace Page (UserPasswordResetPage.tsx)
- * [BN] ব্যবহারকারী পাসওয়ার্ড রিসেট কার্যক্ষেত্র পেজ (UserPasswordResetPage.tsx)
+ * [EN] Premium User Password Reset Page (UserPasswordResetPage.tsx)
+ * [BN] প্রিমিয়াম ব্যবহারকারী পাসওয়ার্ড রিসেট পেজ (UserPasswordResetPage.tsx)
  * =============================================================================
- * [EN] Reference: docs/specifications/ROUTE_URL_AND_MENU_SPECIFICATION.md
- * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens), Rule 27 (Full-page)
- * [BN] অ্যাডমিন কর্তৃক কর্মীদের নিরাপদ পাসওয়ার্ড রিসেট, অটো-জেনারেট ও আনলকিং ওয়ার্কফ্লো।
+ * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens), Rule 28 (Single-word buttons)
+ * [BN] কর্মীদের নিরাপদ পাসওয়ার্ড রিসেট, অটো-জেনারেট ও একাউন্ট আনলকিং প্রিমিয়াম কার্যক্ষেত্র।
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
@@ -13,7 +12,6 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Lock,
   RefreshCw,
-  ShieldCheck,
   AlertTriangle,
   KeyRound,
   Users,
@@ -36,19 +34,17 @@ export const UserPasswordResetPage: React.FC = () => {
     paramId || searchParams.get('userId') || ''
   );
 
-  // Load all users for directory selection
   const loadUsers = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await userService.getUsers();
       setUsers(data);
-      // If param or query param provided, ensure it's selected
       const targetId = paramId || searchParams.get('userId');
       if (targetId) {
         setSelectedUserId(targetId);
       }
     } catch {
-      toast.error('Failed to load user directory.');
+      toast.error('Failed to load user directory');
     } finally {
       setIsLoading(false);
     }
@@ -58,20 +54,17 @@ export const UserPasswordResetPage: React.FC = () => {
     loadUsers();
   }, [loadUsers]);
 
-  // Sync state if paramId changes
   useEffect(() => {
     if (paramId) {
       setSelectedUserId(paramId);
     }
   }, [paramId]);
 
-  // Resolve currently selected target user
   const targetUser = useMemo(
     () => users.find((u) => u.id === selectedUserId) || null,
     [users, selectedUserId]
   );
 
-  // Filter locked accounts needing immediate unlock/reset
   const lockedUsers = useMemo(
     () => users.filter((u) => u.status === 'LOCKED'),
     [users]
@@ -84,18 +77,18 @@ export const UserPasswordResetPage: React.FC = () => {
 
   if (isLoading && users.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-3">
-        <RefreshCw className="animate-spin text-brand-accent" size={28} />
-        <p className="text-xs text-text-muted">Loading employee credentials workspace...</p>
+      <div className="flex flex-col items-center justify-center min-h-[360px] space-y-2">
+        <RefreshCw className="animate-spin text-brand-accent" size={24} />
+        <p className="text-xs text-text-muted">Loading workspace...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 w-full max-w-5xl mx-auto">
-      {/* Page Header */}
+    <div className="space-y-4 w-full max-w-3xl mx-auto">
+      {/* Top Page Header */}
       <PageHeader
-        title="Password Reset Workspace"
+        title="Password Reset"
         breadcrumbs={[
           { label: 'Home', href: '/app/overview' },
           { label: 'Administration', href: '/app/admin/users' },
@@ -108,7 +101,7 @@ export const UserPasswordResetPage: React.FC = () => {
               size="sm"
               variant="secondary"
               onClick={() => navigate('/app/admin/users')}
-              icon={<Users size={14} />}
+              icon={<Users size={13} />}
             >
               Directory
             </Button>
@@ -117,7 +110,7 @@ export const UserPasswordResetPage: React.FC = () => {
               variant="secondary"
               onClick={loadUsers}
               disabled={isLoading}
-              icon={<RefreshCw size={13} className={isLoading ? 'animate-spin' : ''} />}
+              icon={<RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />}
             >
               Refresh
             </Button>
@@ -125,17 +118,12 @@ export const UserPasswordResetPage: React.FC = () => {
         }
       />
 
-      {/* Searchable User Selector Toolbar */}
+      {/* Target User Selector Panel */}
       <div className="p-4 bg-surface-card border border-border-subtle rounded-[6px] shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <label className="text-xs font-bold text-text-primary uppercase tracking-wider block">
-              Target Employee Selection
-            </label>
-            <p className="text-[11px] text-text-muted mt-0.5">
-              Search by name, @username, punch card ID, or email to reset credentials.
-            </p>
-          </div>
+          <label className="text-xs font-bold text-text-primary uppercase tracking-wider">
+            Select Employee
+          </label>
           <div className="w-full sm:w-80">
             <SearchableUserSelect
               users={users}
@@ -146,14 +134,14 @@ export const UserPasswordResetPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Locked Accounts Quick-Select Alert Pill Bar */}
+        {/* Locked Accounts Quick-Select Pills */}
         {lockedUsers.length > 0 && (
           <div className="pt-2 border-t border-border-subtle flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-amber-700 font-semibold flex items-center gap-1">
-              <AlertTriangle size={13} className="text-amber-600" />
-              <span>{lockedUsers.length} Locked Account{lockedUsers.length > 1 ? 's' : ''}:</span>
+            <span className="text-amber-600 font-semibold flex items-center gap-1 text-[11px]">
+              <AlertTriangle size={12} className="text-amber-500" />
+              <span>{lockedUsers.length} Locked:</span>
             </span>
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1">
               {lockedUsers.map((lu) => (
                 <button
                   key={lu.id}
@@ -161,10 +149,10 @@ export const UserPasswordResetPage: React.FC = () => {
                   onClick={() => handleSelectUser(lu.id)}
                   className={`px-2 py-0.5 rounded-[3px] text-[11px] font-mono font-medium transition-colors cursor-pointer flex items-center gap-1 border ${
                     selectedUserId === lu.id
-                      ? 'bg-amber-600 text-white border-amber-700 shadow-xs'
-                      : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
+                      ? 'bg-amber-500 text-white border-amber-600 shadow-2xs'
+                      : 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 border-amber-500/20'
                   }`}
-                  title="Click to select this locked account"
+                  title="Click to select"
                 >
                   <Lock size={10} />
                   <span>@{lu.username}</span>
@@ -176,92 +164,62 @@ export const UserPasswordResetPage: React.FC = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Form Column (8 cols) */}
-        <div className="lg:col-span-8 space-y-4">
-          {targetUser ? (
-            <>
-              {/* Target User Overview Card */}
-              <div className="p-4 bg-surface-card border border-border-subtle rounded-[6px] shadow-xs flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-11 h-11 rounded-full bg-brand-accent/15 text-brand-accent font-bold text-base flex items-center justify-center shrink-0">
-                    {targetUser.fullName?.charAt(0).toUpperCase() || 'U'}
-                  </div>
-                  <div className="min-w-0 truncate">
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-sm font-bold text-text-primary truncate">{targetUser.fullName}</h2>
-                      <span className="font-mono text-xs text-text-muted">(@{targetUser.username})</span>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
-                      {targetUser.employeeCardNo && (
-                        <span className="px-1.5 py-0.2 rounded bg-surface-muted text-brand-accent font-mono text-[10px] font-bold border border-border-subtle">
-                          Card ID: {targetUser.employeeCardNo}
-                        </span>
-                      )}
-                      <span className="text-text-muted text-[11px]">{targetUser.email}</span>
-                      {targetUser.designation && (
-                        <span className="text-text-muted text-[11px]">• {targetUser.designation}</span>
-                      )}
-                    </div>
-                  </div>
+      {/* Main Workspace Body */}
+      {targetUser ? (
+        <div className="space-y-4">
+          {/* Employee Identity Hero Card */}
+          <div className="p-4 bg-surface-card border border-border-subtle rounded-[6px] shadow-xs flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-full bg-brand-accent/10 border border-brand-accent/25 text-brand-accent font-bold text-sm flex items-center justify-center shrink-0">
+                {targetUser.fullName?.charAt(0).toUpperCase() || 'U'}
+              </div>
+              <div className="min-w-0 truncate">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xs font-bold text-text-primary truncate">{targetUser.fullName}</h2>
+                  <span className="font-mono text-[11px] text-text-muted">(@{targetUser.username})</span>
                 </div>
-
-                <div className="shrink-0 flex flex-col items-end gap-1">
-                  <Badge variant={targetUser.status === 'LOCKED' ? 'warning' : 'success'}>
-                    {targetUser.status}
-                  </Badge>
-                  {targetUser.status === 'LOCKED' && (
-                    <span className="text-[10px] text-status-warning flex items-center gap-1 font-medium">
-                      <Lock size={10} /> Locked Account
+                <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px]">
+                  {targetUser.employeeCardNo && (
+                    <span className="px-1.5 py-0.2 rounded bg-surface-base text-brand-accent font-mono text-[10px] font-bold border border-border-subtle">
+                      Card: {targetUser.employeeCardNo}
                     </span>
+                  )}
+                  <span className="text-text-muted">{targetUser.email}</span>
+                  {targetUser.designation && (
+                    <span className="text-text-muted">• {targetUser.designation}</span>
                   )}
                 </div>
               </div>
-
-              {/* Reset Password Form */}
-              <UserPasswordResetForm
-                userId={targetUser.id}
-                username={targetUser.username}
-                onSuccess={() => {
-                  loadUsers();
-                }}
-                onCancel={() => navigate('/app/admin/users')}
-              />
-            </>
-          ) : (
-            <div className="p-8 bg-surface-card border border-border-subtle rounded-[6px] shadow-xs text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-brand-accent/10 text-brand-accent flex items-center justify-center mx-auto">
-                <KeyRound size={22} />
-              </div>
-              <h3 className="text-sm font-bold text-text-primary">No Employee Selected</h3>
-              <p className="text-xs text-text-muted max-w-md mx-auto">
-                Please search and select an employee from the dropdown above, or select a locked account to reset their password.
-              </p>
             </div>
-          )}
-        </div>
 
-        {/* Right Info Column (4 cols) */}
-        <div className="lg:col-span-4 space-y-4">
-          <div className="p-4 bg-surface-card border border-border-subtle rounded-[6px] shadow-xs space-y-3">
-            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldCheck size={14} className="text-brand-accent" />
-              <span>Security Protocols</span>
-            </h4>
-            <div className="space-y-2 text-xs text-text-muted leading-relaxed">
-              <p>
-                <strong>Administrative Reset Only:</strong> For factory and data security, employee password resets are managed directly by authorized system administrators.
-              </p>
-              <p>
-                <strong>Password Policy:</strong> Minimum 8 characters with alphanumeric credentials.
-              </p>
-              <p>
-                <strong>Audit Trail:</strong> All password updates and unlock actions are recorded with admin identifier and timestamp.
-              </p>
+            <div className="shrink-0 flex items-center gap-1.5">
+              <Badge variant={targetUser.status === 'LOCKED' ? 'warning' : 'success'}>
+                {targetUser.status}
+              </Badge>
             </div>
           </div>
+
+          {/* Reset Password Form */}
+          <UserPasswordResetForm
+            userId={targetUser.id}
+            username={targetUser.username}
+            onSuccess={() => {
+              loadUsers();
+            }}
+            onCancel={() => navigate('/app/admin/users')}
+          />
         </div>
-      </div>
+      ) : (
+        <div className="p-10 bg-surface-card border border-border-subtle rounded-[6px] shadow-xs text-center space-y-2.5">
+          <div className="w-10 h-10 rounded-full bg-brand-accent/10 text-brand-accent flex items-center justify-center mx-auto">
+            <KeyRound size={18} />
+          </div>
+          <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">No Employee Selected</h3>
+          <p className="text-[11px] text-text-muted max-w-sm mx-auto">
+            Select an employee from the dropdown above to reset password credentials.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
