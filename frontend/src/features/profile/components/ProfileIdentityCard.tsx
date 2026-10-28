@@ -1,186 +1,212 @@
 /**
  * =============================================================================
- * [EN] Executive Profile Identity & Authorization Card (ProfileIdentityCard.tsx)
- * [BN] এক্সিকিউটিভ প্রোফাইল আইডেন্টিটি ও অনুমতি কার্ড
+ * [EN] Executive Profile Identity Card Component (ProfileIdentityCard.tsx)
+ * [BN] এক্সিকিউটিভ প্রোফাইল আইডেন্টিটি কার্ড কম্পোনেন্ট (ProfileIdentityCard.tsx)
  * =============================================================================
- * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens), Rule 21 (Components)
- * [BN] কর্পোরেট ক্রেডেনশিয়াল, ডিপার্টমেন্ট, পারমিশন বিবরণ ও সুরক্ষিত সেশন সাইনআউট কার্ড।
+ * [EN] Rules: Rule 05 (Zero Static Data), Rule 07 (<300 lines), Rule 15 (Bilingual),
+ *             Rule 20 (Tokens), Rule 29 (Minimal Text)
+ * [BN] ১০০% ডাইনামিক ডেটাবেজ-চালিত ইউজারের প্রাতিষ্ঠানিক তথ্য ও অ্যাকাউন্ট বিবরণী।
  */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Mail,
+  Phone,
   Copy,
   Check,
-  Shield,
   Building2,
-  Lock,
-  LogOut,
-  BadgeCheck,
+  IdCard,
+  UserCheck,
+  Shield,
+  Clock,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store';
+import { Badge } from '@/components/ui/Badge';
 
-/**
- * [EN] Corporate Profile Identity & Authorization Card Component.
- * [BN] ব্যবহারকারীর কর্পোরেট পরিচয় ও সিস্টেম অথোরাইজেশন কার্ড।
- */
 export const ProfileIdentityCard: React.FC = () => {
-  const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
-  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const { user } = useAuthStore();
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
-  const copyToClipboard = (text: string, fieldName: string) => {
-    if (!navigator.clipboard) return;
+  const copyToClipboard = (text: string, key: string) => {
+    if (!navigator.clipboard || !text) return;
     navigator.clipboard.writeText(text);
-    setCopiedField(fieldName);
-    toast.success(`${fieldName} copied to clipboard`);
-    setTimeout(() => setCopiedField(null), 2000);
+    setCopiedKey(key);
+    toast.info('Copied');
+    setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const handleSignOut = () => {
-    logout();
-    navigate('/login', { replace: true });
-  };
+  const userRoles = user?.roles && user.roles.length > 0 ? user.roles : ['ROLE_USER'];
 
-  const userEmail = user?.email || `${user?.username || 'admin'}@garmentiqerp.com`;
-  const tenantId = user?.tenantId || '019472ba-0e00-7000-8800-000000000000';
+  const formatDate = (isoString?: string) => {
+    if (!isoString) return '—';
+    try {
+      return new Date(isoString).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return isoString;
+    }
+  };
 
   return (
-    <div className="space-y-5">
-      {/* =====================================================================
-       * [EN] Corporate Credentials Card
-       * [BN] কর্পোরেট ক্রেডেনশিয়াল কার্ড
-       * ===================================================================== */}
-      <div className="bg-surface-card border border-border-subtle rounded-[8px] p-5 shadow-xs space-y-4">
+    <div className="space-y-4">
+      {/* 1. Account Details Grid */}
+      <div className="bg-surface-card border border-border-subtle rounded-[6px] p-5 shadow-xs space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
-          <h2 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
-            <BadgeCheck size={14} className="text-brand-accent" />
-            <span>Corporate Credentials</span>
-          </h2>
-          <span className="text-[10px] font-mono text-text-muted">Verified Enterprise Profile</span>
+          <div className="flex items-center gap-2">
+            <UserCheck size={15} className="text-brand-accent" />
+            <h2 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+              Corporate Credentials
+            </h2>
+          </div>
+          <Badge variant={user?.status === 'ACTIVE' ? 'success' : 'warning'}>
+            {user?.status || 'ACTIVE'}
+          </Badge>
         </div>
 
-        {/* Credential Fields List */}
-        <div className="space-y-3 text-xs">
-          {/* Corporate Email */}
-          <div className="p-2.5 rounded-[4px] bg-surface-muted/40 border border-border-subtle/70 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <Mail size={15} className="text-brand-accent shrink-0" />
-              <div className="min-w-0">
-                <span className="text-[10px] text-text-muted font-medium block">Corporate Email</span>
-                <span className="font-semibold text-text-primary truncate block">{userEmail}</span>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => copyToClipboard(userEmail, 'Email')}
-              className="p-1 rounded-[3px] text-text-muted hover:text-text-primary hover:bg-surface-card transition-colors cursor-pointer shrink-0"
-              title="Copy Email"
-            >
-              {copiedField === 'Email' ? <Check size={13} className="text-status-success" /> : <Copy size={13} />}
-            </button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          {/* Full Name */}
+          <div className="p-3 rounded-[4px] bg-surface-base border border-border-subtle space-y-0.5">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold block">
+              Full Name
+            </span>
+            <span className="font-semibold text-text-primary text-xs block">
+              {user?.fullName || user?.username || '—'}
+            </span>
           </div>
 
-          {/* Employee Code & Department */}
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="p-2.5 rounded-[4px] bg-surface-muted/40 border border-border-subtle/70">
-              <span className="text-[10px] text-text-muted font-medium block">Employee Code</span>
-              <span className="font-mono font-bold text-text-primary text-xs mt-0.5 block">255776</span>
-            </div>
-            <div className="p-2.5 rounded-[4px] bg-surface-muted/40 border border-border-subtle/70">
-              <span className="text-[10px] text-text-muted font-medium block">Department</span>
-              <span className="font-semibold text-text-primary text-xs mt-0.5 truncate block">Technology & IT</span>
-            </div>
+          {/* Username */}
+          <div className="p-3 rounded-[4px] bg-surface-base border border-border-subtle space-y-0.5">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold block">
+              Username
+            </span>
+            <span className="font-mono font-semibold text-text-primary text-xs block">
+              @{user?.username || '—'}
+            </span>
           </div>
 
-          {/* Assigned Roles & Permissions */}
-          <div className="p-2.5 rounded-[4px] bg-surface-muted/40 border border-border-subtle/70 space-y-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] text-text-muted font-medium flex items-center gap-1.5">
-                <Shield size={12} className="text-brand-accent" />
-                <span>System Authorizations</span>
+          {/* Email Address */}
+          <div className="p-3 rounded-[4px] bg-surface-base border border-border-subtle flex items-center justify-between gap-2">
+            <div className="min-w-0 space-y-0.5">
+              <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                <Mail size={11} className="text-brand-accent" />
+                <span>Email</span>
               </span>
-              <span className="text-[10px] font-mono text-status-success font-semibold">Tier 1 Full Access</span>
+              <span className="font-semibold text-text-primary text-xs truncate block">
+                {user?.email || '—'}
+              </span>
             </div>
-            <div className="flex flex-wrap gap-1 pt-1">
-              {(user?.roles && user.roles.length > 0 ? user.roles : ['ROLE_SUPER_ADMIN']).map((role) => (
-                <span
-                  key={role}
-                  className="px-2 py-0.5 rounded-[3px] text-[10px] font-mono font-bold tracking-wider bg-brand-accent/15 text-brand-accent border border-brand-accent/25 uppercase"
-                >
-                  {role.replace(/^ROLE_/, '').replace(/_/g, ' ')}
+            {user?.email && (
+              <button
+                type="button"
+                onClick={() => copyToClipboard(user.email, 'email')}
+                className="p-1 rounded text-text-muted hover:text-text-primary cursor-pointer shrink-0"
+                title="Copy email"
+              >
+                {copiedKey === 'email' ? <Check size={13} className="text-status-success" /> : <Copy size={13} />}
+              </button>
+            )}
+          </div>
+
+          {/* Phone Number */}
+          <div className="p-3 rounded-[4px] bg-surface-base border border-border-subtle space-y-0.5">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+              <Phone size={11} className="text-brand-accent" />
+              <span>Contact Phone</span>
+            </span>
+            <span className="font-mono text-text-primary text-xs block">
+              {user?.phone || 'Not Specified'}
+            </span>
+          </div>
+
+          {/* Corporate Designation */}
+          <div className="p-3 rounded-[4px] bg-surface-base border border-border-subtle space-y-0.5">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold block">
+              Designation
+            </span>
+            <span className="font-semibold text-text-primary text-xs block">
+              {user?.designation || 'Factory Operator'}
+            </span>
+          </div>
+
+          {/* Punch/RFID Card No */}
+          <div className="p-3 rounded-[4px] bg-surface-base border border-border-subtle space-y-0.5">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+              <IdCard size={11} className="text-brand-accent" />
+              <span>Employee Card ID</span>
+            </span>
+            <span className="font-mono font-bold text-text-primary text-xs block">
+              {user?.employeeCardNo || 'Not Assigned'}
+            </span>
+          </div>
+        </div>
+
+        {/* Factory Tenant Scope */}
+        <div className="p-3 rounded-[4px] bg-surface-base border border-border-subtle flex items-center justify-between gap-3 text-xs">
+          <div className="min-w-0 space-y-0.5">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+              <Building2 size={11} className="text-brand-accent" />
+              <span>Factory Tenant Scope</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-text-primary text-xs">
+                {user?.tenantName || 'Platform Root'}
+              </span>
+              {user?.tenantCode && (
+                <span className="px-1.5 py-0.2 rounded bg-surface-muted text-[10px] font-mono font-bold text-text-secondary border border-border-subtle">
+                  {user.tenantCode}
                 </span>
-              ))}
-              <span className="px-2 py-0.5 rounded-[3px] text-[10px] font-semibold bg-surface-card text-text-secondary border border-border-subtle">
-                BOM & Costing Approval
-              </span>
-              <span className="px-2 py-0.5 rounded-[3px] text-[10px] font-semibold bg-surface-card text-text-secondary border border-border-subtle">
-                Shop Floor Overwrite
-              </span>
+              )}
             </div>
           </div>
-
-          {/* Factory Tenant Scope */}
-          <div className="p-2.5 rounded-[4px] bg-surface-muted/40 border border-border-subtle/70 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <Building2 size={15} className="text-text-muted shrink-0" />
-              <div className="min-w-0">
-                <span className="text-[10px] text-text-muted font-medium block">Active Factory Tenant Scope</span>
-                <span className="font-mono text-text-primary text-[11px] truncate block">{tenantId}</span>
-              </div>
-            </div>
+          {user?.tenantId && (
             <button
               type="button"
-              onClick={() => copyToClipboard(tenantId, 'Tenant ID')}
-              className="p-1 rounded-[3px] text-text-muted hover:text-text-primary hover:bg-surface-card transition-colors cursor-pointer shrink-0"
-              title="Copy Tenant ID"
+              onClick={() => copyToClipboard(user.tenantId, 'tenantId')}
+              className="p-1 rounded text-text-muted hover:text-text-primary cursor-pointer shrink-0"
+              title="Copy Tenant UUID"
             >
-              {copiedField === 'Tenant ID' ? <Check size={13} className="text-status-success" /> : <Copy size={13} />}
+              {copiedKey === 'tenantId' ? <Check size={13} className="text-status-success" /> : <Copy size={13} />}
             </button>
+          )}
+        </div>
+
+        {/* Assigned Roles Strip */}
+        <div className="p-3 rounded-[4px] bg-surface-base border border-border-subtle space-y-1.5 text-xs">
+          <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+            <Shield size={11} className="text-brand-accent" />
+            <span>Assigned Security Roles</span>
+          </span>
+          <div className="flex flex-wrap gap-1.5 pt-0.5">
+            {userRoles.map((role) => (
+              <span
+                key={role}
+                className="px-2 py-0.5 rounded-[3px] text-[10px] font-mono font-bold tracking-wider bg-brand-accent/10 text-brand-accent border border-brand-accent/25 uppercase"
+              >
+                {role.replace(/^ROLE_/, '').replace(/_/g, ' ')}
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* =====================================================================
-       * [EN] Enterprise Session Security & Safe Sign Out
-       * [BN] এন্টারপ্রাইজ সেশন সিকিউরিটি ও নিরাপদ সাইন আউট কার্ড
-       * ===================================================================== */}
-      <div className="bg-surface-card border border-border-subtle rounded-[8px] p-5 shadow-xs space-y-3.5">
-        <div className="flex items-center justify-between pb-2.5 border-b border-border-subtle">
-          <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
-            <Lock size={13} className="text-status-success" />
-            <span>Session Protection</span>
-          </h3>
-          <span className="h-2 w-2 rounded-full bg-status-success" />
-        </div>
-
-        <div className="space-y-2 text-xs">
-          <div className="flex items-center justify-between py-1">
-            <span className="text-text-muted">Browser Session Anchor</span>
-            <span className="font-mono text-status-success font-semibold text-[11px]">Enforced (RFC 6265)</span>
-          </div>
-          <div className="flex items-center justify-between py-1 border-t border-border-subtle/50">
-            <span className="text-text-muted">Cross-Tab Realtime Sync</span>
-            <span className="font-mono text-brand-accent font-semibold text-[11px]">Broadcast Active</span>
-          </div>
-          <div className="flex items-center justify-between py-1 border-t border-border-subtle/50">
-            <span className="text-text-muted">Auto-Logout on Browser Exit</span>
-            <span className="font-mono text-status-success font-semibold text-[11px]">Enabled</span>
-          </div>
-        </div>
-
-        {/* Safe Sign Out Button Placed at Bottom of Security Card */}
-        <div className="pt-2">
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-status-danger bg-status-danger-bg hover:bg-status-danger/15 border border-status-danger-border rounded-[4px] transition-colors cursor-pointer shadow-2xs"
-          >
-            <LogOut size={14} />
-            <span>Logout</span>
-          </button>
+      {/* 2. Audit Timestamps */}
+      <div className="bg-surface-card border border-border-subtle rounded-[6px] p-4 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-text-muted">
+          <span className="flex items-center gap-1.5 font-mono text-[11px]">
+            <Clock size={12} className="text-brand-accent shrink-0" />
+            <span>Created: {formatDate(user?.createdAt)}</span>
+          </span>
+          {user?.updatedAt && (
+            <span className="font-mono text-[11px]">
+              Last Modified: {formatDate(user.updatedAt)}
+            </span>
+          )}
         </div>
       </div>
     </div>

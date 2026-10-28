@@ -135,7 +135,7 @@ export const SearchableRoleSelect: React.FC<SearchableRoleSelectProps> = ({
           </div>
 
           {/* Filtered Roles List */}
-          <div className="max-h-60 overflow-y-auto divide-y divide-border-subtle scrollbar-thin">
+          <div className="max-h-60 overflow-y-auto divide-y divide-border-subtle/40 scrollbar-thin">
             {filteredRoles.length === 0 ? (
               <div className="p-4 text-center text-xs text-text-muted">
                 No roles found matching &ldquo;<span className="text-text-primary font-semibold">{searchQuery}</span>&rdquo;

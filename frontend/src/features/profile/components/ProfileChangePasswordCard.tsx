@@ -3,11 +3,12 @@
  * [EN] Profile Password Change Card Component (ProfileChangePasswordCard.tsx)
  * [BN] প্রোফাইল পাসওয়ার্ড পরিবর্তন কার্ড কম্পোনেন্ট (ProfileChangePasswordCard.tsx)
  * =============================================================================
- * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens), Rule 25 (Validation)
+ * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens),
+ *             Rule 28 (Single-word buttons), Rule 29 (Minimal Text)
  * [BN] ব্যবহারকারীর বর্তমান পাসওয়ার্ড ভেরিফাই করে নতুন পাসওয়ার্ড সেট করার স্বয়ংসম্পূর্ণ কার্ড।
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   KeyRound,
   Eye,
@@ -15,74 +16,76 @@ import {
   Check,
   AlertCircle,
   ShieldCheck,
-  Lock,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui';
 import { userService } from '@/features/users/services/userService';
 
-/**
- * [EN] Profile Change Password Card Component
- * [BN] ব্যবহারকারীর ব্যক্তিগত পাসওয়ার্ড পরিবর্তন কার্ড
- */
 export const ProfileChangePasswordCard: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
-  const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
+  const [showCurrent, setShowCurrent] = useState<boolean>(false);
+  const [showNew, setShowNew] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // [EN] Basic password strength computation / [BN] পাসওয়ার্ড শক্তি মূল্যায়ন
-  const getPasswordStrength = (pwd: string): { score: number; label: string; color: string } => {
-    if (!pwd) return { score: 0, label: '', color: '' };
+  const strengthScore = useMemo(() => {
+    if (!newPassword) return 0;
     let score = 0;
-    if (pwd.length >= 8) score += 1;
-    if (/[A-Z]/.test(pwd)) score += 1;
-    if (/[0-9]/.test(pwd)) score += 1;
-    if (/[^A-Za-z0-9]/.test(pwd)) score += 1;
+    if (newPassword.length >= 8) score += 1;
+    if (/[A-Z]/.test(newPassword) && /[0-9]/.test(newPassword)) score += 1;
+    if (/[^A-Za-z0-9]/.test(newPassword)) score += 1;
+    return score;
+  }, [newPassword]);
 
-    if (score <= 1) return { score: 25, label: 'Weak', color: 'bg-rose-500 text-rose-600' };
-    if (score === 2) return { score: 50, label: 'Fair', color: 'bg-amber-500 text-amber-600' };
-    if (score === 3) return { score: 75, label: 'Good', color: 'bg-sky-500 text-sky-600' };
-    return { score: 100, label: 'Strong', color: 'bg-emerald-500 text-emerald-600' };
-  };
+  const strengthConfig = useMemo(() => {
+    switch (strengthScore) {
+      case 3:
+        return { label: 'Strong', color: 'bg-emerald-500', text: 'text-emerald-500' };
+      case 2:
+        return { label: 'Medium', color: 'bg-amber-500', text: 'text-amber-500' };
+      case 1:
+        return { label: 'Weak', color: 'bg-rose-500', text: 'text-rose-500' };
+      default:
+        return { label: '', color: 'bg-border-subtle', text: 'text-text-muted' };
+    }
+  }, [strengthScore]);
 
-  const strength = getPasswordStrength(newPassword);
   const isMatched = newPassword && confirmPassword && newPassword === confirmPassword;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!currentPassword) {
-      toast.error('Please enter your current password.');
+      toast.error('Enter current password');
       return;
     }
 
     if (newPassword.length < 8) {
-      toast.error('New password must be at least 8 characters long.');
+      toast.error('Minimum 8 characters required');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error('New password and confirmation do not match.');
+      toast.error('Passwords do not match');
       return;
     }
 
     if (currentPassword === newPassword) {
-      toast.error('New password cannot be identical to the current password.');
+      toast.error('New password must differ from current password');
       return;
     }
 
     setIsSubmitting(true);
     try {
       await userService.changePassword(currentPassword, newPassword);
-      toast.success('Your password has been changed successfully.');
+      toast.success('Password updated successfully');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err: unknown) {
-      const msg = (err as { message?: string })?.message || 'Failed to change password. Check your current password.';
+      const msg = (err as { message?: string })?.message || 'Password update failed';
       toast.error(msg);
     } finally {
       setIsSubmitting(false);
@@ -90,130 +93,128 @@ export const ProfileChangePasswordCard: React.FC = () => {
   };
 
   return (
-    <div className="bg-surface-card border border-border-subtle rounded-[8px] p-5 shadow-xs space-y-4">
+    <div className="bg-surface-card border border-border-subtle rounded-[6px] p-5 shadow-xs space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
-        <h2 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
-          <KeyRound size={14} className="text-brand-accent" />
-          <span>Change Account Password</span>
-        </h2>
+        <div className="flex items-center gap-2">
+          <KeyRound size={15} className="text-brand-accent" />
+          <h2 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+            Change Password
+          </h2>
+        </div>
         <span className="text-[10px] font-mono text-text-muted flex items-center gap-1">
-          <ShieldCheck size={12} className="text-status-success" /> End-to-End Encrypted
+          <ShieldCheck size={12} className="text-brand-accent" />
+          <span>Minimum 8 Characters</span>
         </span>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
-        {/* Current Password Field */}
+      <form onSubmit={handleSubmit} className="space-y-3.5">
+        {/* Current Password */}
         <div className="space-y-1">
-          <label className="block text-[11px] font-semibold text-text-secondary">
-            Current Password <span className="text-status-danger">*</span>
+          <label className="block text-xs font-semibold text-text-primary">
+            Current Password
           </label>
           <div className="relative">
             <input
-              type={showCurrentPassword ? 'text' : 'password'}
+              type={showCurrent ? 'text' : 'password'}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               placeholder="Enter current password"
               required
-              className="w-full pl-3 pr-10 py-1.5 text-xs bg-surface-muted/40 border border-border-subtle rounded-[4px] text-text-primary focus:border-brand-accent focus:outline-none shadow-2xs font-mono"
+              className="w-full pl-3 pr-10 py-2 text-xs bg-surface-base border border-border-subtle rounded-[4px] text-text-primary focus:border-brand-accent focus:outline-none shadow-2xs font-mono"
             />
             <button
               type="button"
-              onClick={() => setShowCurrentPassword((prev) => !prev)}
+              onClick={() => setShowCurrent((p) => !p)}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary cursor-pointer p-0.5"
             >
-              {showCurrentPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+              {showCurrent ? <EyeOff size={13} /> : <Eye size={13} />}
             </button>
           </div>
         </div>
 
-        {/* New Password Field */}
+        {/* New Password */}
         <div className="space-y-1">
-          <label className="block text-[11px] font-semibold text-text-secondary">
-            New Password <span className="text-status-danger">*</span>
+          <label className="block text-xs font-semibold text-text-primary">
+            New Password
           </label>
           <div className="relative">
             <input
-              type={showNewPassword ? 'text' : 'password'}
+              type={showNew ? 'text' : 'password'}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Minimum 8 characters"
+              placeholder="Enter 8+ characters"
               required
               minLength={8}
-              className="w-full pl-3 pr-10 py-1.5 text-xs bg-surface-muted/40 border border-border-subtle rounded-[4px] text-text-primary focus:border-brand-accent focus:outline-none shadow-2xs font-mono"
+              className="w-full pl-3 pr-10 py-2 text-xs bg-surface-base border border-border-subtle rounded-[4px] text-text-primary focus:border-brand-accent focus:outline-none shadow-2xs font-mono"
             />
             <button
               type="button"
-              onClick={() => setShowNewPassword((prev) => !prev)}
+              onClick={() => setShowNew((p) => !p)}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary cursor-pointer p-0.5"
             >
-              {showNewPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+              {showNew ? <EyeOff size={13} /> : <Eye size={13} />}
             </button>
           </div>
 
-          {/* Strength Meter Bar */}
+          {/* Live Strength Meter */}
           {newPassword && (
-            <div className="pt-1 space-y-1">
-              <div className="h-1 w-full bg-surface-muted rounded-full overflow-hidden">
-                <div
-                  className={`h-full transition-all duration-300 ${strength.color.split(' ')[0]}`}
-                  style={{ width: `${strength.score}%` }}
-                />
+            <div className="pt-1 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5 flex-1">
+                <span className={`h-1 flex-1 rounded-full transition-all ${strengthScore >= 1 ? strengthConfig.color : 'bg-border-subtle'}`} />
+                <span className={`h-1 flex-1 rounded-full transition-all ${strengthScore >= 2 ? strengthConfig.color : 'bg-border-subtle'}`} />
+                <span className={`h-1 flex-1 rounded-full transition-all ${strengthScore >= 3 ? strengthConfig.color : 'bg-border-subtle'}`} />
               </div>
-              <div className="flex justify-between text-[10px]">
-                <span className="text-text-muted">Password Strength:</span>
-                <span className={`font-semibold ${strength.color.split(' ')[1]}`}>
-                  {strength.label}
-                </span>
-              </div>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${strengthConfig.text}`}>
+                {strengthConfig.label}
+              </span>
             </div>
           )}
         </div>
 
-        {/* Confirm Password Field */}
+        {/* Confirm Password */}
         <div className="space-y-1">
-          <label className="block text-[11px] font-semibold text-text-secondary">
-            Confirm New Password <span className="text-status-danger">*</span>
+          <label className="block text-xs font-semibold text-text-primary">
+            Confirm Password
           </label>
-          <input
-            type={showNewPassword ? 'text' : 'password'}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Re-enter matching new password"
-            required
-            className={`w-full px-3 py-1.5 text-xs bg-surface-muted/40 border rounded-[4px] text-text-primary focus:outline-none shadow-2xs font-mono ${
-              confirmPassword && !isMatched
-                ? 'border-rose-400 focus:border-rose-500'
-                : isMatched
-                ? 'border-emerald-400 focus:border-emerald-500'
-                : 'border-border-subtle focus:border-brand-accent'
-            }`}
-          />
-          {confirmPassword && (
-            <div className="text-[10px] flex items-center gap-1 pt-0.5">
-              {isMatched ? (
-                <span className="text-emerald-600 flex items-center gap-1">
-                  <Check size={11} strokeWidth={3} /> Passwords match
-                </span>
-              ) : (
-                <span className="text-rose-600 flex items-center gap-1">
-                  <AlertCircle size={11} /> Passwords do not match
-                </span>
-              )}
-            </div>
-          )}
+          <div className="relative">
+            <input
+              type={showNew ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter matching password"
+              required
+              className={`w-full pl-3 pr-8 py-2 text-xs bg-surface-base border rounded-[4px] text-text-primary focus:outline-none shadow-2xs font-mono transition-colors ${
+                confirmPassword && !isMatched
+                  ? 'border-rose-400 focus:border-rose-500'
+                  : isMatched
+                  ? 'border-emerald-400 focus:border-emerald-500'
+                  : 'border-border-subtle focus:border-brand-accent'
+              }`}
+            />
+            {confirmPassword && (
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2">
+                {isMatched ? (
+                  <Check size={14} className="text-emerald-500" />
+                ) : (
+                  <AlertCircle size={14} className="text-rose-500" />
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Submit Action */}
-        <div className="pt-2">
-          <button
+        {/* Actions */}
+        <div className="flex items-center justify-end pt-2 border-t border-border-subtle">
+          <Button
             type="submit"
             disabled={isSubmitting || !isMatched || newPassword.length < 8 || !currentPassword}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-white bg-brand-accent hover:bg-brand-accent-hover rounded-[4px] transition-colors cursor-pointer shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+            variant="primary"
+            size="sm"
+            icon={<KeyRound size={13} />}
           >
-            <Lock size={13} />
-            <span>{isSubmitting ? 'Updating' : 'Update'}</span>
-          </button>
+            {isSubmitting ? 'Updating' : 'Update'}
+          </Button>
         </div>
       </form>
     </div>
