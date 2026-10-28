@@ -16,6 +16,8 @@
 - **👨‍💻 আরিফুল ইসলাম**: Tech Lead & Backend Specialist — Java 21, Spring Boot, PostgreSQL 17
 - **👩‍💻 সাদিয়া জাহান**: Senior Frontend & UI/UX Specialist — React 19, TypeScript, Tailwind CSS v4
 - **👩‍🔬 ফারহানা চৌধুরী**: Lead QA & Security Gatekeeper — জিরো এরর অডিট ও কোয়ালিটি গেট
+- **👩‍💼 নাসরিন সুলতানা**: Lead Technical Writer & Documentation Specialist — এসআরএস, বিআরডি ও ডকস
+- **👨‍💻 মাহমুদুল হাসান**: Lead DevOps & IoT/RFID Engineer — ডকার, আরএফআইডি ও ইনফ্রাস্ট্রাকচার
 
 ---
 
@@ -298,6 +300,7 @@
   - 👩‍💻 **সাদিয়া জাহান (Senior Frontend Engineer & UI/UX)**: *"রিয়্যাক্ট ১৯, ভাইট ৬, ইউজার/ক্লায়েন্ট/রোল টেবিলে ফ্রেশ এম্পটি স্টেট ও ইউনিফর্ম আইকন অ্যাকশন বাটনসহ ইউআই শতভাগ প্রস্তুত।"*
   - 👩‍🔬 **ফারহানা চৌধুরী (Lead QA & Security Gatekeeper)**: *"ডাটাবেজ ইন্টিগ্রিটি চেক, সুপারএডমিন লগইন ভ্যালিডেশন ও সিকিউরিটি গেটকিপিং সফলভাবে উত্তীর্ণ। জিরো এরর।"*
   - 👩‍💼 **নাসরিন সুলতানা (Lead Technical Writer & Documentation Specialist)**: *"ডোমেন ০০-এর ফাউন্ডেশন এসআরএস, বিআরডি, এপিআই কন্ট্রাক্ট ডকস ও সেন্ট্রাল ডকুমেন্টেশন পোর্টাল ১০০% সিঙ্ক ও সিলগালা করা হলো।"*
+  - 👨‍💻 **মাহমুদুল হাসান (Lead DevOps & IoT/RFID Engineer)**: *"ডকার কন্টেইনারাইজেশন, নেটওয়ার্কিং, পোস্টগ্রেস ১৭ ভলিউম পারসিসটেন্স, রেডিস ক্যাশ এবং হাইব্রিড ডেপ্লয়মেন্ট ইনফ্রাস্ট্রাকচার ১০০% ভেরিফাইড ও সিলগালা করা হলো।"*
 - **ডোমেন ০০ বর্তমান স্ট্যাটাস**: 🟢 **১০০% কমপ্লিট ও সম্পূর্ণ সিলগালা (100% SEALED & PRODUCTION READY)**।
 - **পরবর্তী সক্রিয় ডোমেন**: **`docs/management/step-tracking/STEP_TRACKER_DOMAIN_01_MERCHANDISING.md`** (Domain 01: Merchandising, Costing & Buyer Order Processing)।
 
