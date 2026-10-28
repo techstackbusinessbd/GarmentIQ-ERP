@@ -3,7 +3,6 @@ package com.garments.erp.tenant.service;
 import com.garments.erp.auth.repository.RoleRepository;
 import com.garments.erp.tenant.dto.CreateTenantRequest;
 import com.garments.erp.tenant.dto.TenantDto;
-import com.garments.erp.tenant.service.TenantBootstrapService;
 import com.garments.erp.tenant.entity.Tenant;
 import com.garments.erp.tenant.repository.TenantRepository;
 import com.garments.erp.user.repository.UserRepository;
@@ -17,11 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
