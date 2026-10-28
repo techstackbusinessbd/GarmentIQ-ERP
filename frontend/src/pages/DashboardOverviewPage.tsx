@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store';
+import { isPlatformSuperAdmin } from '@/routes';
 import { WidgetMetricCard, PageHeader, Button, Badge } from '@/components/ui';
 import { clientService } from '@/features/clients';
 import { userService } from '@/features/users';
@@ -39,6 +40,7 @@ interface PlatformStats {
  */
 export const DashboardOverviewPage: React.FC = () => {
   const { user } = useAuthStore();
+  const isSuperAdmin = isPlatformSuperAdmin(user);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [stats, setStats] = useState<PlatformStats>({
     tenantsCount: 0,
@@ -57,7 +59,9 @@ export const DashboardOverviewPage: React.FC = () => {
     setIsRefreshing(true);
     try {
       const [tenants, users, roles, permissions] = await Promise.all([
-        clientService.getAllTenants().catch(() => []),
+        isPlatformSuperAdmin(useAuthStore.getState().user)
+          ? clientService.getAllTenants().catch(() => [])
+          : Promise.resolve([]),
         userService.getUsers().catch(() => []),
         roleService.getRoles().catch(() => []),
         permissionService.getAllPermissions().catch(() => []),
@@ -67,7 +71,7 @@ export const DashboardOverviewPage: React.FC = () => {
       const lockedUsers = users.filter((u: { status: string }) => u.status === 'LOCKED').length;
 
       setStats({
-        tenantsCount: tenants.length,
+        tenantsCount: isPlatformSuperAdmin(useAuthStore.getState().user) ? tenants.length : 1,
         usersCount: users.length,
         activeUsersCount: activeUsers,
         lockedUsersCount: lockedUsers,
@@ -124,9 +128,9 @@ export const DashboardOverviewPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <WidgetMetricCard
           id="registered-tenants"
-          title="Factory Tenants"
-          value={`${stats.tenantsCount} Org`}
-          subtitle="Registered Factory Groups"
+          title={isSuperAdmin ? 'Factory Tenants' : 'Tenant Workspace'}
+          value={isSuperAdmin ? `${stats.tenantsCount} Org` : (user?.tenantCode || 'STANDARD GROUP')}
+          subtitle={isSuperAdmin ? 'Registered Factory Groups' : 'Factory Workspace'}
           icon={<Building2 size={16} />}
           accentVariant="primary"
           badge={{ label: 'Active', variant: 'success' }}

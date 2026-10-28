@@ -19,6 +19,8 @@ export interface UserMasterDetailMatrixTableProps {
   readonly roleBasePermissions: ReadonlySet<string>;
   readonly customGrants: ReadonlySet<string>;
   readonly isSuperAdmin: boolean;
+  readonly collapsedModuleIds?: ReadonlySet<string>;
+  readonly onToggleModuleCollapse?: (moduleId: string) => void;
   readonly onToggleAction: (code: string) => void;
   readonly onToggleMenu: (menuCodes: readonly string[], shouldEnable: boolean) => void;
   readonly onResetModule: (allCodes: readonly string[]) => void;
@@ -29,19 +31,26 @@ export const UserMasterDetailMatrixTable: React.FC<UserMasterDetailMatrixTablePr
   roleBasePermissions,
   customGrants,
   isSuperAdmin,
+  collapsedModuleIds: externalCollapsedIds,
+  onToggleModuleCollapse: externalToggleCollapse,
   onToggleAction,
   onToggleMenu,
   onResetModule,
 }) => {
-  const [collapsedModuleIds, setCollapsedModuleIds] = useState<Set<string>>(new Set());
+  const [internalCollapsedIds, setInternalCollapsedIds] = useState<Set<string>>(new Set());
+  const collapsedIds = externalCollapsedIds || internalCollapsedIds;
 
   const toggleModuleCollapse = (moduleId: string) => {
-    setCollapsedModuleIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(moduleId)) next.delete(moduleId);
-      else next.add(moduleId);
-      return next;
-    });
+    if (externalToggleCollapse) {
+      externalToggleCollapse(moduleId);
+    } else {
+      setInternalCollapsedIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(moduleId)) next.delete(moduleId);
+        else next.add(moduleId);
+        return next;
+      });
+    }
   };
 
   return (
@@ -49,27 +58,27 @@ export const UserMasterDetailMatrixTable: React.FC<UserMasterDetailMatrixTablePr
       <div className="overflow-x-auto scrollbar-thin">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-surface-muted/60 border-b border-border-subtle text-[11px] font-mono uppercase tracking-wider text-text-muted">
-              <th className="p-2.5 font-bold min-w-[200px]">
+            <tr className="bg-surface-muted/80 border-b border-border-subtle text-[11px] font-mono uppercase tracking-wider text-text-muted">
+              <th className="p-3 font-bold min-w-[220px]">
                 Feature
               </th>
-              <th className="p-2.5 font-bold text-center min-w-[100px]">
+              <th className="p-3 font-bold text-center min-w-[120px]">
                 Menu
               </th>
-              <th className="p-2.5 font-bold min-w-[220px]">
+              <th className="p-3 font-bold min-w-[240px]">
                 Actions
               </th>
-              <th className="p-2.5 font-bold min-w-[180px]">
+              <th className="p-3 font-bold min-w-[210px]">
                 Special
               </th>
-              <th className="p-2.5 font-bold min-w-[120px]">
+              <th className="p-3 font-bold text-right min-w-[130px]">
                 Status
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border-subtle/40 text-xs">
+          <tbody className="divide-y divide-border-subtle/50 text-xs">
             {modules.map((module) => {
-              const isCollapsed = collapsedModuleIds.has(module.id);
+              const isCollapsed = collapsedIds.has(module.id);
               return (
                 <React.Fragment key={module.id}>
                   {/* 1. Module Grouping Header */}
@@ -135,3 +144,5 @@ export const UserMasterDetailMatrixTable: React.FC<UserMasterDetailMatrixTablePr
     </div>
   );
 };
+
+export default UserMasterDetailMatrixTable;

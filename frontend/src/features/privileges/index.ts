@@ -23,6 +23,7 @@ export * from './components/MasterDetailDomainTabs';
 export * from './components/MasterDetailFilterBar';
 export * from './components/MasterDetailActionHeader';
 export * from './components/SearchableRoleSelect';
+export * from './components/SearchableUserSelect';
 export * from './components/MasterDetailClearanceRow';
 export * from './components/MasterDetailMatrixRow';
 export * from './components/MasterDetailFeatureRow';

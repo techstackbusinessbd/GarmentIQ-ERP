@@ -3,140 +3,174 @@
  * [EN] User Special Permissions Detail Action Header (UserDetailActionHeader.tsx)
  * [BN] ব্যবহারকারী বিশেষ অনুমতি ডিটেল অ্যাকশন হেডার কম্পোনেন্ট
  * =============================================================================
- * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens), Rule 21 (Components)
- * [BN] নির্বাচিত কর্মীর প্রোফাইল কার্ড, অ্যাসাইন করা রোলস, পারমিশন ওভাররাইড মেট্রিক্স এবং অ্যাকশন বাটনসমূহ।
+ * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens), Rule 28 (1-word), Rule 29 (Minimal Text)
+ * [BN] সার্চেবল ইউজার কম্বোবক্স, ক্লিয়ারেন্স চিপ ও সেভ টুলবার একীভূত হেডার (মিনিমাল মাইক্রোকপি)।
  */
 
 import React from 'react';
-import {
-  RotateCcw,
-  Save,
-  Shield,
-  ShieldAlert,
-  Sparkles,
-} from 'lucide-react';
+import { RotateCcw, Save, Ban } from 'lucide-react';
 import type { User } from '@/types';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { SearchableUserSelect } from './SearchableUserSelect';
 
 export interface UserDetailActionHeaderProps {
+  readonly users: readonly User[];
+  readonly selectedUserId: string;
+  readonly onSelectUserId: (userId: string) => void;
   readonly selectedUser?: User;
   readonly isSuperAdmin: boolean;
   readonly roleBaseCount: number;
   readonly customGrantsCount: number;
   readonly totalCatalogCount: number;
   readonly isDirty: boolean;
+  readonly dirtyUserIds?: ReadonlySet<string>;
+  readonly modifiedCount: number;
   readonly isSaving: boolean;
+  readonly userGrantsMap?: Record<string, number>;
   readonly onResetToDefaults: () => void;
+  readonly onClearOverrides: () => void;
+  readonly onDiscard: () => void;
   readonly onSaveOverrides: () => void;
 }
 
 export const UserDetailActionHeader: React.FC<UserDetailActionHeaderProps> = ({
+  users,
+  selectedUserId,
+  onSelectUserId,
   selectedUser,
   isSuperAdmin,
   roleBaseCount,
   customGrantsCount,
   totalCatalogCount,
   isDirty,
+  dirtyUserIds,
+  modifiedCount,
   isSaving,
+  userGrantsMap,
   onResetToDefaults,
+  onClearOverrides,
+  onDiscard,
   onSaveOverrides,
 }) => {
-  if (!selectedUser) {
-    return (
-      <div className="p-3 bg-surface-card border border-border-subtle rounded-[4px] shadow-2xs text-xs text-text-muted">
-        Select a user from the directory to inspect clearances.
-      </div>
-    );
-  }
+  if (!selectedUser) return null;
 
   const effectiveCount = isSuperAdmin ? totalCatalogCount : roleBaseCount + customGrantsCount;
-  const initial = selectedUser.fullName?.trim() ? selectedUser.fullName.trim().charAt(0).toUpperCase() : 'U';
+  const primaryRole = selectedUser.roles && selectedUser.roles.length > 0
+    ? selectedUser.roles[0]?.replace('ROLE_', '')
+    : 'USER';
 
   return (
-    <div className="bg-surface-card border border-border-subtle rounded-[4px] shadow-2xs p-3 space-y-2">
-      {/* Sleek Integrated Strip */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-[4px] bg-accent/15 text-accent border border-accent/25 flex items-center justify-center font-bold text-xs shrink-0">
-            {isSuperAdmin ? <Shield size={14} /> : initial}
-          </div>
+    <div className="p-3 bg-surface-card border border-border-subtle rounded-[4px] shadow-2xs space-y-2.5">
+      {/* Top Row: Searchable User Combobox Dropdown & Action CTAs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[10px] font-mono font-bold uppercase text-text-muted">
+            User:
+          </span>
 
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-xs font-bold text-text-primary tracking-tight truncate">
-                {selectedUser.fullName || selectedUser.username}
-              </h2>
-              <span className="text-[11px] font-mono text-text-muted">
-                (@{selectedUser.username})
-              </span>
-              {selectedUser.roles?.map((role) => (
-                <span
-                  key={role}
-                  className="px-1.5 py-0.2 rounded-[3px] text-[9px] font-mono font-semibold bg-surface-muted text-text-muted border border-border-subtle uppercase"
-                >
-                  {role.replace('ROLE_', '')}
-                </span>
-              ))}
-            </div>
+          <SearchableUserSelect
+            users={users}
+            selectedUserId={selectedUserId}
+            onSelectUserId={onSelectUserId}
+            dirtyUserIds={dirtyUserIds}
+            userGrantsMap={userGrantsMap}
+          />
 
-            {/* Inline subtle metrics */}
-            <div className="flex items-center gap-2 mt-0.5 text-[11px] text-text-muted flex-wrap font-mono">
-              <span>{roleBaseCount} base</span>
-              <span>•</span>
-              {customGrantsCount > 0 ? (
-                <span className="text-accent font-medium inline-flex items-center gap-1">
-                  <Sparkles size={10} />
-                  <span>+{customGrantsCount} custom</span>
-                </span>
-              ) : (
-                <span>0 custom</span>
-              )}
-              <span>•</span>
-              <span>
-                <strong className="text-accent font-sans tabular-nums">{effectiveCount}</strong>{' '}
-                <span className="text-[10px] text-text-muted">of</span>{' '}
-                <span className="text-text-secondary font-sans tabular-nums font-semibold">{totalCatalogCount}</span> total
-              </span>
-            </div>
-          </div>
+          <Badge variant="accent">
+            {primaryRole}
+          </Badge>
+
+          {customGrantsCount > 0 && (
+            <Badge variant="info">
+              +{customGrantsCount} Custom
+            </Badge>
+          )}
+
+          {isDirty && (
+            <Badge variant="warning" dot>
+              {modifiedCount} Modified
+            </Badge>
+          )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            icon={<RotateCcw size={11} className="text-text-muted" />}
-            disabled={isSuperAdmin || customGrantsCount === 0 || isSaving}
-            onClick={onResetToDefaults}
-            title="Clear all overrides and restore baseline"
-          >
-            Revert
-          </Button>
+        {/* Action CTAs using standard Button component */}
+        <div className="flex items-center gap-2 self-start sm:self-center">
+          {isDirty && (
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={<RotateCcw size={13} />}
+              onClick={onDiscard}
+              disabled={isSaving}
+            >
+              Discard
+            </Button>
+          )}
 
           <Button
-            type="button"
             variant="primary"
             size="sm"
-            icon={!isSaving ? <Save size={12} /> : undefined}
+            icon={<Save size={13} />}
             isLoading={isSaving}
-            disabled={isSuperAdmin || !isDirty || isSaving}
+            disabled={!isDirty || isSaving || isSuperAdmin}
             onClick={onSaveOverrides}
-            title="Save pending clearance overrides"
           >
             {isSaving ? 'Saving' : 'Save'}
           </Button>
         </div>
       </div>
 
-      {/* Super Admin Notice (Only when superadmin) */}
-      {isSuperAdmin && (
-        <div className="p-2 rounded-[3px] bg-accent/10 border border-accent/20 flex items-center gap-2 text-[11px] text-accent">
-          <ShieldAlert size={13} className="shrink-0" />
-          <span>Super Admin has permanent full clearances.</span>
+      {/* Bottom Row: Quick Presets & Coverage Bar (Ultra-Minimal) */}
+      <div className="pt-2 border-t border-border-subtle/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-1.5 text-xs text-text-muted">
+          <span className="text-[11px] font-medium text-text-muted">Clearance:</span>
+          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] bg-accent/10 border border-accent/20">
+            <span className="font-bold text-accent font-sans tabular-nums text-xs">
+              {effectiveCount}
+            </span>
+            <span className="text-[10px] text-text-muted font-sans px-0.5">of</span>
+            <span className="font-medium text-text-secondary font-sans tabular-nums text-xs">
+              {totalCatalogCount}
+            </span>
+            <span className="text-[10px] text-text-muted font-mono ml-0.5">
+              ({Math.round((effectiveCount / (totalCatalogCount || 1)) * 100)}%)
+            </span>
+          </div>
+
+          <span className="text-[10px] font-mono text-text-muted ml-1">
+            ({roleBaseCount} Base • {customGrantsCount} Custom)
+          </span>
         </div>
-      )}
+
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-[10px] font-mono text-text-muted uppercase font-bold mr-0.5">
+            Presets:
+          </span>
+
+          <Button
+            variant="outline"
+            size="xs"
+            icon={<RotateCcw size={10} className="text-text-muted" />}
+            onClick={onResetToDefaults}
+            disabled={isSuperAdmin || customGrantsCount === 0}
+          >
+            Defaults
+          </Button>
+
+          <Button
+            variant="outline"
+            size="xs"
+            icon={<Ban size={10} className="text-danger" />}
+            onClick={onClearOverrides}
+            disabled={isSuperAdmin || customGrantsCount === 0}
+          >
+            Clear
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
+
+export default UserDetailActionHeader;

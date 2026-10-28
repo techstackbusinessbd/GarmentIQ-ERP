@@ -3,13 +3,12 @@
  * [EN] User Special Permissions Master-Detail Workspace (UserMatrixView.tsx)
  * [BN] ব্যবহারকারী বিশেষ অনুমতি মাস্টার-ডিটেল ওয়ার্কস্পেস (UserMatrixView.tsx)
  * =============================================================================
- * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 17 (Enterprise UI), Rule 20 (Tokens), Rule 28 (1-word buttons)
- * [BN] বামপাশে ফ্যাক্টরি ইউজার তালিকা এবং ডানপাশে স্লিম কন্ট্রোল হেডার ও হাই-ডেনসিটি ম্যাট্রিক্স টেবিল।
- *      প্ল্যাটফর্ম রুট মডিউল (Client Management) নন-সুপারঅ্যাডমিনদের জন্য সম্পূর্ণ নিষিদ্ধ।
+ * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 17 (Enterprise UI), Rule 20 (Tokens), Rule 28 (1-word)
+ * [BN] একক সমন্বিত হেডার কার্ড (ইউজার ড্রপডাউনসহ), ৩-টিয়ার ফিল্টার বার এবং ফুল-উইডথ ডোমেন ব্যানার ম্যাট্রিক্স টেবিল।
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Loader2, Search, RotateCcw } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { User } from '@/types';
 import { userService } from '@/features/users';
@@ -18,9 +17,7 @@ import { usePermissionCatalog } from '../hooks/usePermissionCatalog';
 import { usePermission } from '../hooks/usePermission';
 import { roleService, type BackendRoleDto } from '../services/roleService';
 import { useAuthStore } from '@/store';
-import { TextInput } from '@/components/ui/TextInput';
-import { SearchableSelect } from '@/components/ui/SearchableSelect';
-import { MasterDetailUserList } from './MasterDetailUserList';
+import { MasterDetailFilterBar } from './MasterDetailFilterBar';
 import { UserDetailActionHeader } from './UserDetailActionHeader';
 import { UserMasterDetailMatrixTable } from './UserMasterDetailMatrixTable';
 import { UnsavedChangesFloatingBar } from './UnsavedChangesFloatingBar';
@@ -34,13 +31,12 @@ export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, o
   const { isSuperAdmin: isCallerSuperAdmin } = usePermission();
   const { data: rawCatalog = [], isLoading: isCatalogLoading } = usePermissionCatalog('admin');
 
-  // [EN] Filter out platform root modules (client_mgmt) for tenant operators
-  // [BN] নন-সুপারঅ্যাডমিন অপারেটরদের জন্য প্ল্যাটফর্ম রুট মডিউল ফিল্টার আউট করা
-  const catalogDomains = useMemo(() => {
-    if (isCallerSuperAdmin) return rawCatalog;
-    return rawCatalog.map((d) => ({ ...d, modules: d.modules.filter((m) => m.id !== 'client_mgmt') }));
-  }, [rawCatalog, isCallerSuperAdmin]);
-
+  // Filter out platform root modules (client_mgmt) for tenant operators
+  const catalogDomains = useMemo(() => isCallerSuperAdmin
+    ? rawCatalog
+    : rawCatalog.map((d) => ({ ...d, modules: d.modules.filter((m) => m.id !== 'client_mgmt') })),
+    [rawCatalog, isCallerSuperAdmin]
+  );
   const allCatalogCodes = useMemo(() => extractCatalogPermissionCodes(catalogDomains), [catalogDomains]);
 
   const [users, setUsers] = useState<User[]>([]);
@@ -51,8 +47,8 @@ export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, o
   const [pristineGrants, setPristineGrants] = useState<Set<string>>(new Set());
   const [customGrants, setCustomGrants] = useState<Set<string>>(new Set());
   const [userGrantsMap, setUserGrantsMap] = useState<Record<string, number>>({});
-  const [selectedDomainId, setSelectedDomainId] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filters, setFilters] = useState({ domain: 'all', module: 'all', feature: 'all', query: '' });
+  const [collapsedModuleIds, setCollapsedModuleIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setIsLoadingUsers(true);
@@ -64,19 +60,20 @@ export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, o
     }).catch(() => toast.error('Failed to load user and role directory.')).finally(() => setIsLoadingUsers(false));
   }, [initialUserId, isCallerSuperAdmin]);
 
-  const visibleUsers = useMemo(() => {
-    return isCallerSuperAdmin ? users : users.filter((u) => u.username !== 'superadmin' && !u.roles?.includes('ROLE_SUPER_ADMIN'));
-  }, [users, isCallerSuperAdmin]);
-
+  const visibleUsers = useMemo(() => isCallerSuperAdmin
+    ? users
+    : users.filter((u) => u.username !== 'superadmin' && !u.roles?.includes('ROLE_SUPER_ADMIN')),
+    [users, isCallerSuperAdmin]
+  );
   const selectedUser = useMemo(() => visibleUsers.find((u) => u.id === selectedUserId), [visibleUsers, selectedUserId]);
   const isSuperAdminUser = selectedUser?.username === 'superadmin' || selectedUser?.roles?.includes('ROLE_SUPER_ADMIN');
 
   const roleBasePermissions = useMemo(() => {
     if (!selectedUser?.roles || roles.length === 0) return new Set<string>();
     const set = new Set<string>();
-    selectedUser.roles.forEach((roleCode) => {
-      const normalized = roleCode.startsWith('ROLE_') ? roleCode : `ROLE_${roleCode}`;
-      const matched = roles.find((r) => r.roleCode === roleCode || r.roleCode === normalized || `ROLE_${r.roleCode}` === normalized);
+    selectedUser.roles.forEach((code) => {
+      const normalized = code.startsWith('ROLE_') ? code : `ROLE_${code}`;
+      const matched = roles.find((r) => r.roleCode === code || r.roleCode === normalized || `ROLE_${r.roleCode}` === normalized);
       matched?.permissions?.forEach((p) => set.add(p));
     });
     return set;
@@ -116,9 +113,7 @@ export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, o
     return diff;
   }, [customGrants, pristineGrants]);
 
-  const dirtyUserIds = useMemo(() => {
-    return selectedUserId && isCurrentDirty ? new Set([selectedUserId]) : new Set<string>();
-  }, [selectedUserId, isCurrentDirty]);
+  const dirtyUserIds = useMemo(() => selectedUserId && isCurrentDirty ? new Set([selectedUserId]) : new Set<string>(), [selectedUserId, isCurrentDirty]);
 
   const handleSelectUser = (userId: string) => {
     if (isCurrentDirty && selectedUserId !== userId) {
@@ -157,7 +152,7 @@ export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, o
     toast.info('Module special permissions reset to role defaults.');
   }, [isSuperAdminUser]);
 
-  const handleResetToDefaults = () => {
+  const handleClearOverrides = () => {
     if (isSuperAdminUser) return;
     setCustomGrants(new Set());
     toast.warning(`Cleared all special permissions for @${selectedUser?.username}.`);
@@ -184,23 +179,43 @@ export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, o
     } finally { setIsSaving(false); }
   };
 
-  const displayedModules = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
+  // 3-Tier Filter Pipeline: Domain ➔ Module ➔ Submodule ➔ Keyword
+  const displayedDomains = useMemo(() => {
+    const q = filters.query.trim().toLowerCase();
     return catalogDomains
-      .filter((d) => selectedDomainId === 'all' || d.id === selectedDomainId)
-      .flatMap((d) => d.modules)
-      .filter((m) => !q || m.name.toLowerCase().includes(q) || m.features.some((f) => f.name.toLowerCase().includes(q) || Object.values(f.actions).some((a) => a && a.code.toLowerCase().includes(q))));
-  }, [catalogDomains, selectedDomainId, searchQuery]);
+      .filter((d) => filters.domain === 'all' || d.id === filters.domain)
+      .map((d) => ({
+        ...d,
+        modules: d.modules
+          .filter((m) => filters.module === 'all' || m.id === filters.module)
+          .map((m) => ({
+            ...m,
+            features: m.features.filter((f) => (filters.feature === 'all' || f.id === filters.feature) &&
+              (!q || f.name.toLowerCase().includes(q) || m.name.toLowerCase().includes(q) ||
+                Object.values(f.actions).some((a) => a && (a.code.toLowerCase().includes(q) || a.label.toLowerCase().includes(q))))),
+          })).filter((m) => m.features.length > 0),
+      })).filter((d) => d.modules.length > 0);
+  }, [catalogDomains, filters]);
 
-  const domainFilterOptions = useMemo(() => [
-    { value: 'all', label: 'All Domains', count: catalogDomains.length },
-    ...catalogDomains.map((d) => ({ value: d.id, label: d.title, count: d.modules.length })),
-  ], [catalogDomains]);
+  const allDisplayedModuleIds = useMemo(() => displayedDomains.flatMap((d) => d.modules.map((m) => m.id)), [displayedDomains]);
+  const isAllExpanded = collapsedModuleIds.size === 0;
+
+  const handleToggleAllCollapse = useCallback(() => {
+    setCollapsedModuleIds(isAllExpanded ? new Set(allDisplayedModuleIds) : new Set());
+  }, [isAllExpanded, allDisplayedModuleIds]);
+
+  const handleToggleModuleCollapse = useCallback((moduleId: string) => {
+    setCollapsedModuleIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(moduleId)) next.delete(moduleId); else next.add(moduleId);
+      return next;
+    });
+  }, []);
 
   if (isLoadingUsers || isCatalogLoading) {
     return (
       <div className="flex items-center justify-center py-20 text-xs text-text-muted">
-        <Loader2 className="w-5 h-5 animate-spin mr-2 text-brand-accent" />
+        <Loader2 className="w-5 h-5 animate-spin mr-2 text-accent" />
         <span>Loading permissions...</span>
       </div>
     );
@@ -208,87 +223,58 @@ export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, o
 
   return (
     <div className="w-full space-y-3 pb-12">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
-        {/* Left Column: User Navigation List */}
-        <div className="lg:col-span-4 xl:col-span-3">
-          <MasterDetailUserList
-            users={visibleUsers}
-            selectedUserId={selectedUserId}
-            onSelectUserId={handleSelectUser}
-            userGrantsMap={userGrantsMap}
-            dirtyUserIds={dirtyUserIds}
-            isLoading={isLoadingUsers}
-          />
-        </div>
+      <UserDetailActionHeader
+        users={visibleUsers} selectedUserId={selectedUserId} onSelectUserId={handleSelectUser}
+        selectedUser={selectedUser} isSuperAdmin={Boolean(isSuperAdminUser)}
+        roleBaseCount={roleBasePermissions.size} customGrantsCount={customGrants.size} totalCatalogCount={allCatalogCodes.length}
+        isDirty={isCurrentDirty} dirtyUserIds={dirtyUserIds} modifiedCount={dirtyDiffCount} isSaving={isSaving}
+        userGrantsMap={userGrantsMap}
+        onResetToDefaults={handleClearOverrides} onClearOverrides={handleClearOverrides}
+        onDiscard={handleDiscard} onSaveOverrides={handleSaveOverrides}
+      />
 
-        {/* Right Column: Unified Clearances Workspace */}
-        <div className="lg:col-span-8 xl:col-span-9 space-y-2.5">
-          <UserDetailActionHeader
-            selectedUser={selectedUser}
-            isSuperAdmin={Boolean(isSuperAdminUser)}
-            roleBaseCount={roleBasePermissions.size}
-            customGrantsCount={customGrants.size}
-            totalCatalogCount={allCatalogCodes.length}
-            isDirty={isCurrentDirty}
-            isSaving={isSaving}
-            onResetToDefaults={handleResetToDefaults}
-            onSaveOverrides={handleSaveOverrides}
-          />
+      <MasterDetailFilterBar
+        domains={catalogDomains}
+        selectedDomainId={filters.domain} onSelectDomainId={(domain) => setFilters((p) => ({ ...p, domain, module: 'all', feature: 'all' }))}
+        selectedModuleId={filters.module} onSelectModuleId={(module) => setFilters((p) => ({ ...p, module, feature: 'all' }))}
+        selectedFeatureId={filters.feature} onSelectFeatureId={(feature) => setFilters((p) => ({ ...p, feature }))}
+        searchQuery={filters.query} onSearchChange={(query) => setFilters((p) => ({ ...p, query }))}
+        onResetFilters={() => setFilters({ domain: 'all', module: 'all', feature: 'all', query: '' })}
+        isAllExpanded={isAllExpanded} onToggleAllCollapse={handleToggleAllCollapse}
+      />
 
-          <div className="flex flex-wrap items-center justify-between gap-2 p-2 bg-surface-card border border-border-subtle rounded-[4px] shadow-2xs">
-            <div className="flex-1 min-w-[200px] max-w-sm">
-              <TextInput
-                leftIcon={<Search size={13} />}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search modules..."
-              />
+      <div className="space-y-4">
+        {displayedDomains.map((domain) => (
+          <div key={domain.id} className="space-y-2">
+            <div className="flex items-center gap-2 px-1 pt-1">
+              <span className="font-mono text-accent uppercase tracking-wider text-[10px] bg-accent/10 px-2 py-0.5 rounded font-bold border border-accent/20">
+                {domain.id.toUpperCase()}
+              </span>
+              <span className="text-xs font-bold text-text-primary">{domain.title}</span>
+              <span className="text-[10px] font-mono text-text-muted">
+                ({domain.modules.reduce((acc, m) => acc + m.features.length, 0)})
+              </span>
             </div>
-
-            <div className="flex items-center gap-2">
-              <div className="w-52">
-                <SearchableSelect
-                  options={domainFilterOptions}
-                  value={selectedDomainId}
-                  onChange={setSelectedDomainId}
-                  placeholder="Select domain..."
-                  searchPlaceholder="Search domains..."
-                />
-              </div>
-
-              {(searchQuery || selectedDomainId !== 'all') && (
-                <button
-                  type="button"
-                  onClick={() => { setSearchQuery(''); setSelectedDomainId('all'); }}
-                  className="px-2 py-1 text-xs text-text-muted hover:text-text-primary rounded inline-flex items-center gap-1 cursor-pointer"
-                >
-                  <RotateCcw size={11} />
-                  <span>Reset</span>
-                </button>
-              )}
-            </div>
+            <UserMasterDetailMatrixTable
+              modules={domain.modules}
+              roleBasePermissions={roleBasePermissions} customGrants={customGrants} isSuperAdmin={Boolean(isSuperAdminUser)}
+              collapsedModuleIds={collapsedModuleIds} onToggleModuleCollapse={handleToggleModuleCollapse}
+              onToggleAction={handleToggleAction} onToggleMenu={handleToggleMenu} onResetModule={handleResetModule}
+            />
           </div>
+        ))}
 
-          <UserMasterDetailMatrixTable
-            modules={displayedModules}
-            roleBasePermissions={roleBasePermissions}
-            customGrants={customGrants}
-            isSuperAdmin={Boolean(isSuperAdminUser)}
-            onToggleAction={handleToggleAction}
-            onToggleMenu={handleToggleMenu}
-            onResetModule={handleResetModule}
-          />
-
-          <UnsavedChangesFloatingBar
-            title={`Unsaved Changes for @${selectedUser?.username}`}
-            saveLabel="Save"
-            modifiedCount={dirtyDiffCount}
-            isSaving={isSaving}
-            onDiscard={handleDiscard}
-            onSave={handleSaveOverrides}
-          />
-        </div>
+        {displayedDomains.length === 0 && (
+          <div className="p-12 text-center text-xs text-text-muted bg-surface-card border border-border-subtle rounded-[4px]">
+            No matching modules or actions found.
+          </div>
+        )}
       </div>
+
+      <UnsavedChangesFloatingBar
+        title={`Unsaved Changes for @${selectedUser?.username}`} saveLabel="Save"
+        modifiedCount={dirtyDiffCount} isSaving={isSaving} onDiscard={handleDiscard} onSave={handleSaveOverrides}
+      />
     </div>
   );
 };
