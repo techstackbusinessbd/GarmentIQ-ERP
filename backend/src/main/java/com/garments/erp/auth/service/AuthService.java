@@ -244,16 +244,36 @@ public class AuthService {
             }
         }
         UserDto dto = new UserDto(user.getId(), user.getTenantId(), user.getUsername(), user.getEmail(), user.getFullName(), user.getDepartment(), user.getDesignation(), user.getPhone(), user.getStatus());
+        dto.setEmployeeCardNo(user.getEmployeeCardNo());
+
         dto.setRoles(roles);
         dto.setPermissions(perms);
+
+        if (user.getTenantId() != null) {
+            tenantRepository.findById(user.getTenantId()).ifPresent(t -> {
+                dto.setTenantCode(t.getTenantCode());
+                dto.setTenantName(t.getTenantName());
+            });
+        }
         return dto;
     }
 
     private UserDto buildUserDto(CustomUserPrincipal p, Set<String> roles, Set<String> perms) {
         User u = userRepository.findById(p.getId()).orElse(null);
         UserDto dto = new UserDto(p.getId(), p.getTenantId(), p.getUsername(), p.getEmail(), p.getFullName(), u != null ? u.getDepartment() : null, u != null ? u.getDesignation() : null, u != null ? u.getPhone() : null, UserStatus.ACTIVE);
+        if (u != null) {
+            dto.setEmployeeCardNo(u.getEmployeeCardNo());
+        }
+
         dto.setRoles(roles);
         dto.setPermissions(perms);
+
+        if (p.getTenantId() != null) {
+            tenantRepository.findById(p.getTenantId()).ifPresent(t -> {
+                dto.setTenantCode(t.getTenantCode());
+                dto.setTenantName(t.getTenantName());
+            });
+        }
         return dto;
     }
 }

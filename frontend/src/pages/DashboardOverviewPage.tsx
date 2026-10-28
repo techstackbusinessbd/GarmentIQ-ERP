@@ -129,8 +129,8 @@ export const DashboardOverviewPage: React.FC = () => {
         <WidgetMetricCard
           id="registered-tenants"
           title={isSuperAdmin ? 'Factory Tenants' : 'Tenant Workspace'}
-          value={isSuperAdmin ? `${stats.tenantsCount} Org` : (user?.tenantCode || 'STANDARD GROUP')}
-          subtitle={isSuperAdmin ? 'Registered Factory Groups' : 'Factory Workspace'}
+          value={isSuperAdmin ? `${stats.tenantsCount} Org` : (user?.tenantName || user?.tenantCode || 'Tenant')}
+          subtitle={isSuperAdmin ? 'Registered Factory Groups' : (user?.tenantCode ? `Factory Code: ${user.tenantCode}` : 'Factory Workspace')}
           icon={<Building2 size={16} />}
           accentVariant="primary"
           badge={{ label: 'Active', variant: 'success' }}
