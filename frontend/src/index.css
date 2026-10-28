@@ -3,202 +3,216 @@
  * [EN] Garments ERP - Enterprise Design System Stylesheet (Tailwind CSS v4)
  * [BN] গার্মেন্টস ইআরপি - এন্টারপ্রাইজ ডিজাইন সিস্টেম স্টাইলশিট (Tailwind CSS v4)
  * =============================================================================
- * [EN] Reference: docs/specifications/design-system/ (01 to 06)
+ * [EN] Semantic Tokens: Executive Navy (#142B45), Teal Accent (#0F766E), Canvas (#F3F5F7)
  * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Tokens), Rule 25 (Validation)
- * [BN] ৪টি চোখের স্বাচ্ছন্দ্যময় থিম, ৬০-৩০-১০ অনুপাত, শার্প মাইক্রো-রেডিয়াস ও সার্ভার ভ্যালিডেশন
  */
 
 @import "tailwindcss";
 
-@theme {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* Tailwind CSS 4: Semantic design tokens */
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  --font-sans: "Inter", "Noto Sans Bengali", sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 
-  /* [EN] Sharp Enterprise Micro-Radius Ramp / [BN] শার্প মাইক্রো-রেডিয়াস স্কেল */
+  /* Enterprise Micro-Radius Ramp */
   --radius-xs: 2px;
   --radius-subtle: 3px;
   --radius-sm: 4px;
-  --radius-card: 6px;
+  --radius-card: var(--radius, 0.625rem);
   --radius-modal: 8px;
 
-  /* [EN] Dynamic Surface Tokens / [BN] ডাইনামিক সারফেস টোকেনসমূহ */
-  --color-surface-base: var(--surface-base);
-  --color-surface-card: var(--surface-card);
-  --color-surface-muted: var(--surface-muted);
-  --color-surface-hover: var(--surface-hover);
+  /* Backward Compatible Semantic Mappings */
+  --color-surface-base: var(--background);
+  --color-surface-card: var(--surface);
+  --color-surface-hover: var(--surface-muted);
 
-  /* [EN] Master Sidebar Scaffolding / [BN] মাস্টার সাইডবার স্ট্রাকচারাল কালার */
-  --color-brand-sidebar: var(--brand-sidebar);
-  --color-brand-sidebar-header: var(--brand-sidebar-header);
-  --color-brand-sidebar-border: var(--brand-sidebar-border);
+  --color-brand-sidebar: var(--sidebar-bg);
+  --color-brand-sidebar-header: var(--sidebar-bg);
+  --color-brand-sidebar-border: var(--sidebar-border);
 
-  /* [EN] Brand Focal Accents (10% Ratio) / [BN] ব্র্যান্ড অ্যাকসেন্ট কালার (১০% রেশিও) */
-  --color-brand-accent: var(--brand-accent);
-  --color-brand-accent-hover: var(--brand-accent-hover);
-  --color-brand-accent-light: var(--brand-accent-light);
+  --color-brand-accent: var(--accent);
+  --color-brand-accent-hover: var(--accent-hover);
+  --color-brand-accent-light: rgba(15, 118, 110, 0.12);
 
-  /* [EN] Borders & Dividers / [BN] বর্ডার ও ডিভাইডার টোকেনসমূহ */
-  --color-border-subtle: var(--border-subtle);
-  --color-border-strong: var(--border-strong);
+  --color-border-subtle: var(--border);
+  --color-border-strong: #BAC7D5;
 
-  /* [EN] Semantic Text Hierarchy / [BN] টেক্সট হায়ারার্কি */
-  --color-text-primary: var(--text-primary);
-  --color-text-muted: var(--text-muted);
+  --color-text-primary: var(--foreground);
+  --color-text-secondary: var(--muted-foreground);
+  --color-text-muted: var(--muted-foreground);
+  --color-text-tertiary: #8B9CAE;
 
-  /* [EN] RMG Domain Status Tokens / [BN] আরএমজি ডোমেন স্ট্যাটাস টোকেনসমূহ */
-  --color-status-success: var(--status-success);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-popover: var(--sidebar-popover-bg);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-text: var(--sidebar-text);
+  --color-sidebar-text-muted: var(--sidebar-text-muted);
+  --color-sidebar-hover: var(--sidebar-hover-bg);
+  --color-sidebar-active-bg: var(--sidebar-active-bg);
+  --color-sidebar-active-text: var(--sidebar-active-text);
+
+  --color-status-success: var(--success);
   --color-status-success-bg: var(--status-success-bg);
   --color-status-success-border: var(--status-success-border);
-
-  --color-status-warning: var(--status-warning);
+  --color-status-warning: var(--warning);
   --color-status-warning-bg: var(--status-warning-bg);
   --color-status-warning-border: var(--status-warning-border);
-
-  --color-status-danger: var(--status-danger);
+  --color-status-danger: var(--danger);
   --color-status-danger-bg: var(--status-danger-bg);
   --color-status-danger-border: var(--status-danger-border);
-
-  --color-status-info: var(--status-info);
+  --color-status-info: var(--info);
   --color-status-info-bg: var(--status-info-bg);
   --color-status-info-border: var(--status-info-border);
 }
 
-/* =============================================================================
- * [EN] Universal Base Tokens & Default Theme: Royal Indigo & Raw Denim
- * [BN] সর্বজনীন বেস টোকেন ও ডিফল্ট থিম: রয়্যাল ইন্ডিগো ও র-ডেনিম
- * ============================================================================= */
-:root,
-[data-theme="indigo"] {
+:root {
   color-scheme: light;
 
-  /* [EN] Sidebar (30% Scaffolding) / [BN] সাইডবার */
-  --brand-sidebar: #0f172a;
-  --brand-sidebar-header: #0b1120;
-  --brand-sidebar-border: #1e293b;
+  /* Brand Structure */
+  --primary: #142B45;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #1D3B5A;
+  --primary-soft: #E8EEF4;
 
-  /* [EN] Accent (10% Focal) / [BN] অ্যাকসেন্ট */
-  --brand-accent: #4f46e5;
-  --brand-accent-hover: #4338ca;
-  --brand-accent-light: #eef2ff;
+  /* Primary Accent & Action */
+  --accent: #0F766E;
+  --accent-foreground: #FFFFFF;
+  --accent-hover: #115E59;
 
-  /* [EN] Surfaces (60% Neutral) / [BN] সারফেস */
-  --surface-base: #f8fafc;
-  --surface-card: #ffffff;
-  --surface-muted: #f1f5f9;
-  --surface-hover: #f1f5f9;
+  /* Workspace Canvas & Surfaces */
+  --background: #F3F5F7;
+  --surface: #FFFFFF;
+  --surface-muted: #EAF0F4;
+  --card: #FFFFFF;
+  --card-foreground: #182536;
+  --popover: #FFFFFF;
+  --popover-foreground: #182536;
 
-  /* [EN] Borders & Lines / [BN] বর্ডার */
-  --border-subtle: #e2e8f0;
-  --border-strong: #cbd5e1;
+  /* Typography and borders */
+  --foreground: #182536;
+  --muted-foreground: #526579;
+  --border: #D8E0E8;
+  --input: #D8E0E8;
+  --ring: #0F766E;
 
-  /* [EN] Typography / [BN] টাইপোগ্রাফি */
-  --text-primary: #0f172a;
-  --text-muted: #64748b;
+  /* Semantic status */
+  --success: #15803D;
+  --warning: #B45309;
+  --danger: #B91C1C;
+  --info: #1D4ED8;
+  --destructive: #B91C1C;
+  --destructive-foreground: #FFFFFF;
 
-  /* [EN] Universal Status Tokens / [BN] স্ট্যাটাস টোকেন */
-  --status-success: #059669;
-  --status-success-bg: #ecfdf5;
-  --status-success-border: #a7f3d0;
+  /* Status tints */
+  --status-success-bg: #ECFDF5;
+  --status-success-border: #A7F3D0;
+  --status-warning-bg: #FFFBEB;
+  --status-warning-border: #FDE68A;
+  --status-danger-bg: #FEF2F2;
+  --status-danger-border: #FECACA;
+  --status-info-bg: #EFF6FF;
+  --status-info-border: #BFDBFE;
 
-  --status-warning: #d97706;
-  --status-warning-bg: #fffbeb;
-  --status-warning-border: #fde68a;
+  /* Geometry */
+  --radius: 0.625rem;
 
-  --status-danger: #e11d48;
-  --status-danger-bg: #fff1f2;
-  --status-danger-border: #fecdd3;
-
-  --status-info: #0284c7;
-  --status-info-bg: #f0f9ff;
-  --status-info-border: #bae6fd;
+  /* Master Sidebar Tokens (Midnight Navy default per Spec Section 11) */
+  --sidebar-bg: #142B45;
+  --sidebar-popover-bg: #0F2238;
+  --sidebar-border: #1D3B5A;
+  --sidebar-text: #FFFFFF;
+  --sidebar-text-muted: #94A3B8;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+  --sidebar-active-bg: #0F766E;
+  --sidebar-active-text: #FFFFFF;
 }
 
-/* =============================================================================
- * [EN] Theme 2: Sapphire Corporate & Pure Steel (Commercial & Executive)
- * [BN] থিম ২: স্যাফায়ার কর্পোরেট ও পিওর স্টিল (কমার্শিয়াল ও এক্সিকিউটিভ)
- * ============================================================================= */
-[data-theme="sapphire"] {
-  color-scheme: light;
-  --brand-sidebar: #0f172a;
-  --brand-sidebar-header: #0b1120;
-  --brand-sidebar-border: #1e293b;
-
-  --brand-accent: #2563eb;
-  --brand-accent-hover: #1d4ed8;
-  --brand-accent-light: #eff6ff;
-
-  --surface-base: #f8fafc;
-  --surface-card: #ffffff;
-  --surface-muted: #f1f5f9;
-  --surface-hover: #f1f5f9;
-
-  --border-subtle: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text-primary: #0f172a;
-  --text-muted: #64748b;
-}
-
-/* =============================================================================
- * [EN] Theme 3: Emerald Sustainable & Green Factory (Eco & Compliance Audit)
- * [BN] থিম ৩: এমারেল্ড সাসটেইনেবল ও গ্রিন ফ্যাক্টরি (পরিবেশবান্ধব ও অডিট)
- * ============================================================================= */
-[data-theme="emerald"] {
-  color-scheme: light;
-  --brand-sidebar: #022c22;
-  --brand-sidebar-header: #011f18;
-  --brand-sidebar-border: #064e3b;
-
-  --brand-accent: #059669;
-  --brand-accent-hover: #047857;
-  --brand-accent-light: #ecfdf5;
-
-  --surface-base: #f8fafc;
-  --surface-card: #ffffff;
-  --surface-muted: #f0fdf4;
-  --surface-hover: #f0fdf4;
-
-  --border-subtle: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text-primary: #0f172a;
-  --text-muted: #64748b;
-}
-
-/* =============================================================================
- * [EN] Theme 4: Midnight Obsidian (High-Contrast Shop Floor Dark Mode)
- * [BN] থিম ৪: মিডনাইট অবসিডিয়ান (হাই-কনট্রাস্ট শপ ফ্লোর ডার্ক মোড)
- * ============================================================================= */
+.dark,
+[data-theme="dark"],
 [data-theme="obsidian"] {
   color-scheme: dark;
-  --brand-sidebar: #0b0f19;
-  --brand-sidebar-header: #070a12;
-  --brand-sidebar-border: #1e293b;
 
-  --brand-accent: #6366f1;
-  --brand-accent-hover: #818cf8;
-  --brand-accent-light: #1e293b;
+  --primary: #A9C4E0;
+  --primary-foreground: #111A24;
+  --primary-hover: #C2D7EB;
+  --primary-soft: #253B52;
 
-  --surface-base: #0b0f19;
-  --surface-card: #151c2c;
-  --surface-muted: #1e293b;
-  --surface-hover: #222d42;
+  --accent: #5EE0CF;
+  --accent-foreground: #111A24;
+  --accent-hover: #8AEADD;
 
-  --border-subtle: #252f44;
-  --border-strong: #334155;
-  --text-primary: #f8fafc;
-  --text-muted: #94a3b8;
+  --background: #111A24;
+  --surface: #192531;
+  --surface-muted: #22313F;
+  --card: #192531;
+  --card-foreground: #E5ECF3;
+  --popover: #192531;
+  --popover-foreground: #E5ECF3;
 
-  /* [EN] High-Contrast Status Glows for Shop Floor Terminals */
-  --status-success-bg: rgba(5, 150, 105, 0.15);
-  --status-success-border: rgba(5, 150, 105, 0.4);
+  --foreground: #E5ECF3;
+  --muted-foreground: #A6B5C5;
+  --border: #344454;
+  --input: #344454;
+  --ring: #5EE0CF;
 
-  --status-warning-bg: rgba(217, 119, 6, 0.15);
-  --status-warning-border: rgba(217, 119, 6, 0.4);
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --danger: #F87171;
+  --info: #93C5FD;
+  --destructive: #F87171;
+  --destructive-foreground: #FFFFFF;
 
-  --status-danger-bg: rgba(225, 29, 72, 0.15);
-  --status-danger-border: rgba(225, 29, 72, 0.4);
+  /* Status tints (dark) */
+  --status-success-bg: rgba(74, 222, 128, 0.15);
+  --status-success-border: rgba(74, 222, 128, 0.35);
+  --status-warning-bg: rgba(251, 191, 36, 0.15);
+  --status-warning-border: rgba(251, 191, 36, 0.35);
+  --status-danger-bg: rgba(248, 113, 113, 0.15);
+  --status-danger-border: rgba(248, 113, 113, 0.35);
+  --status-info-bg: rgba(147, 197, 253, 0.15);
+  --status-info-border: rgba(147, 197, 253, 0.35);
 
-  --status-info-bg: rgba(2, 132, 199, 0.15);
-  --status-info-border: rgba(2, 132, 199, 0.4);
+  /* Sidebar Tokens (Dark Mode) */
+  --sidebar-bg: #0E1620;
+  --sidebar-popover-bg: #0A111A;
+  --sidebar-border: #1E2D3D;
+  --sidebar-text: #E5ECF3;
+  --sidebar-text-muted: #8E9EAF;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.06);
+  --sidebar-active-bg: #0F766E;
+  --sidebar-active-text: #FFFFFF;
+}
+
+[data-sidebar="dark"] {
+  --sidebar-bg: #142B45; --sidebar-popover-bg: #0F2238; --sidebar-border: #1D3B5A;
+  --sidebar-text: #FFFFFF; --sidebar-text-muted: #94A3B8;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.08); --sidebar-active-bg: #0F766E; --sidebar-active-text: #FFFFFF;
+}
+
+[data-sidebar="light"] {
+  --sidebar-bg: #FFFFFF; --sidebar-popover-bg: #FFFFFF; --sidebar-border: #D8E0E8;
+  --sidebar-text: #182536; --sidebar-text-muted: #526579;
+  --sidebar-hover-bg: #EAF0F4; --sidebar-active-bg: #0F766E; --sidebar-active-text: #FFFFFF;
 }
 
 /* =============================================================================
@@ -211,14 +225,22 @@
   box-sizing: border-box;
 }
 
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus {
+  outline: none;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
   font-family: var(--font-sans);
-  background-color: var(--surface-base);
-  color: var(--text-primary);
+  background-color: var(--background);
+  color: var(--foreground);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -229,8 +251,8 @@ body {
  * [BN] রুল ২৫ অনুবর্তী সার্ভার-সাইড ভ্যালিডেশন এরর ভিজ্যুয়াল ক্লাসসমূহ
  * ============================================================================= */
 .erp-input-error {
-  border-color: var(--status-danger) !important;
-  box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.18) !important;
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.18) !important;
 }
 
 .erp-error-message {
@@ -239,7 +261,7 @@ body {
   gap: 4px;
   font-size: 0.75rem;
   line-height: 1rem;
-  color: var(--status-danger);
+  color: var(--danger);
   margin-top: 4px;
   font-weight: 500;
 }
@@ -258,10 +280,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--border-strong);
+  background-color: var(--border);
   border-radius: var(--radius-xs);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--text-muted);
+  background-color: var(--muted-foreground);
 }

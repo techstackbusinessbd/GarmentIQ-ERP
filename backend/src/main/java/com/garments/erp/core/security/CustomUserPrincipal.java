@@ -69,12 +69,19 @@ public class CustomUserPrincipal implements UserDetails {
     private final boolean enabled;
 
     /**
-     * [EN] Parameterized constructor
-     * [BN] প্যারামিটারযুক্ত কনস্ট্রাক্টর
+     * [EN] Account non-locked security flag
+     * [BN] অ্যাকাউন্ট আনলকড নির্দেশক ফ্ল্যাগ
+     */
+    private final boolean accountNonLocked;
+
+    /**
+     * [EN] Parameterized constructor with locking support
+     * [BN] লকিং সমর্থনসহ প্যারামিটারযুক্ত কনস্ট্রাক্টর
      */
     public CustomUserPrincipal(UUID id, UUID tenantId, String username, String password,
                                String email, String fullName,
-                               Collection<? extends GrantedAuthority> authorities, boolean enabled) {
+                               Collection<? extends GrantedAuthority> authorities, boolean enabled,
+                               boolean accountNonLocked) {
         this.id = id;
         this.tenantId = tenantId;
         this.username = username;
@@ -83,6 +90,17 @@ public class CustomUserPrincipal implements UserDetails {
         this.fullName = fullName;
         this.authorities = authorities;
         this.enabled = enabled;
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    /**
+     * [EN] Backward-compatible constructor defaulting accountNonLocked to true
+     * [BN] ব্যাকওয়ার্ড-কম্প্যাটিবল কনস্ট্রাক্টর
+     */
+    public CustomUserPrincipal(UUID id, UUID tenantId, String username, String password,
+                               String email, String fullName,
+                               Collection<? extends GrantedAuthority> authorities, boolean enabled) {
+        this(id, tenantId, username, password, email, fullName, authorities, enabled, true);
     }
 
     @Override
@@ -107,7 +125,7 @@ public class CustomUserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override

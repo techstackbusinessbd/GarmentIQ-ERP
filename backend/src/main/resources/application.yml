@@ -50,8 +50,22 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
-    baseline-version: 0
+    baseline-version: 2
     locations: classpath:db/migration
+
+  # [EN] Distributed Redis Cache (Rule 08: Sub-200ms latency)
+  # [BN] ডিস্ট্রিবিউটেড রেডিস ক্যাশ কনফিগারেশন (সাব-২০০ms লেটেন্সি)
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      timeout: 2000ms
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000ms # 10 minutes default TTL
+      cache-null-values: false
 
 management:
   endpoints:

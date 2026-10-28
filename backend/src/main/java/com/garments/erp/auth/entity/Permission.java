@@ -55,6 +55,39 @@ public class Permission implements Serializable {
     @Column(name = "description", length = 255)
     private String description;
 
+    @Column(name = "domain_id", length = 50)
+    private String domainId;
+
+    @Column(name = "domain_title", length = 100)
+    private String domainTitle;
+
+    @Column(name = "module_id", length = 50)
+    private String moduleId;
+
+    @Column(name = "module_title", length = 100)
+    private String moduleTitle;
+
+    @Column(name = "module_description", length = 255)
+    private String moduleDescription;
+
+    @Column(name = "feature_id", length = 50)
+    private String featureId;
+
+    @Column(name = "feature_name", length = 100)
+    private String featureName;
+
+    @Column(name = "action_key", length = 30)
+    private String actionKey;
+
+    @Column(name = "action_label", length = 50)
+    private String actionLabel;
+
+    @Column(name = "target_path", length = 100)
+    private String targetPath;
+
+    @Column(name = "sort_order", nullable = false)
+    private int sortOrder = 0;
+
     /**
      * [EN] UTC timestamp marking creation moment
      * [BN] পারমিশন তৈরির UTC টাইমস্ট্যাম্প

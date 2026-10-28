@@ -73,3 +73,23 @@ export interface MasterDefectCode {
   /** [EN] Active defect code flag / [BN] সক্রিয় কি না নির্দেশক ফ্ল্যাগ */
   active: boolean;
 }
+
+/**
+ * [EN] Domain-driven Master Library Entry (Rule 12 & ADR-015).
+ * [BN] ডোমেন-ভিত্তিক মাস্টার লাইব্রেরি এন্ট্রি মডেল।
+ */
+export interface MasterLibraryEntry {
+  id: string;
+  tenantId?: string;
+  domainCode: string;
+  entityType: string;
+  entryCode: string;
+  entryName: string;
+  displayOrder: number;
+  description?: string;
+  attributes?: string | Record<string, unknown>;
+  isActive: boolean;
+  isSystemSeeded: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}

@@ -10,7 +10,7 @@
 
 | টাইপোগ্রাফি রোল | ফন্ট ফ্যামিলি | ফলব্যাক স্ট্যাক | ব্যবহারের ক্ষেত্র (Usage Scope) |
 | :--- | :--- | :--- | :--- |
-| **Primary Sans** | `'Inter'` | `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif` | সিস্টেমের সকল হেডলাইন, বডি টেক্সট, বাটন, মেনু ও ফর্ম লেবেল। |
+| **Primary Sans** | `'Plus Jakarta Sans'` | `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif` | সিস্টেমের সকল হেডলাইন, বডি টেক্সট, বাটন, মেনু ও ফর্ম লেবেল (Eye Comfort Standard)। |
 | **Tabular Monospace** | `'JetBrains Mono'` | `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace` | সুতা/ফেব্রিক কনসাম্পশন, অর্ডার কোয়ান্টিটি, মানি ভ্যালু, বারকোড/RFID ও টাইমস্ট্যাম্প। |
 
 ---

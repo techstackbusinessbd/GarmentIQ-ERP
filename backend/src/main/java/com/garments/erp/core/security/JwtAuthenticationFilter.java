@@ -1,11 +1,14 @@
 package com.garments.erp.core.security;
 
 import com.garments.erp.tenant.context.TenantContext;
+import com.garments.erp.tenant.entity.Tenant;
+import com.garments.erp.tenant.repository.TenantRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,15 +23,12 @@ import java.util.UUID;
 
 /**
  * =============================================================================
- * [EN] Once-Per-Request Stateless JWT Authentication & Tenant Context Filter
- * [BN] প্রতি রিকোয়েস্টে স্টেটলেস জেডব্লিউটি অথেনটিকেশন ও টেন্যান্ট কনটেক্সট ফিল্টার
+ * [EN] Multi-Tenant SaaS Gateway & JWT Authentication Filter
+ * [BN] মাল্টি-টেন্যান্ট সাশ গেটওয়ে ও জেডব্লিউটি অথেনটিকেশন ফিল্টার (রুল ০৭ ও ১৫)
  * =============================================================================
- * [EN] Intercepts every inbound HTTP request to extract the Bearer token, validate
- *      cryptographic signatures, bind the authenticated principal into SecurityContext,
- *      and populate the TenantContext with tenant_id claims for seamless data isolation.
- * [BN] প্রতিটি ইনকামিং HTTP রিকোয়েস্ট ইন্টারসেপ্ট করে Bearer টোকেন এক্সট্র্যাক্ট করে,
- *      স্বাক্ষর যাচাই করে, SecurityContext-এ অথেনটিকেশন সেট করে এবং ডেটা আইসোলেশনের জন্য
- *      TenantContext-এ সক্রিয় টেন্যান্টের UUID সংরক্ষণ করে।
+ * [EN] Intercepts requests for subdomain resolution, JWT validation, tenant license
+ *      enforcement, and request-lifetime thread-local TenantContext lifecycle.
+ * [BN] সাবডোমেন হেডার যাচাই, টেন্যান্ট লাইসেন্স সক্রিয়তা পরীক্ষা ও থ্রেড-লোকাল কনটেক্সট পরিচালনা করে।
  */
 @Slf4j
 @Component
@@ -36,19 +36,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
+    private final TenantRepository tenantRepository;
 
-    /**
-     * [EN] Explicit constructor for dependency injection.
-     * [BN] ডিপেন্ডেন্সি ইনজেকশনের জন্য সুস্পষ্ট কনস্ট্রাক্টর।
-     *
-     * @param tokenProvider      [EN] JWT validation and parsing provider / [BN] জেডব্লিউটি প্রোভাইডার
-     * @param userDetailsService [EN] User principal loader service / [BN] ইউজার লোডার সার্ভিস
-     */
     public JwtAuthenticationFilter(
             JwtTokenProvider tokenProvider,
-            CustomUserDetailsService userDetailsService) {
+            CustomUserDetailsService userDetailsService,
+            TenantRepository tenantRepository) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
+        this.tenantRepository = tenantRepository;
     }
 
     @Override
@@ -59,19 +55,61 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         try {
+            // [EN] Resolve tenant from subdomain or X-Tenant-ID header for inbound/public routes
+            // [BN] সাবডোমেন অথবা X-Tenant-ID হেডার থেকে টেন্যান্ট কনটেক্সট নির্ধারণ
+            String subdomain = request.getHeader("X-Tenant-Subdomain");
+            if (StringUtils.hasText(subdomain)) {
+                tenantRepository.findBySubdomainIgnoreCaseAndIsDeletedFalse(subdomain.trim())
+                        .ifPresent(t -> TenantContext.setTenantId(t.getId()));
+            } else {
+                String tenantIdHeader = request.getHeader("X-Tenant-ID");
+                if (StringUtils.hasText(tenantIdHeader)) {
+                    try {
+                        TenantContext.setTenantId(UUID.fromString(tenantIdHeader.trim()));
+                    } catch (IllegalArgumentException ignored) {}
+                }
+            }
+
             String jwt = resolveToken(request);
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 String username = tokenProvider.getUsernameFromToken(jwt);
                 UUID tenantId = tokenProvider.getTenantIdFromToken(jwt);
 
-                // [EN] Populate ThreadLocal TenantContext for request lifetime
-                // [BN] রিকোয়েস্ট লাইফটাইমের জন্য ThreadLocal TenantContext সেট করা
+                // [EN] Set verified tenant identifier from cryptographic JWT claim
+                // [BN] ক্রিপ্টোগ্রাফিক টোকেনের ক্লেইম থেকে যাচাইকৃত টেন্যান্ট আইডি কনটেক্সটে সেট করা
                 if (tenantId != null) {
                     TenantContext.setTenantId(tenantId);
+
+                    // [EN] SaaS License Enforcer: Verify tenant active subscription status
+                    // [BN] সাশ লাইসেন্স প্রয়োগ: কারখানার সক্রিয় সাবস্ক্রিপশন স্ট্যাটাস নিশ্চিতকরণ
+                    Tenant tenant = tenantRepository.findById(tenantId).orElse(null);
+                    if (tenant != null && (!tenant.isActive() || tenant.isDeleted())) {
+                        log.warn("Access rejected: Factory tenant '{}' is suspended or deactivated.", tenant.getTenantCode());
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                        response.setCharacterEncoding("UTF-8");
+                        response.getWriter().write("{\"success\":false,\"message\":\"Your factory organization subscription has been suspended or deactivated. Please contact platform administration.\",\"error\":\"TENANT_SUSPENDED\"}");
+                        response.getWriter().flush();
+                        return;
+                    }
                 }
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = (tenantId != null)
+                        ? userDetailsService.loadUserByTenantIdAndUsername(tenantId, username)
+                        : userDetailsService.loadUserByUsername(username);
+
+                // [EN] Real-time lockout verification: reject immediately if account is locked, disabled, or soft-deleted
+                // [BN] রিয়েল-টাইম অ্যাকাউন্ট স্থিতি যাচাই: অ্যাকাউন্ট লক বা নিষ্ক্রিয় হলে তাৎক্ষণিক রিজেক্ট
+                if (!userDetails.isAccountNonLocked() || !userDetails.isEnabled()) {
+                    log.warn("Access rejected: Authenticated user '{}' is locked or disabled.", username);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write("{\"success\":false,\"message\":\"Your account has been locked. You have been logged out.\",\"error\":\"ACCOUNT_LOCKED\"}");
+                    response.getWriter().flush();
+                    return;
+                }
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

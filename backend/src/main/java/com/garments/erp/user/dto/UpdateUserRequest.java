@@ -1,11 +1,13 @@
 package com.garments.erp.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.garments.erp.user.entity.UserStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * =============================================================================
@@ -22,10 +24,28 @@ import java.util.Set;
 public class UpdateUserRequest implements Serializable {
 
     /**
+     * [EN] Optional updated parent tenant organization identifier (super admin only)
+     * [BN] পরিমার্জিত প্যারেন্ট টেন্যান্ট আইডি (কেবলমাত্র সুপার অ্যাডমিনের জন্য)
+     */
+    private UUID tenantId;
+
+    /**
+     * [EN] Modified corporate email address
+     * [BN] পরিমার্জিত প্রাতিষ্ঠানিক ইমেইল
+     */
+    private String email;
+
+    /**
      * [EN] Modified employee full legal name
      * [BN] পরিমার্জিত পূর্ণ নাম
      */
     private String fullName;
+
+    /**
+     * [EN] Optional updated password credential
+     * [BN] অপশনাল নতুন পাসওয়ার্ড
+     */
+    private String password;
 
     /**
      * [EN] Modified functional department
@@ -46,6 +66,12 @@ public class UpdateUserRequest implements Serializable {
     private String phone;
 
     /**
+     * [EN] Modified factory employee punch/RFID card identifier
+     * [BN] পরিমার্জিত এমপ্লয়ি পাঞ্চ বা আরএফআইডি কার্ড নম্বর
+     */
+    private String employeeCardNo;
+
+    /**
      * [EN] Updated account operational status (ACTIVE, INACTIVE, etc.)
      * [BN] হালনাগাদকৃত সক্রিয়তা স্ট্যাটাস
      */
@@ -55,6 +81,7 @@ public class UpdateUserRequest implements Serializable {
      * [EN] Updated set of assigned role codes
      * [BN] হালনাগাদকৃত সিকিউরিটি রোল কোডের সেট
      */
+    @JsonAlias({"roles", "roleCodes"})
     private Set<String> roles;
 
     /**

@@ -55,4 +55,40 @@ public interface TenantRepository extends JpaRepository<Tenant, UUID> {
      * @return [EN] true if exists, false otherwise / [BN] অস্তিত্ব থাকলে true
      */
     boolean existsByContactEmail(String contactEmail);
+
+    /**
+     * [EN] Verifies whether a subdomain is already in use by another tenant
+     * [BN] কোনো সাবডোমেন ইতিমধ্যে অন্য কোনো টেন্যান্ট ব্যবহার করছে কি না যাচাই করে
+     */
+    boolean existsBySubdomainIgnoreCaseAndIsDeletedFalse(String subdomain);
+
+    /**
+     * [EN] Finds tenant by subdomain slug ensuring active status
+     * [BN] সক্রিয় সাবডোমেন দিয়ে টেন্যান্ট খুঁজে বের করে
+     */
+    Optional<Tenant> findBySubdomainIgnoreCaseAndIsActiveTrueAndIsDeletedFalse(String subdomain);
+
+    /**
+     * [EN] Finds tenant by subdomain slug regardless of active status (for suspension diagnosis)
+     * [BN] সাবডোমেন দিয়ে টেন্যান্ট খুঁজে বের করে (সাসপেন্ডেড অবস্থা নির্ণয়ের জন্য)
+     */
+    Optional<Tenant> findBySubdomainIgnoreCaseAndIsDeletedFalse(String subdomain);
+
+    /**
+     * [EN] Finds tenant by on-premise custom domain FQDN or IP
+     * [BN] অন-প্রেমিসেস কাস্টম ডোমেন বা আইপি দিয়ে টেন্যান্ট খুঁজে বের করে
+     */
+    Optional<Tenant> findByCustomDomainIgnoreCaseAndIsActiveTrueAndIsDeletedFalse(String customDomain);
+
+    /**
+     * [EN] Retrieves all non-deleted client tenants ordered by company name
+     * [BN] মুছে ফেলা হয়নি এমন সকল ক্লায়েন্ট টেন্যান্টের তালিকা কোম্পানির নামানুসারে আনে
+     */
+    java.util.List<Tenant> findAllByIsDeletedFalseOrderByTenantNameAsc();
+
+    /**
+     * [EN] Retrieves all client tenants including deleted ordered by company name
+     * [BN] মুছে ফেলাসহ সকল ক্লায়েন্ট টেন্যান্টের তালিকা কোম্পানির নামানুসারে আনে
+     */
+    java.util.List<Tenant> findAllByOrderByTenantNameAsc();
 }

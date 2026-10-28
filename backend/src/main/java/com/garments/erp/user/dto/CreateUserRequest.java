@@ -1,5 +1,7 @@
 package com.garments.erp.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.garments.erp.user.entity.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -9,6 +11,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * =============================================================================
@@ -23,6 +26,12 @@ import java.util.Set;
 @Getter
 @Setter
 public class CreateUserRequest implements Serializable {
+
+    /**
+     * [EN] Target client factory tenant identifier (optional; specified by platform super admin)
+     * [BN] কাঙ্ক্ষিত ফ্যাক্টরি বা ক্লায়েন্ট টেন্যান্ট আইডি (সুপার অ্যাডমিনের জন্য প্রযোজ্য)
+     */
+    private UUID tenantId;
 
     /**
      * [EN] Unique enterprise login username handle (3 to 50 characters)
@@ -74,9 +83,22 @@ public class CreateUserRequest implements Serializable {
     private String phone;
 
     /**
+     * [EN] Factory employee punch/RFID card identifier (e.g. 255776)
+     * [BN] কারখানা বা প্রতিষ্ঠানের এমপ্লয়ি পাঞ্চ বা আরএফআইডি কার্ড নম্বর
+     */
+    private String employeeCardNo;
+
+    /**
+     * [EN] Account operational lifecycle status (default: ACTIVE)
+     * [BN] অ্যাকাউন্টের প্রারম্ভিক সক্রিয়তা স্ট্যাটাস
+     */
+    private UserStatus status = UserStatus.ACTIVE;
+
+    /**
      * [EN] Set of role codes to assign (e.g. ROLE_MERCHANDISER)
      * [BN] ব্যবহারকারীকে নির্ধারিত রোল কোডসমূহের সেট
      */
+    @JsonAlias({"roles", "roleCodes"})
     private Set<String> roles = new HashSet<>();
 
     /**

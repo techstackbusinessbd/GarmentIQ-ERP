@@ -21,14 +21,15 @@ import axios, {
 } from 'axios';
 import { toast } from 'sonner';
 import type { ApiError, ApiResponse, FieldErrors } from '@/types';
-import { AUTH_STORAGE_KEY } from '@/constants';
+import { AUTH_STORAGE_KEY, TENANT_STORAGE_KEY } from '@/constants';
+import { clearBrowserSession, purgeSessionStorage } from '@/utils';
 
 /**
  * [EN] Resolve base API URL from environment or local proxy default.
  * [BN] এনভায়রনমেন্ট ভ্যারিয়েবল অথবা লোকাল প্রক্সি থেকে বেস URL নির্ধারণ।
  */
 const API_BASE_URL: string =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081/api/v1';
+  import.meta.env.VITE_API_BASE_URL || '/api/v1';
 
 /**
  * [EN] Core Axios instance configured for enterprise RMG platform.
@@ -56,9 +57,19 @@ axiosInstance.interceptors.request.use(
           config.headers.Authorization = `Bearer ${token}`;
         }
 
-        const tenantId = localStorage.getItem('garments_erp_tenant_id');
+        const tenantId = localStorage.getItem(TENANT_STORAGE_KEY);
         if (tenantId && config.headers) {
           config.headers['X-Tenant-ID'] = tenantId;
+        }
+
+        // [EN] SaaS Subdomain Routing: Extract tenant workspace subdomain from hostname
+        // [BN] ব্রাউজারের হোস্টনেম থেকে ক্লায়েন্ট টেন্যান্টের সাবডোমেন আলাদা করে হেডারে পাঠানো
+        const hostname = window.location.hostname;
+        if (hostname && !hostname.startsWith('localhost') && !hostname.startsWith('127.0.0.1')) {
+          const parts = hostname.split('.');
+          if (parts.length > 2 && parts[0] !== 'www' && parts[0] !== 'app' && config.headers) {
+            config.headers['X-Tenant-Subdomain'] = parts[0];
+          }
         }
       } catch {
         // [EN] Ignore storage access restrictions / [BN] লোকাল স্টোরেজ এক্সেস সীমাবদ্ধতা অগ্রাহ্য করা
@@ -103,32 +114,64 @@ axiosInstance.interceptors.response.use(
         description: serverMessage,
       });
     } else if (status === 401) {
-      toast.error('Session Expired', {
-        description: 'Please sign in again to continue your session.',
-      });
-      if (typeof window !== 'undefined') {
-        try {
-          localStorage.removeItem(AUTH_STORAGE_KEY);
-        } catch {
-          // [EN] Ignore storage cleanup error / [BN] স্টোরেজ ক্লিনআপ এরর অগ্রাহ্য করা
+      const isLoginRequest = error.config?.url?.includes('/auth/login');
+      if (!isLoginRequest) {
+        // [EN] Detect whether rejection was caused by administrative lockout or session expiration
+        // [BN] অ্যাডমিন কর্তৃক অ্যাকাউন্ট লক হওয়া নাকি সাধারণ সেশন মেয়াদোত্তীর্ণ তা শনাক্তকরণ
+        const rawError = (responseBody as unknown as Record<string, unknown>)?.error;
+        const isAccountLocked =
+          rawError === 'ACCOUNT_LOCKED' ||
+          serverMessage?.toLowerCase().includes('account has been locked') ||
+          serverMessage?.toLowerCase().includes('account is locked');
+
+        toast.error(isAccountLocked ? 'Account Locked' : 'Session Expired', {
+          description: isAccountLocked
+            ? 'Your account has been locked by an administrator. You have been automatically signed out.'
+            : 'Please sign in again to continue your session.',
+        });
+
+        if (typeof window !== 'undefined') {
+          try {
+            // [EN] Broadcast logout across all tabs and purge session keys
+            // [BN] সমস্ত ট্যাবে ব্রডকাস্টের মাধ্যমে লগআউট নির্দেশ ও সেশন অবসান
+            clearBrowserSession(true);
+            purgeSessionStorage();
+            window.dispatchEvent(new CustomEvent('garments_erp_force_logout', {
+              detail: { isAccountLocked }
+            }));
+          } catch {
+            // [EN] Ignore storage cleanup error / [BN] স্টোরেজ ক্লিনআপ এরর অগ্রাহ্য করা
+          }
         }
       }
     } else if (status === 403) {
-      toast.error('Access Denied', {
+      const rawError = (responseBody as unknown as Record<string, unknown>)?.error;
+      const isTenantSuspended = rawError === 'TENANT_SUSPENDED' || serverMessage?.toLowerCase().includes('subscription has been suspended');
+
+      toast.error(isTenantSuspended ? 'Subscription Suspended' : 'Access Denied', {
         description:
           serverMessage !== 'Unable to connect to the server. Please check your network connection.'
             ? serverMessage
             : 'You do not have permission to perform this operation.',
       });
+
+      if (isTenantSuspended && typeof window !== 'undefined') {
+        clearBrowserSession(true);
+        purgeSessionStorage();
+        window.dispatchEvent(new CustomEvent('garments_erp_force_logout', {
+          detail: { isAccountLocked: true }
+        }));
+      }
     } else if (status === 404) {
       toast.warning('Record Not Found', {
         description: serverMessage,
       });
     } else if (status === 409) {
-      toast.error('Simultaneous Update Detected', {
+      const isConcurrency = serverMessage?.toLowerCase().includes('modified by another') || serverMessage?.toLowerCase().includes('concurrency');
+      toast.error(isConcurrency ? 'Simultaneous Update Detected' : 'Conflict Detected', {
         description:
           serverMessage ||
-          'Another user has modified this record. Please refresh and review before saving.',
+          'A record with this information already exists or has been modified.',
       });
     } else if (status && status >= 500) {
       toast.error('Server Encountered an Issue', {

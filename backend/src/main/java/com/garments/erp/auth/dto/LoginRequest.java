@@ -35,6 +35,12 @@ public class LoginRequest implements Serializable {
     private String password;
 
     /**
+     * [EN] Optional tenant organization code or subdomain
+     * [BN] ঐচ্ছিক কারখানা কোড বা সাবডোমেন
+     */
+    private String tenantCode;
+
+    /**
      * [EN] Default no-args constructor
      * [BN] ডিফল্ট কনস্ট্রাক্টর
      */
@@ -48,5 +54,11 @@ public class LoginRequest implements Serializable {
     public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public LoginRequest(String username, String password, String tenantCode) {
+        this.username = username;
+        this.password = password;
+        this.tenantCode = tenantCode;
     }
 }

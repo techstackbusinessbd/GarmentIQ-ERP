@@ -3,12 +3,16 @@ package com.garments.erp.user.service;
 import com.garments.erp.auth.entity.Role;
 import com.garments.erp.auth.repository.RoleRepository;
 import com.garments.erp.tenant.context.TenantContext;
+import com.garments.erp.tenant.repository.TenantRepository;
 import com.garments.erp.user.dto.CreateUserRequest;
 import com.garments.erp.user.dto.UpdateUserRequest;
 import com.garments.erp.user.dto.UserDto;
 import com.garments.erp.user.entity.User;
 import com.garments.erp.user.entity.UserStatus;
 import com.garments.erp.user.repository.UserRepository;
+import com.garments.erp.core.security.SecurityUtils;
+import com.garments.erp.settings.service.SystemAuditLogService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,72 +27,66 @@ import java.util.stream.Collectors;
  * [EN] Multi-Tenant Enterprise User Management Service (Rule 23)
  * [BN] মাল্টি-টেন্যান্ট এন্টারপ্রাইজ ব্যবহারকারী ব্যবস্থাপনা সার্ভিস (রুল ২৩)
  * =============================================================================
- * [EN] Encapsulates business logic for provisioning users, managing role sets,
- *      enforcing unique credential boundaries per tenant, and soft deletion.
+ * [EN] Encapsulates business logic for user provisioning, tenant scoping,
+ *      role sets, credential uniqueness, and cross-tenant Super Admin oversight.
  * [BN] টেন্যান্ট বাউন্ডারির মধ্যে ব্যবহারকারী নিবন্ধন, সিকিউরিটি রোল পরিচালনা,
- *      ইউনিক ক্রেডেনশিয়াল নিশ্চিতকরণ এবং নিরাপদ সফট-ডিলিটের ব্যবসায়িক যুক্তি সম্পাদন করে।
+ *      অনন্য ক্রেডেনশিয়াল যাচাই এবং সুপার অ্যাডমিনের ক্রস-টেন্যান্ট তত্ত্বাবধান পরিচালনা করে।
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final TenantRepository tenantRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SystemAuditLogService auditLogService;
 
     /**
-     * [EN] Explicit constructor for dependency injection.
-     * [BN] ডিপেন্ডেন্সি ইনজেকশনের জন্য সুস্পষ্ট কনস্ট্রাক্টর।
-     *
-     * @param userRepository  [EN] User data repository / [BN] ইউজার ডেটা রিপোজিটরি
-     * @param roleRepository  [EN] Role data repository / [BN] রোল ডেটা রিপোজিটরি
-     * @param passwordEncoder [EN] Cryptographic password hasher / [BN] পাসওয়ার্ড হ্যাশার
-     */
-    public UserService(
-            UserRepository userRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    /**
-     * [EN] Retrieves all active users scoped under current tenant organization
-     * [BN] বর্তমান টেন্যান্টের অধীনে বিদ্যমান সকল সক্রিয় ব্যবহারকারীর তালিকা ফেরত দেয়
+     * [EN] Retrieves users; super admin views all, factory admin views tenant only
+     * [BN] ব্যবহারকারী তালিকা আনে; সুপার অ্যাডমিন সবাইকে দেখে, ফ্যাক্টরি অ্যাডমিন নিজ টেন্যান্টের
      */
     @Transactional(readOnly = true)
     public List<UserDto> getAllUsers() {
-        UUID tenantId = resolveTenantId();
-        List<User> users = userRepository.findAllByTenantIdAndIsDeletedFalseOrderByFullNameAsc(tenantId);
+        return getAllUsers(false);
+    }
 
-        return users.stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public List<UserDto> getAllUsers(Boolean includeDeleted) {
+        boolean withDeleted = Boolean.TRUE.equals(includeDeleted);
+        List<User> users = isSuperAdmin()
+                ? (withDeleted ? userRepository.findAllByOrderByFullNameAsc() : userRepository.findAllByIsDeletedFalseOrderByFullNameAsc())
+                : (withDeleted ? userRepository.findAllByTenantIdOrderByFullNameAsc(resolveTenantId()) : userRepository.findAllByTenantIdAndIsDeletedFalseOrderByFullNameAsc(resolveTenantId()));
+
+        return users.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     /**
-     * [EN] Retrieves a specific user by identifier strictly within tenant boundary
-     * [BN] টেন্যান্ট বাউন্ডারির মধ্যে আইডি দ্বারা নির্দিষ্ট ইউজারের তথ্য ফেরত দেয়
+     * [EN] Retrieves user by ID with super admin privilege or tenant scoping
+     * [BN] সুপার অ্যাডমিন সুবিধা বা টেন্যান্ট বাউন্ডারির মধ্যে আইডি দ্বারা ইউজার আনে
      */
     @Transactional(readOnly = true)
     public UserDto getUserById(UUID id) {
-        UUID tenantId = resolveTenantId();
-        User user = findUserByIdAndTenant(id, tenantId);
+        User user = findUserWithAuthorization(id);
         return mapToDto(user);
     }
 
     /**
-     * [EN] Provisions a new user account with hashed password and role assignments
-     * [BN] পাসওয়ার্ড হ্যাশ ও রোল নির্ধারণ করে নতুন ইউজার অ্যাকাউন্ট তৈরি করে
+     * [EN] Provisions user under specified tenant (if super admin) or current tenant
+     * [BN] কাঙ্ক্ষিত টেন্যান্টে (সুপার অ্যাডমিন) বা বর্তমান টেন্যান্টে নতুন ইউজার তৈরি করে
      */
     @Transactional
     public UserDto createUser(CreateUserRequest request) {
-        UUID tenantId = resolveTenantId();
+        UUID tenantId = (request.getTenantId() != null && isSuperAdmin())
+                ? request.getTenantId()
+                : resolveTenantId();
+
         log.info("Creating new user '{}' for tenant {}", request.getUsername(), tenantId);
 
-        // [EN] Enforce credential uniqueness within tenant
-        // [BN] টেন্যান্টে ইউজারনেম ও ইমেইলের অনন্যতা যাচাই করা
+        if (!tenantRepository.existsById(tenantId)) {
+            throw new IllegalArgumentException("Target tenant does not exist with ID: " + tenantId);
+        }
         if (userRepository.existsByTenantIdAndUsernameAndIsDeletedFalse(tenantId, request.getUsername())) {
             throw new IllegalArgumentException("Username '" + request.getUsername() + "' is already taken in this tenant");
         }
@@ -97,23 +95,22 @@ public class UserService {
         }
 
         String passwordHash = passwordEncoder.encode(request.getPassword());
-
         User user = new User(tenantId, request.getUsername(), request.getEmail(), passwordHash, request.getFullName());
-        user.setDepartment(request.getDepartment());
-        user.setDesignation(request.getDesignation());
-        user.setPhone(request.getPhone());
-        user.setStatus(UserStatus.ACTIVE);
+        Optional.ofNullable(request.getDepartment()).ifPresent(v -> user.setDepartment(v.trim()));
+        Optional.ofNullable(request.getDesignation()).ifPresent(v -> user.setDesignation(v.trim()));
+        Optional.ofNullable(request.getPhone()).ifPresent(v -> user.setPhone(v.trim()));
+        Optional.ofNullable(request.getEmployeeCardNo()).ifPresent(v -> user.setEmployeeCardNo(v.trim()));
+        user.setStatus(request.getStatus() != null ? request.getStatus() : UserStatus.ACTIVE);
 
-        // [EN] Assign roles if specified in request
-        // [BN] রিকোয়েস্টে উল্লিখিত রোলসমূহ ব্যবহারকারীতে সংযুক্ত করা
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
             for (String roleCode : request.getRoles()) {
                 roleRepository.findByTenantIdAndRoleCodeAndIsDeletedFalse(tenantId, roleCode)
+                        .or(() -> roleRepository.findFirstByRoleCodeAndIsDeletedFalse(roleCode))
                         .ifPresent(user::addRole);
             }
         }
-
         User saved = userRepository.save(user);
+        auditLogService.record(saved.getTenantId(), "USER_MANAGEMENT", "USER_CREATED", "User: " + saved.getUsername(), "Created user: " + saved.getUsername() + " (" + saved.getEmail() + ")", "INFO");
         return mapToDto(saved);
     }
 
@@ -123,37 +120,58 @@ public class UserService {
      */
     @Transactional
     public UserDto updateUser(UUID id, UpdateUserRequest request) {
-        UUID tenantId = resolveTenantId();
-        User user = findUserByIdAndTenant(id, tenantId);
+        User user = findUserWithAuthorization(id);
+        UUID currentTenantId = user.getTenantId();
 
-        if (request.getFullName() != null) {
-            user.setFullName(request.getFullName());
+        if (request.getTenantId() != null && isSuperAdmin() && !request.getTenantId().equals(currentTenantId)) {
+            if (!tenantRepository.existsById(request.getTenantId())) {
+                throw new IllegalArgumentException("Target tenant does not exist with ID: " + request.getTenantId());
+            }
+            user.setTenantId(request.getTenantId());
+            currentTenantId = request.getTenantId();
         }
-        if (request.getDepartment() != null) {
-            user.setDepartment(request.getDepartment());
+
+        if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+            String newEmail = request.getEmail().trim();
+            if (!newEmail.equalsIgnoreCase(user.getEmail())) {
+                userRepository.findByTenantIdAndEmailAndIsDeletedFalse(currentTenantId, newEmail).ifPresent(existing -> {
+                    if (!existing.getId().equals(user.getId())) {
+                        throw new IllegalArgumentException("Email '" + newEmail + "' is already registered in this tenant");
+                    }
+                });
+                user.setEmail(newEmail);
+            }
         }
-        if (request.getDesignation() != null) {
-            user.setDesignation(request.getDesignation());
-        }
-        if (request.getPhone() != null) {
-            user.setPhone(request.getPhone());
-        }
+        Optional.ofNullable(request.getFullName()).ifPresent(user::setFullName);
+        Optional.ofNullable(request.getPassword()).filter(p -> !p.trim().isEmpty()).ifPresent(p -> user.setPasswordHash(passwordEncoder.encode(p.trim())));
+        Optional.ofNullable(request.getDepartment()).ifPresent(user::setDepartment);
+        Optional.ofNullable(request.getDesignation()).ifPresent(user::setDesignation);
+        Optional.ofNullable(request.getPhone()).ifPresent(user::setPhone);
+        Optional.ofNullable(request.getEmployeeCardNo()).ifPresent(user::setEmployeeCardNo);
         if (request.getStatus() != null) {
-            user.setStatus(request.getStatus());
-        }
-
-        // [EN] Update roles if specified in request
-        // [BN] রিকোয়েস্টে নতুন রোল সেট দেওয়া থাকলে তা হালনাগাদ করা
-        if (request.getRoles() != null) {
-            user.getRoles().clear();
-            for (String roleCode : request.getRoles()) {
-                roleRepository.findByTenantIdAndRoleCodeAndIsDeletedFalse(tenantId, roleCode)
-                        .ifPresent(user::addRole);
+            if (user.isSuperAdmin() && request.getStatus() != UserStatus.ACTIVE) {
+                user.setStatus(UserStatus.ACTIVE);
+            } else {
+                user.setStatus(request.getStatus());
+            }
+            if (user.getStatus() == UserStatus.ACTIVE) {
+                user.resetFailedAttempts();
+                user.setLockedUntil(null);
             }
         }
 
+        if (request.getRoles() != null) {
+            user.getRoles().clear();
+            UUID roleTenantId = user.getTenantId();
+            for (String roleCode : request.getRoles()) {
+                roleRepository.findByTenantIdAndRoleCodeAndIsDeletedFalse(roleTenantId, roleCode)
+                        .or(() -> roleRepository.findFirstByRoleCodeAndIsDeletedFalse(roleCode))
+                        .ifPresent(user::addRole);
+            }
+        }
         user.setUpdatedAt(Instant.now());
         User saved = userRepository.save(user);
+        auditLogService.record(saved.getTenantId(), "USER_MANAGEMENT", "USER_UPDATED", "User: " + saved.getUsername(), "Updated user account profile: " + saved.getUsername(), "INFO");
         return mapToDto(saved);
     }
 
@@ -163,13 +181,79 @@ public class UserService {
      */
     @Transactional
     public void deleteUser(UUID id) {
-        UUID tenantId = resolveTenantId();
-        User user = findUserByIdAndTenant(id, tenantId);
-
+        User user = findUserWithAuthorization(id, false);
+        if (user.isSuperAdmin()) {
+            throw new IllegalStateException("Platform owner / Super Admin account cannot be deleted or deactivated.");
+        }
         user.setDeleted(true);
+        user.setStatus(UserStatus.INACTIVE);
         user.setUpdatedAt(Instant.now());
         userRepository.save(user);
-        log.info("Soft-deleted user ID {} from tenant {}", id, tenantId);
+        auditLogService.record(user.getTenantId(), "USER_MANAGEMENT", "USER_DELETED", "User: " + user.getUsername(), "Soft-deleted user account: " + user.getUsername(), "WARNING");
+        log.info("Soft-deleted user ID {} from tenant {}", id, user.getTenantId());
+    }
+
+    @Transactional
+    public UserDto restoreUser(UUID id) {
+        User user = findUserWithAuthorization(id, true);
+        if (!user.isDeleted()) {
+            throw new IllegalArgumentException("User account is already active and cannot be restored.");
+        }
+        user.setDeleted(false);
+        user.setStatus(UserStatus.ACTIVE);
+        user.setUpdatedAt(Instant.now());
+        User saved = userRepository.save(user);
+        auditLogService.record(saved.getTenantId(), "USER_MANAGEMENT", "USER_RESTORED", "User: " + saved.getUsername(), "Restored soft-deleted user account: " + saved.getUsername(), "INFO");
+        log.info("Restored user ID {} for tenant {}", id, saved.getTenantId());
+        return mapToDto(saved);
+    }
+
+    @Transactional
+    public void purgeUser(UUID id) {
+        User user = findUserWithAuthorization(id, true);
+        if (user.isSuperAdmin()) {
+            throw new IllegalStateException("Platform owner / Super Admin account is protected and cannot be purged.");
+        }
+        if (!user.isDeleted()) {
+            throw new IllegalArgumentException("Only soft-deleted accounts in Trash can be permanently purged.");
+        }
+        userRepository.delete(user);
+        auditLogService.record(user.getTenantId(), "USER_MANAGEMENT", "USER_PURGED", "User: " + user.getUsername(), "Permanently purged user account: " + user.getUsername(), "CRITICAL");
+        log.info("Permanently purged user ID {} from tenant {}", id, user.getTenantId());
+    }
+
+    /**
+     * [EN] Unlocks a locked user account and clears failed attempt history
+     * [BN] লক হওয়া অ্যাকাউন্ট আনলক করে এবং ব্যর্থ লগইন প্রচেষ্টা রিসেট করে
+     */
+    @Transactional
+    public UserDto unlockUser(UUID id) {
+        User user = findUserWithAuthorization(id);
+        user.unlockAccount();
+        user.setUpdatedAt(Instant.now());
+        User saved = userRepository.save(user);
+        auditLogService.record(saved.getTenantId(), "USER_MANAGEMENT", "USER_UNLOCKED", "User: " + saved.getUsername(), "Unlocked user account: " + saved.getUsername(), "SUCCESS");
+        log.info("Unlocked user account '{}' (ID: {}) by admin", user.getUsername(), user.getId());
+        return mapToDto(saved);
+    }
+
+    private boolean isSuperAdmin() { return SecurityUtils.isSuperAdmin(); }
+    private User findUserWithAuthorization(UUID id) { return findUserWithAuthorization(id, false); }
+
+    private User findUserWithAuthorization(UUID id, boolean allowDeleted) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
+
+        if (!allowDeleted && user.isDeleted()) {
+            throw new NoSuchElementException("User not found or deleted for ID: " + id);
+        }
+        if (!isSuperAdmin()) {
+            UUID tenantId = resolveTenantId();
+            if (!tenantId.equals(user.getTenantId())) {
+                throw new NoSuchElementException("User not found or access denied for ID: " + id);
+            }
+        }
+        return user;
     }
 
     /**
@@ -185,40 +269,26 @@ public class UserService {
     }
 
     /**
-     * [EN] Finds user by ID verifying strict multi-tenant boundary
-     * [BN] কঠোর টেন্যান্ট বাউন্ডারি যাচাই করে ইউজার খুঁজে বের করে
-     */
-    private User findUserByIdAndTenant(UUID id, UUID tenantId) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
-
-        if (!tenantId.equals(user.getTenantId()) || user.isDeleted()) {
-            throw new NoSuchElementException("User not found or access denied for ID: " + id);
-        }
-        return user;
-    }
-
-    /**
-     * [EN] Helper method mapping User domain entity to secure UserDto
-     * [BN] ডোমেন ইউজার এন্টিটিকে নিরাপদ UserDto-তে রূপান্তরকারী হেল্পার মেথড
+     * [EN] Maps User entity to UserDto with enriched tenant code & name
+     * [BN] টেন্যান্ট কোড ও নামসহ User এন্টিটিকে UserDto-তে রূপান্তর করে
      */
     private UserDto mapToDto(User user) {
-        Set<String> roleCodes = (user.getRoles() != null)
-                ? user.getRoles().stream().map(Role::getRoleCode).collect(Collectors.toSet())
-                : Collections.emptySet();
-
-        UserDto dto = new UserDto(
-                user.getId(),
-                user.getTenantId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getFullName(),
-                user.getDepartment(),
-                user.getDesignation(),
-                user.getPhone(),
-                user.getStatus()
-        );
+        Set<String> roleCodes = user.getRoles() == null ? Set.of() :
+                user.getRoles().stream().map(Role::getRoleCode).collect(Collectors.toSet());
+        Set<String> permissionCodes = user.getRoles() == null ? Set.of() :
+                user.getRoles().stream().filter(r -> r.getPermissions() != null)
+                        .flatMap(r -> r.getPermissions().stream()).map(p -> p.getPermissionCode()).collect(Collectors.toSet());
+        UserDto dto = new UserDto(user.getId(), user.getTenantId(), user.getUsername(), user.getEmail(), user.getFullName(), user.getDepartment(), user.getDesignation(), user.getPhone(), user.getStatus());
+        dto.setEmployeeCardNo(user.getEmployeeCardNo());
         dto.setRoles(roleCodes);
+        dto.setPermissions(permissionCodes);
+        dto.setDeleted(user.isDeleted());
+        if (user.getTenantId() != null) {
+            tenantRepository.findById(user.getTenantId()).ifPresent(t -> {
+                dto.setTenantCode(t.getTenantCode());
+                dto.setTenantName(t.getTenantName());
+            });
+        }
         return dto;
     }
 }

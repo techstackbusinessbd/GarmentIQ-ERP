@@ -98,12 +98,33 @@ public class User implements Serializable {
     private String phone;
 
     /**
+     * [EN] Factory employee punch/RFID card identifier (e.g. 255776)
+     * [BN] কারখানা বা প্রতিষ্ঠানের এমপ্লয়ি পাঞ্চ বা আরএফআইডি কার্ড নম্বর
+     */
+    @Column(name = "employee_card_no", length = 50)
+    private String employeeCardNo;
+
+    /**
      * [EN] Account operational lifecycle status (ACTIVE, INACTIVE, SUSPENDED, LOCKED)
      * [BN] অ্যাকাউন্টের সক্রিয়তা ও কার্যকারিতা স্ট্যাটাস
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private UserStatus status;
+
+    /**
+     * [EN] Consecutive failed login attempts counter (locks at 5)
+     * [BN] ধারাবাহিক ভুল লগইন প্রচেষ্টার কাউন্টার (৫ বার হলে লক হয়)
+     */
+    @Column(name = "failed_login_attempts", nullable = false)
+    private int failedLoginAttempts = 0;
+
+    /**
+     * [EN] Lockout expiration timestamp (null if unlocked)
+     * [BN] অ্যাকাউন্ট লকের মেয়াদোত্তীর্ণের টাইমস্ট্যাম্প
+     */
+    @Column(name = "locked_until")
+    private Instant lockedUntil;
 
     /**
      * [EN] Soft deletion flag (false = active, true = soft-deleted)
@@ -153,35 +174,20 @@ public class User implements Serializable {
      * [BN] এই ব্যবহারকারীকে বরাদ্দকৃত সিকিউরিটি রোলসমূহের সেট
      */
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    /**
-     * [EN] Default no-args constructor initializing active status
-     * [BN] ডিফল্ট কনস্ট্রাক্টর—প্রাথমিক সক্রিয় স্ট্যাটাস সেট করে
-     */
+    /** [EN] Default no-args constructor / [BN] ডিফল্ট কনস্ট্রাক্টর */
     public User() {
         this.status = UserStatus.ACTIVE;
+        this.failedLoginAttempts = 0;
         this.isDeleted = false;
         this.version = 0L;
         this.createdBy = "SYSTEM";
         this.updatedBy = "SYSTEM";
     }
 
-    /**
-     * [EN] Parameterized constructor for user provisioning
-     * [BN] নতুন ইউজার তৈরির জন্য প্যারামিটারযুক্ত কনস্ট্রাক্টর
-     *
-     * @param tenantId     [EN] Tenant UUID / [BN] টেন্যান্ট আইডি
-     * @param username     [EN] Login username / [BN] ইউজারনেম
-     * @param email        [EN] Official email / [BN] ইমেইল
-     * @param passwordHash [EN] BCrypt hash / [BN] পাসওয়ার্ড হ্যাশ
-     * @param fullName     [EN] Employee full name / [BN] পূর্ণ নাম
-     */
+    /** [EN] Parameterized constructor / [BN] প্যারামিটারযুক্ত কনস্ট্রাক্টর */
     public User(UUID tenantId, String username, String email, String passwordHash, String fullName) {
         this();
         this.tenantId = tenantId;
@@ -191,12 +197,7 @@ public class User implements Serializable {
         this.fullName = fullName;
     }
 
-    /**
-     * [EN] Helper method to assign a role to this user
-     * [BN] ব্যবহারকারীকে একটি নতুন রোল বরাদ্দ করার সহায়ক মেথড
-     *
-     * @param role [EN] Role entity / [BN] রোল অবজেক্ট
-     */
+    /** [EN] Assigns role / [BN] রোল বরাদ্দ */
     public void addRole(Role role) {
         this.roles.add(role);
     }
@@ -209,6 +210,46 @@ public class User implements Serializable {
      */
     public void removeRole(Role role) {
         this.roles.remove(role);
+    }
+
+    /** [EN] Checks if user is immune from lockout (Platform Owner / Super Admin) / [BN] সুপার অ্যাডমিন বা প্ল্যাটফর্ম ওনার */
+    public boolean isSuperAdmin() {
+        if ("superadmin".equalsIgnoreCase(this.username)) return true;
+        return this.roles != null && this.roles.stream()
+                .anyMatch(r -> "ROLE_SUPER_ADMIN".equalsIgnoreCase(r.getRoleCode()) || "SUPER_ADMIN".equalsIgnoreCase(r.getRoleCode()));
+    }
+
+    /** [EN] Evaluates whether account is currently locked / [BN] অ্যাকাউন্ট লক কি না যাচাই */
+    public boolean isAccountLocked() {
+        if (isSuperAdmin()) return false;
+        return this.status == UserStatus.LOCKED ||
+               (this.lockedUntil != null && this.lockedUntil.isAfter(Instant.now()));
+    }
+
+    /** [EN] Increments failed login count / [BN] ব্যর্থ লগইন সংখ্যা বৃদ্ধি */
+    public void incrementFailedAttempts() {
+        if (!isSuperAdmin()) this.failedLoginAttempts++;
+    }
+
+    /** [EN] Clears failed login count / [BN] ব্যর্থ লগইন সংখ্যা রিসেট */
+    public void resetFailedAttempts() {
+        this.failedLoginAttempts = 0;
+        this.lockedUntil = null;
+    }
+
+    /** [EN] Enforces account lockout / [BN] অ্যাকাউন্ট লক বলবৎ করে */
+    public void lockAccount(Instant until) {
+        if (!isSuperAdmin()) {
+            this.status = UserStatus.LOCKED;
+            this.lockedUntil = until;
+        }
+    }
+
+    /** [EN] Restores active account state / [BN] অ্যাকাউন্ট পুনরায় সক্রিয় করে */
+    public void unlockAccount() {
+        this.status = UserStatus.ACTIVE;
+        this.failedLoginAttempts = 0;
+        this.lockedUntil = null;
     }
 
     /**

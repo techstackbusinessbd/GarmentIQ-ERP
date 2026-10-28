@@ -1,27 +1,100 @@
 /**
  * =============================================================================
  * [EN] Master App Component with Page-Driven React Router Configuration
- * [BN] পেজ-ড্রিভেন রিঅ্যাক্ট রাউটার কনফিগারেশন সহ মূল অ্যাপ কম্পোনেন্ট
+ * [BN] পেজ-ড্রিভেন রিঅ্যাক্ট রাউটার কনফিগারেশন সহ মূল অ্যাপ কম্পোনেন্ট (রুল ০৭ ও ১৫ অনুবর্তী)
  * =============================================================================
+ * [EN] Reference: docs/specifications/ROUTE_URL_AND_MENU_SPECIFICATION.md
  * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 20 (Design Tokens)
- * [BN] রুল ০৭ ও রুল ১৫ মেনে সম্পূর্ণ দ্বিভাষিক কমেন্ট সমৃদ্ধ রুট কম্পোনেন্ট।
+ * [BN] রুল ০৭ ও রুল ১৫ মেনে সম্পূর্ণ দ্বিভাষিক কমেন্ট সমৃদ্ধ মূল রাউটার কনফিগারেশন।
  */
 
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { ProtectedRoute, GuestRoute } from '@/components/auth';
+import { LoginPage } from '@/pages';
+import { renderDomainRoutes, getDefaultDashboardPath } from '@/routes';
+import { useAuthStore } from '@/store';
+import { subscribeToSessionEvents } from '@/utils';
+
+/**
+ * [EN] Root landing component that conditionally redirects authenticated users to the
+ * unified dashboard (/app/overview/dashboard), or unauthenticated guests to /login.
+ *
+ * [BN] মূল রুট রিডাইরেক্ট কম্পোনেন্ট: অথেনটিকেটেড ইউজারদের ইউনিফায়েড ড্যাশবোর্ডে পাঠায়।
+ */
+const RootRedirect: React.FC = () => {
+  const { isAuthenticated, user } = useAuthStore();
+  if (isAuthenticated && user) {
+    return <Navigate to={getDefaultDashboardPath(user)} replace />;
+  }
+  return <Navigate to="/login" replace />;
+};
 
 /**
  * [EN] Root Application Component.
  * Sets up the browser routing hierarchy, global Sonner toast manager, and default page shells.
  *
  * [BN] মূল অ্যাপ্লিকেশন কম্পোনেন্ট।
- * ব্রাউজার রাউটিং হায়ারার্কি, গ্লোবাল টোস্ট নোটিফিকেশন ম্যানেজার এবং ডিফল্ট পেজ শেল কনফিগার করে।
+ * ব্রাউজার রাউটিং হায়ারার্কি, গ্লোবাল টোস্ট নোটিফিকেশন ম্যানেজার এবং সুরক্ষিত এন্টারপ্রাইজ শেল পরিচালনা করে।
  *
  * @returns [EN] Rendered root React tree / [BN] রেন্ডারকৃত রিঅ্যাক্ট অ্যাপ্লিকেশন
  */
 export const App: React.FC = () => {
+  React.useEffect(() => {
+    const unsubscribe = subscribeToSessionEvents(
+      () => {
+        // [EN] Another tab logged out; synchronize current tab without echoing broadcast
+        // [BN] অন্য ট্যাব লগআউট করেছে; পুনরায় ব্রডকাস্ট প্রতিধ্বনি না করে বর্তমান ট্যাব সিঙ্ক করা
+        useAuthStore.getState().logout(false);
+      },
+      () => {
+        // [EN] Another tab logged in; sync auth state
+        // [BN] অন্য ট্যাব লগইন করেছে; অথ স্টেট সিঙ্ক করা
+        if (!useAuthStore.getState().isAuthenticated) {
+          useAuthStore.getState().fetchProfile();
+        }
+      }
+    );
+
+    // [EN] Synchronize live permissions on window focus or tab visibility
+    // [BN] ব্যবহারকারী উইন্ডো বা ট্যাবে ফিরে আসলে ব্যাকএন্ড থেকে সর্বশেষ পারমিশন সিঙ্ক করা
+    const handleFocusSync = () => {
+      if (useAuthStore.getState().isAuthenticated) {
+        useAuthStore.getState().fetchProfile();
+      }
+    };
+    window.addEventListener('focus', handleFocusSync);
+    const handleVisibilitySync = () => {
+      if (document.visibilityState === 'visible' && useAuthStore.getState().isAuthenticated) {
+        useAuthStore.getState().fetchProfile();
+      }
+    };
+    // [EN] Listen for immediate force-logout events (e.g. administrative account lock)
+    // [BN] তাৎক্ষণিক ফোর্স-লগআউট ইভেন্ট লিসেনার (অ্যাডমিন কর্তৃক অ্যাকাউন্ট লক হলে কার্যকর)
+    const handleForceLogout = () => {
+      useAuthStore.getState().logout(false);
+    };
+    window.addEventListener('garments_erp_force_logout', handleForceLogout);
+
+    // [EN] Periodic background privilege and lockout sync (every 15s) for active sessions
+    // [BN] সক্রিয় সেশনের জন্য প্রতি ১৫ সেকেন্ড পর পর ব্যাকগ্রাউন্ডে স্বয়ংক্রিয় পারমিশন ও লক স্থিতি যাচাই
+    const interval = setInterval(() => {
+      if (useAuthStore.getState().isAuthenticated) {
+        useAuthStore.getState().fetchProfile();
+      }
+    }, 15000);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('focus', handleFocusSync);
+      window.removeEventListener('visibilitychange', handleVisibilitySync);
+      window.removeEventListener('garments_erp_force_logout', handleForceLogout);
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <BrowserRouter>
       {/* =====================================================================
@@ -31,72 +104,32 @@ export const App: React.FC = () => {
       <Toaster position="top-right" richColors closeButton />
 
       {/* =====================================================================
-       * [EN] Master Route Hierarchy wrapped in AppLayout Shell
-       * [BN] AppLayout শেল দ্বারা আবদ্ধ মাস্টার রুট হায়ারার্কি
+       * [EN] Master Route Hierarchy: Public & Authenticated Protected Views
+       * [BN] মাস্টার রুট হায়ারার্কি: পাবলিক ও অথেনটিকেটেড প্রটেক্টেড ভিউসমূহ
        * ===================================================================== */}
       <Routes>
-        <Route path="/" element={<AppLayout />}>
-          {/* [EN] Default Foundation Overview View / [BN] ডিফল্ট ফাউন্ডেশন ওভারভিউ ভিউ */}
-          <Route
-            index
-            element={
-              <div className="space-y-6 animate-in fade-in duration-200">
-                {/* [EN] Dashboard Title Header / [BN] ড্যাশবোর্ড টাইটেল হেডার */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-border-subtle gap-2">
-                  <div>
-                    <h1 className="text-xl font-bold tracking-tight text-text-primary">
-                      Operations Dashboard
-                    </h1>
-                    <p className="text-xs text-text-muted mt-0.5">
-                      Real-time enterprise overview across Woven, Denim & Laundry plants.
-                    </p>
-                  </div>
-                </div>
+        {/* [EN] Root Landing Route: Smart Role-Based Redirect / [BN] স্মার্ট রোলভিত্তিক রিডাইরেক্ট */}
+        <Route path="/" element={<RootRedirect />} />
 
-                {/* [EN] KPI Metrics Cards Grid (4-Column) / [BN] কেপিআই মেট্রিক কার্ডস গ্রিড */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {/* [EN] KPI Card 1: Buyer POs / [BN] কেপিআই কার্ড ১: বায়ার অর্ডার */}
-                  <div className="bg-surface-card border border-border-subtle rounded-card p-4 shadow-xs">
-                    <span className="text-xs font-medium text-text-muted">Active Buyer Orders</span>
-                    <div className="text-2xl font-bold text-text-primary mt-1 font-mono">142 PO</div>
-                    <span className="text-[11px] text-status-success font-medium mt-1 inline-block">
-                      ↑ 8.4% vs last week
-                    </span>
-                  </div>
+        {/* [EN] Guest-Only Corporate Login Route / [BN] শুধুমাত্র গেস্টদের জন্য কর্পোরেট লগইন রুট */}
+        <Route
+          path="/login"
+          element={
+            <GuestRoute>
+              <LoginPage />
+            </GuestRoute>
+          }
+        />
 
-                  {/* [EN] KPI Card 2: Fabric Roll Stock / [BN] কেপিআই কার্ড ২: ফেব্রিক রোল স্টক */}
-                  <div className="bg-surface-card border border-border-subtle rounded-card p-4 shadow-xs">
-                    <span className="text-xs font-medium text-text-muted">Fabric In-Stock</span>
-                    <div className="text-2xl font-bold text-text-primary mt-1 font-mono">84,250 Yds</div>
-                    <span className="text-[11px] text-text-muted font-medium mt-1 inline-block">
-                      Ashulia Warehouse
-                    </span>
-                  </div>
-
-                  {/* [EN] KPI Card 3: Sewing Line Output / [BN] কেপিআই কার্ড ৩: সুইং লাইন আউটপুট */}
-                  <div className="bg-surface-card border border-border-subtle rounded-card p-4 shadow-xs">
-                    <span className="text-xs font-medium text-text-muted">Sewing Floor Output</span>
-                    <div className="text-2xl font-bold text-text-primary mt-1 font-mono">92.4% Eff</div>
-                    <span className="text-[11px] text-status-success font-medium mt-1 inline-block">
-                      Lines 1 - 12 Active
-                    </span>
-                  </div>
-
-                  {/* [EN] KPI Card 4: RFID Gate Pass / [BN] কেপিআই কার্ড ৪: আরএফআইডি গেট পাস */}
-                  <div className="bg-surface-card border border-border-subtle rounded-card p-4 shadow-xs">
-                    <span className="text-xs font-medium text-text-muted">RFID Gate Pass</span>
-                    <div className="text-2xl font-bold text-text-primary mt-1 font-mono">1,820 Ctns</div>
-                    <span className="text-[11px] text-status-info font-medium mt-1 inline-block">
-                      100% Verified
-                    </span>
-                  </div>
-                </div>
-              </div>
-            }
-          />
-
-          {/* [EN] Catch-all redirect to root / [BN] ক্যাচ-অল রিডাইরেক্ট রুট */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+        {/* [EN] Authenticated Protected Enterprise Shell / [BN] সুরক্ষিত এন্টারপ্রাইজ শেল */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
+          {renderDomainRoutes()}
         </Route>
       </Routes>
     </BrowserRouter>

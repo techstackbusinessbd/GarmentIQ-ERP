@@ -6,5 +6,6 @@
  */
 
 export * from './navigationConstants';
+export * from './domainConstants';
 export * from './statusConstants';
 export * from './uiConstants';

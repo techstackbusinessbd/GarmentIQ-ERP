@@ -59,7 +59,7 @@ frontend/src/
   - `Button.jsx` (Primary, Secondary, Outline, Ghost, Danger ভ্যারিয়েন্ট; `isLoading`, `icon`, `size`)
   - `Badge.jsx` ও `StatusBadge.jsx` (Semantic status pills: Active, Pending, Shipped, Defective)
   - `TextInput.jsx`, `NumberInput.jsx`, `Select.jsx`, `Checkbox.jsx`, `ToggleSwitch.jsx`
-  - `Modal.jsx`, `Drawer.jsx`, `Popover.jsx`, `Tooltip.jsx`, `DropdownMenu.jsx`
+  - `Modal.jsx` (শুধুমাত্র "ভেরি স্মল" মাইক্রো-ডায়ালগ ও প্রম্পট; কোনো এনটিটি বা ফর্ম নিষিদ্ধ — রুল ২৭), `Drawer.jsx`, `Popover.jsx`, `Tooltip.jsx`, `DropdownMenu.jsx`
   - `SkeletonLoader.jsx`, `Spinner.jsx`, `EmptyState.jsx`, `Avatar.jsx`, `AlertBanner.jsx`
 
 ### স্তর ২: সমন্বিত কন্ট্রোল — Composite Molecules (`src/components/composite/`)
@@ -69,7 +69,7 @@ frontend/src/
   - `MetricCard.jsx`: কেপিআই ও অ্যানালিটিক্স কার্ড (আইকন, ভ্যালু, ট্রেন্ড ইন্ডিকেটর ও সাবটেক্সট)।
   - `DataTable.jsx`: ভার্চুয়ালাইজড TanStack Table গ্রিড (সার্চ, ফিল্টারিং, পেজিনেশন ও অ্যাকশন স্লট)।
   - `FormField.jsx`: লেবেল, ইনপুট স্লট, রিকোয়ার্ড এস্টেরিস্ক (`*`), হেল্পার টেক্সট ও ভ্যালিডেশন এরর।
-  - `ConfirmDialog.jsx`: ডিলিট বা স্ট্যাটাস চেঞ্জের জন্য রিইউজেবল কনফার্মেশন প্রম্পট।
+  - `ConfirmDialog.jsx`: ডিলিট বা স্ট্যাটাস চেঞ্জের জন্য রিইউজেবল মাইক্রো-কনফার্মেশন প্রম্পট (রুল ২৭ অনুসারী)।
 
 ### স্তর ৩: ফ্রেমওয়ার্ক ও ফ্রেম — Layouts & Shells (`src/components/layout/`)
 - **ম্যান্ডেটরি কম্পোনেন্টস**:

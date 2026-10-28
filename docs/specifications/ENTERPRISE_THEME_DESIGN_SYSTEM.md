@@ -1,82 +1,233 @@
-# এন্টারপ্রাইজ মাল্টি-থিম ও পূর্ণাঙ্গ ডিজাইন সিস্টেম স্পেসিফিকেশন (Enterprise Design System & Theme Engine)
+# GarmentIQ Premium Eye-Comfort UI Theme & Design System Specification
+*(এন্টারপ্রাইজ আই-কমফোর্ট ডিজাইন সিস্টেম ও মাস্টার থিম স্পেসিফিকেশন)*
 
-*প্রজেক্ট: GarmentIQ-ERP (RMG Woven, Denim & Non-Denim Enterprise Platform)*  
-*তত্ত্বাবধায়ক: 👩‍💻 সাদিয়া জাহান (Senior Frontend Lead) ও 👨‍💼 তানভীর আহমেদ (Chief Solutions Architect)*  
-*তারিখ: ১৯ অক্টোবর ২০২৬ | ভার্সন: ২.০ (সম্পূর্ণ এন্টারপ্রাইজ সংস্করণ)*  
-*নীতিমালা রেফারেন্স: [Rule 07](file:///g:/ERP-Software/Garments-ERP/.agents/rules/07_file_length_and_modularity.md) | [Rule 20](file:///g:/ERP-Software/Garments-ERP/.agents/rules/20_centralized_design_tokens_and_zero_inline_styles.md) | [Rule 21](file:///g:/ERP-Software/Garments-ERP/.agents/rules/21_component_based_ui_ux_architecture.md)*
+**Version:** 2.0 (Official Final Enterprise Standard)  
+**Date:** 22 October 2026  
+**Stack:** Tailwind CSS 4 · React 19 · Vite 6 · Lucide React · shadcn/ui  
+**Theme Direction:** Refined Midnight Navy (`#142B45`) + Soft Slate (`#F3F5F7`) + Refined Teal (`#0F766E`)  
+**Supervisors:** 👩‍💻 Sadia Jahan (Senior Frontend & UI/UX Lead) & 👨‍💼 Tanvir Ahmed (Chief Solutions Architect)  
+**Rules Reference:** [Rule 07 (File Length)](file:///g:/ERP-Software/Garments-ERP/.agents/rules/07_file_length_and_modularity.md) | [Rule 15 (Bilingual)](file:///g:/ERP-Software/Garments-ERP/.agents/rules/15_bilingual_code_commenting_standards.md) | [Rule 20 (Design Tokens)](file:///g:/ERP-Software/Garments-ERP/.agents/rules/20_centralized_design_tokens_and_zero_inline_styles.md) | [Rule 21 (Components)](file:///g:/ERP-Software/Garments-ERP/.agents/rules/21_component_based_ui_ux_architecture.md)
 
 ---
 
-## ১. ভূমিকা ও সিস্টেম আর্কিটেকচার (System Architecture)
+## 1. Purpose (উদ্দেশ্য ও ভূমিকা)
 
-GarmentIQ-ERP-এর ডিজাইন সিস্টেম আন্তর্জাতিক মানসম্পন্ন (IBM Carbon ও Salesforce Lightning ধাঁচে) একটি **সম্পূর্ণ কম্পোনেন্ট-ভিত্তিক, হাইপার-পারফরম্যান্ট এবং সেন্ট্রালাইজড ডিজাইন ফ্রেমওয়ার্ক**। তৈরি পোশাক শিল্পে দীর্ঘ সময় একটানা কাজ করা মার্চেন্ডাইজার থেকে শুরু করে কাটিং ও ওয়াশিং ফ্লোরের টার্মিনাল অপারেটরদের চোখের স্বাচ্ছন্দ্য ও উচ্চ ডেটা ঘনত্বের চাহিদা মেটাতে এটি তৈরি করা হয়েছে।
+This document defines the single, authoritative, consistent, low-glare visual system for the GarmentIQ Enterprise ERP platform (RMG Woven, Denim & Non-Denim). It is engineered specifically for long work sessions (8–10 hours daily) by merchandisers, planning officers, cutting supervisors, industrial laundry managers, and commercial accounts teams without sacrificing readability, clear state communication, or WCAG 2.2 AA accessibility.
+
+“Eye-comfort” is an engineered ergonomic goal: contrast, font rendering, ambient light compatibility, display brightness, and zero-glare soft slate neutral surfaces work together to eliminate visual fatigue.
+
+---
+
+## 2. Design Principles (ডিজাইন নীতিমালা)
+
+- **Calm by Default (চোখের জন্য স্বস্তিদায়ক ক্যানভাস):** Use a soft neutral workspace (`#F3F5F7`) rather than a full-screen glaring pure-white canvas.
+- **Hierarchy Before Decoration (অলংকরণের আগে হায়ারার্কি):** Typography, spatial padding, alignment, and surface elevation separate modules and cards cleanly.
+- **Navy for Structure (কাঠামোর জন্য মিডনাইট নেভি):** Deep Midnight Navy (`#142B45`) anchors the application brand, headers, and sidebar navigation, without overwhelming the content canvas.
+- **Teal for Action (অ্যাকশন ও সিঙ্ক নির্দেশনায় রিফাইনড টিল):** Reserve the energetic Teal accent (`#0F766E`) strictly for high-intent primary actions (Save, Submit, Approve, Create), active indicators, and meaningful operational progress.
+- **Semantic Colors (সুনির্দিষ্ট সেমান্টিক অর্থ):** Success (`#15803D`), Warning (`#B45309`), Danger (`#B91C1C`), and Info (`#1D4ED8`) communicate state consistently across all modules.
+- **Dense but Legible (উচ্চ ঘনত্ব কিন্তু শতভাগ পাঠযোগ্য):** Enterprise tables, BOM matrices, and marker ratio grids remain compact and operable.
+- **Single Master Layout (একক মাস্টার লেআউট):** Single Topbar (64px, `#FFFFFF`), collapsible sidebar (60px/240px), 3-level navigation (Domain > Module > Menu), and zero second topbar.
+- **Centralized Tokens (শতভাগ সেন্ট্রালাইজড টোকেনস):** Zero hardcoded hex values in UI components; every color, border, and radius flows from `frontend/src/index.css`.
+- **Optional Dark Theme (ঐচ্ছিক ডার্ক মোড):** Dark mode is an ergonomic user choice for night shifts and low-light environments, not a forced default.
+
+---
+
+## 3. Brand Palette & Semantic Tokens (ব্র্যান্ড প্যালেট ও সেমান্টিক টোকেনস)
+
+| Token Name | Hex Code | Purpose & Usage in GarmentIQ |
+|---|---|---|
+| **Primary / Midnight Navy** | `#142B45` | Brand structure, sidebar navigation, headers, table sticky anchors |
+| **Primary Hover** | `#1D3B5A` | Hover state for dark primary structural elements |
+| **Primary Soft** | `#E8EEF4` | Selected navigation background, subtle badge background |
+| **Accent / Refined Teal** | `#0F766E` | Primary action buttons (CTA), active state indicator, progress |
+| **Accent Hover** | `#115E59` | Hover state for teal primary action buttons |
+| **Workspace / Soft Slate** | `#F3F5F7` | Main application background (low-glare canvas) |
+| **Surface / Cloud White** | `#FFFFFF` | Cards, dialogs, forms, virtual data table grids |
+| **Surface Muted** | `#EAF0F4` | Sunken panels, table row hover, segmented tabs, search inputs |
+| **Border / Subtle Gray** | `#D8E0E8` | Input borders, separators, card outlines, table gridlines |
+| **Text Primary / Deep Slate** | `#182536` | Main headings, table data values, high-contrast body copy |
+| **Text Secondary / Slate Muted**| `#526579` | Form labels, descriptions, secondary navigation |
+| **Text Muted / Placeholder** | `#64748B` | Form placeholders, metadata, auxiliary timestamps |
+| **Success / Forest Green** | `#15803D` | Completed, approved, QC passed, within tolerance |
+| **Warning / Amber Ochre** | `#B45309` | Pending review, attention required, nearing SLA limit |
+| **Danger / Crimson Red** | `#B91C1C` | Rejected, failed QC, destructive action, overdue shipment |
+| **Info / Royal Blue** | `#1D4ED8` | Informational callouts, active system sync notices |
+
+---
+
+## 4. Suggested Color Distribution (স্ক্রিন কালার রেশিও বন্টন)
+
+| Color Family | Approximate Share | Enterprise Ergonomic Guidance |
+|---|---:|---|
+| **Workspace Neutrals & Surfaces** | **70–80%** | Most of the screen consists of quiet neutral space (`#F3F5F7`) and white content surfaces (`#FFFFFF`). |
+| **Navy Structure** | **10–18%** | Navigation sidebar, brand mark, topbar anchors, subtle section headers. |
+| **Teal Accent** | **5–8%** | Primary action buttons and selected tab indicators; never color decorative icons arbitrarily. |
+| **Semantic Status Colors** | **1–3%** | Badges, alerts, and tolerance exception chips; never used for general decoration. |
+
+---
+
+## 5. Light Theme Tokens (`:root`)
+
+```css
+:root {
+  color-scheme: light;
+
+  /* Brand Structure */
+  --primary: #142B45;
+  --primary-hover: #1D3B5A;
+  --primary-soft: #E8EEF4;
+
+  /* Primary Accent & Action */
+  --accent: #0F766E;
+  --accent-hover: #115E59;
+
+  /* Canvas & Surfaces */
+  --background: #F3F5F7;
+  --surface: #FFFFFF;
+  --surface-muted: #EAF0F4;
+
+  /* Typography & Lines */
+  --foreground: #182536;
+  --muted-foreground: #526579;
+  --border: #D8E0E8;
+
+  /* Semantic Status */
+  --success: #15803D;
+  --warning: #B45309;
+  --danger: #B91C1C;
+  --info: #1D4ED8;
+}
+```
+
+---
+
+## 6. Optional Dark Theme Tokens (`.dark`)
+
+```css
+.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Brand Structure (Dark) */
+  --primary: #A9C4E0;
+  --primary-hover: #C2D7EB;
+  --primary-soft: #253B52;
+
+  /* Primary Accent & Action (Dark) */
+  --accent: #5EE0CF;
+  --accent-hover: #8AEADD;
+
+  /* Canvas & Surfaces (Dark) */
+  --background: #111A24;
+  --surface: #192531;
+  --surface-muted: #22313F;
+
+  /* Typography & Lines (Dark) */
+  --foreground: #E5ECF3;
+  --muted-foreground: #A6B5C5;
+  --border: #344454;
+
+  /* Semantic Status (Dark) */
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --danger: #F87171;
+  --info: #93C5FD;
+}
+```
+
+---
+
+## 7. Tailwind CSS 4 `@theme inline` Implementation
+
+In `frontend/src/index.css`:
+
+```css
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  --font-sans: "Inter", "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --radius-lg: 0.625rem;
+}
+```
+
+---
+
+## 8. Master Layout Architecture (একক মাস্টার শেল)
 
 ```
-[Theme Switcher Dropdown (Top Header)]
-                 │
-                 ▼ (Updates Zustand Store & LocalStorage)
-     <html data-theme="sapphire">
-                 │
-                 ▼ (Native CSS Variable Cascading @ 60 FPS)
-   Tailwind CSS v4 @theme Tokens -> Instant Global Style Update
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ 1. GLOBAL TOPBAR (64px, Single Header, #FFFFFF, border-b #D8E0E8, z-20)               │
+│ [Brand Logo] [Sidebar Toggle]   [Breadcrumb Nav]        [Global Search] [Theme] [User] │
+├────────────────────────┬───────────────────────────────────────────────────────────────┤
+│ 2. MASTER SIDEBAR      │ 3. WORKSPACE CANVAS (PageShell, bg-background #F3F5F7)        │
+│ Fixed top-16 (64px)    │ ┌───────────────────────────────────────────────────────────┐ │
+│ Expanded: 240px        │ │ PageHeader: Breadcrumbs + Title + Sticky Action Toolbar   │ │
+│ Collapsed: 60px        │ ├───────────────────────────────────────────────────────────┤ │
+│                        │ │ KPI Metric Cards Grid (bg-surface, border border-border)  │ │
+│ • L1 Domain Picker     │ ├───────────────────────────────────────────────────────────┤ │
+│ • L2 Module Accordions │ │ Virtualized Data Table (TanStack Table v8, bg-surface)    │ │
+│ • L3 Menu Nav Links    │ └───────────────────────────────────────────────────────────┘ │
+└────────────────────────┴───────────────────────────────────────────────────────────────┘
 ```
 
----
-
-## ২. মডুলার ডিজাইন সিস্টেম স্পেসিফিকেশন ডিরেক্টরি (Core Modules)
-
-সম্পূর্ণ ডিজাইন সিস্টেমটি ৪টি বিস্তারিত উপ-স্পেসিফিকেশনে বিভক্ত:
-
-| মডিউল রেফারেন্স | ডকুমেন্ট লিঙ্ক | মূল বিষয়বস্তু ও কভারেজ |
-| :--- | :--- | :--- |
-| **মডিউল ১: টাইপোগ্রাফি** | [01_TYPOGRAPHY_AND_TYPE_SCALE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/01_TYPOGRAPHY_AND_TYPE_SCALE.md) | Inter ও JetBrains Mono ফন্ট, ১০-স্তরের টাইপ-স্কেল র‍্যাম্প (10px - 36px), লাইন-হাইট, ফন্ট ওয়েট ও `tabular-nums` রুলস। |
-| **মডিউল ২: কালার প্যালেট** | [02_COLOR_PALETTES_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/02_COLOR_PALETTES_AND_VARIANTS.md) | ৪টি থিমের পূর্ণাঙ্গ ৫০-৯৫০ টোনাল স্কেল, ৪টি সেমান্টিক স্ট্যাটাস কালার, ৪টি কম্পোনেন্ট ভ্যারিয়েন্ট ও WCAG 2.1 AA/AAA অডিট। |
-| **মডিউল ৩: গ্রিড ও এলিভেশন**| [03_SPATIAL_GRID_AND_ELEVATION.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/03_SPATIAL_GRID_AND_ELEVATION.md) | ৪px/৮px বেসলাইন গ্রিড, ৬টি রেসপনসিভ ব্রেকপয়েন্ট, লেআউট ডাইমেনশনস, বর্ডার রেডিয়াস স্কেল ও জেড-ইনডেক্স লেয়ারিং। |
-| **মডিউল ৪: কম্পোনেন্ট অ্যানাটমি**| [04_COMPONENT_ANATOMY_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/04_COMPONENT_ANATOMY_AND_VARIANTS.md) | বাটন (৫ ভ্যারিয়েন্ট, ৪ সাইজ), স্ট্যাটাস ব্যাজ, ফর্ম কন্ট্রোলস, TanStack হাই-ডেনসিটি টেবিল ও মোডাল অ্যানাটমি। |
-| **মডিউল ৫: স্ক্রিন কালার রেশিও ও ম্যাপিং**| [05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md) | ৬০-৩০-১০ ব্যালেন্স রুল, আই-কমফোর্ট আরগোনোমিক্স এবং কম্পোনেন্ট-টু-কালার ডিটারমিনিস্টিক মাস্টার ম্যাপিং। |
-| **মডিউল ৬: থিম লেআউট আর্কিটেকচার**| [06_THEME_LAYOUT_ARCHITECTURE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/06_THEME_LAYOUT_ARCHITECTURE.md) | মাস্টার শেল DOM হায়ারার্কি, টপ হেডার (64px), কোল্যাপ্সিবল সাইডবার, স্টিকি পেজ অ্যাকশন বার ও শপ ফ্লোর কিয়স্ক মোড। |
+- **Single Topbar Only:** 64px height, sticky top-0, pure white surface (`#FFFFFF`). Zero 2nd topbar.
+- **3-Level Navigation Hierarchy:**
+  1. **Level 1 (Domain):** Selected via `SidebarDomainPicker` popover at the top of the sidebar.
+  2. **Level 2 (Module):** Collapsible accordion group headers with folder icons and badges.
+  3. **Level 3 (Menu):** Active route links (`/merchandising/buyers`, `/merchandising/orders`, etc.).
 
 ---
 
-## ৩. ৪টি এন্টারপ্রাইজ থিমের কালার টোকেন ম্যাট্রিক্স (Master Token Matrix)
+## 9. Component Rules (কম্পোনেন্ট ব্যবহারের সুনির্দিষ্ট নিয়ম)
 
-| সিএসএস টোকেন ভ্যারিয়েবল | ১. Royal Indigo (ডিফল্ট) | ২. Sapphire Corporate | ৩. Emerald Sustainable | ৪. Midnight Obsidian (ডার্ক) |
-| :--- | :---: | :---: | :---: | :---: |
-| **`--brand-sidebar`** | `#0f172a` (Slate 900) | `#111827` (Gray 900) | `#064e3b` (Emerald 950)| `#090d16` (Deep Obsidian) |
-| **`--brand-sidebar-header`**| `#020617` (Slate 950) | `#030712` (Gray 950) | `#022c22` (Emerald 980)| `#05070c` (Ultra Dark) |
-| **`--brand-sidebar-border`**| `#1e293b` (Slate 800) | `#1f2937` (Gray 800) | `#065f46` (Emerald 800)| `#161e30` (Obsidian Border) |
-| **`--brand-accent`** | `#4f46e5` (Indigo 600) | `#2563eb` (Blue 600) | `#059669` (Emerald 600)| `#6366f1` (Neon Indigo) |
-| **`--brand-accent-hover`**| `#4338ca` (Indigo 700) | `#1d4ed8` (Blue 700) | `#047857` (Emerald 700)| `#818cf8` (Indigo 400) |
-| **`--brand-accent-light`**| `#e0e7ff` (Indigo 100) | `#dbeafe` (Blue 100) | `#d1fae5` (Emerald 100)| `#1e1b4b` (Indigo 950) |
-| **`--surface-base`** | `#f8fafc` (Slate 50) | `#f9fafb` (Gray 50) | `#fafafa` (Zinc 50) | `#0b0f19` (Pitch Dark) |
-| **`--surface-card`** | `#ffffff` (Pure White) | `#ffffff` (Pure White) | `#ffffff` (Pure White) | `#151c2c` (Charcoal Surface)|
-| **`--surface-muted`** | `#f1f5f9` (Slate 100) | `#f3f4f6` (Gray 100) | `#f4f4f5` (Zinc 100) | `#1e293b` (Muted Dark) |
-| **`--border-subtle`** | `#e2e8f0` (Slate 200) | `#e5e7eb` (Gray 200) | `#e4e4e7` (Zinc 200) | `#252f44` (Dark Border) |
-| **`--text-primary`** | `#0f172a` (Slate 900) | `#111827` (Gray 900) | `#18181b` (Zinc 900) | `#f8fafc` (Slate 50) |
-| **`--text-muted`** | `#64748b` (Slate 500) | `#6b7280` (Gray 500) | `#71717a` (Zinc 500) | `#94a3b8` (Slate 400) |
+### 9.1 Buttons (`Button.tsx`)
+- **Primary Button:** `bg-accent hover:bg-accent-hover text-white` (Refined Teal `#0F766E` with hover `#115E59`). Reserved for primary submit, approve, and save actions.
+- **Secondary Button:** `bg-surface hover:bg-surface-muted text-foreground border border-border`.
+- **Outline Button:** `bg-transparent hover:bg-accent/10 text-accent border border-accent`.
+- **Ghost Button:** `bg-transparent hover:bg-surface-muted text-muted-foreground hover:text-foreground`.
+- **Destructive / Danger Button:** `bg-danger hover:bg-red-700 text-white`.
 
----
+### 9.2 Data Tables (`DataTable.tsx`)
+- Data table containers use `bg-surface border border-border rounded-lg shadow-2xs`.
+- Table headers use `bg-surface-muted text-foreground font-semibold border-b border-border`.
+- Table rows use `hover:bg-background transition-colors` with subtle dividers (`border-b border-border/60`).
+- Right-align numeric quantities, fabric weights, prices, and financial amounts.
 
-## ৪. থিমসমূহের ডোমেন উপযোগিতা ও লক্ষ্যমাত্রা (Domain Alignment)
-
-1. **Royal Indigo & Raw Denim (`indigo`)**:
-   - মার্চেন্ডাইজিং, বায়ার যোগাযোগ এবং টেক-প্যাক বিশ্লেষণে ডেনিম ইন্ডাস্ট্রির মৌলিক আভিজাত্য ফুটিয়ে তোলে।
-2. **Sapphire Corporate & Pure Steel (`sapphire`)**:
-   - ফিন্যান্স, কমার্শিয়াল শিপিং, এলসি ট্র্যাকিং ও এক্সিকিউটিভ ডিরেক্টরদের ডেটা ড্যাশবোর্ডের জন্য আন্তর্জাতিক মান।
-3. **Emerald Loom & Sustainable Textile (`emerald`)**:
-   - ইউরোপীয় বায়ার অডিট, কমপ্লায়েন্স, GOTS অর্গানিক কটন ও গ্রিন ফ্যাক্টরি (LEED Platinum) সার্টিফিকেশনের জন্য আদর্শ।
-4. **Midnight Obsidian & Cyber Neon (`obsidian`)**:
-   - কাটিং ও সুইং শপ ফ্লোরের টাচস্ক্রিন টার্মিনাল, রাতের শিফট এবং কম আলোর পরিবেশে জিরো আই-স্ট্রেন।
+### 9.3 Forms & Inputs
+- Persistent labels in `text-xs font-semibold text-foreground`.
+- Input fields use `h-10 px-3 bg-surface border border-border rounded-md text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent`.
+- Server-side validation errors trigger `border-danger focus:ring-danger` and display `.erp-error-message`.
 
 ---
 
-## ৫. ফ্রন্টএন্ড কোডিং ও বাস্তবায়ন মেকানিজম
+## 10. Design Sub-Specifications Index
 
-1. **Tailwind CSS v4 `@theme` রেজিস্ট্রেশন**:
-   - `frontend/src/index.css`-এ সমস্ত টোকেন ভ্যারিয়েবল হিসেবে সংজ্ঞায়িত এবং রুট অ্যাট্রিবিউট থেকে ডেটা গ্রহণ করে।
-2. **Zustand থিম স্টোর (`frontend/src/store/themeStore.js`)**:
-   - রিয়েক্টিভ স্টেট ম্যানেজমেন্ট এবং `garments_erp_theme` ব্রাউজার লোকালস্টোরেজ পারসিসটেন্স।
-3. **থিম সুইচার পপওভার কম্পোনেন্ট (`frontend/src/components/ui/ThemeSwitcher.jsx`)**:
-   - ডুয়াল-টোন কালার সার্কেল প্রিভিউ, টিকমার্ক ও কিবোর্ড ট্র্যাভার্সাল সমৃদ্ধ ইউআই প্রিম্যাটিভ।
-4. **Zero FOUC গ্যারান্টি**:
-   - `index.html`-এর হেড সেকশনে তাৎক্ষণিক ইনলাইন বুটস্ট্র্যাপ স্ক্রিপ্ট যা হোয়াইট ফ্ল্যাশ সম্পূর্ণ প্রতিরোধ করে।
+For granular engineering details, consult the following dedicated sub-specifications:
+
+1. [01_TYPOGRAPHY_AND_TYPE_SCALE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/01_TYPOGRAPHY_AND_TYPE_SCALE.md) — 10-level type scale (10px–36px), font weights, and tabular numbers.
+2. [02_COLOR_PALETTES_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/02_COLOR_PALETTES_AND_VARIANTS.md) — Tonal ramps, hex values, and contrast audit.
+3. [03_SPATIAL_GRID_AND_ELEVATION.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/03_SPATIAL_GRID_AND_ELEVATION.md) — 4px/8px baseline grid, radii ramp, and z-index elevation scale.
+4. [04_COMPONENT_ANATOMY_AND_VARIANTS.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/04_COMPONENT_ANATOMY_AND_VARIANTS.md) — Button, badge, input, and modal specifications.
+5. [05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/05_SCREEN_COLOR_RATIO_AND_COMPONENT_MAPPING.md) — 70-80% / 10-18% / 5-8% / 1-3% distribution matrix.
+6. [06_THEME_LAYOUT_ARCHITECTURE.md](file:///g:/ERP-Software/Garments-ERP/docs/specifications/design-system/06_THEME_LAYOUT_ARCHITECTURE.md) — Master shell DOM hierarchy, single topbar, and 3-level sidebar.

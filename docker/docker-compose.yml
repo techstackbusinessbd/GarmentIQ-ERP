@@ -35,11 +35,15 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/garments_erp_db
       SPRING_DATASOURCE_USERNAME: erp_user
       SPRING_DATASOURCE_PASSWORD: erp_password_secure123
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
       SPRING_THREADS_VIRTUAL_ENABLED: "true"
     ports:
       - "${BACKEND_PORT:-8081}:8080"

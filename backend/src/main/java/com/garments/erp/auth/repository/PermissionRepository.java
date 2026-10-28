@@ -58,4 +58,17 @@ public interface PermissionRepository extends JpaRepository<Permission, UUID> {
      * @return [EN] true if exists, false otherwise / [BN] বিদ্যমান থাকলে true
      */
     boolean existsByPermissionCode(String permissionCode);
+
+    /**
+     * [EN] Retrieves all permissions configured with domain metadata ordered by sortOrder
+     * [BN] ডোমেন মেটাডাটা সহ সকল পারমিশন সাজানো ক্রমানুসারে রিটার্ন করে
+     */
+    List<Permission> findAllByDomainIdIsNotNullOrderBySortOrderAsc();
+
+    /**
+     * [EN] Retrieves permissions for a specific domain ordered by sortOrder
+     * [BN] নির্দিষ্ট ডোমেনের পারমিশনসমূহ সাজানো ক্রমানুসারে রিটার্ন করে
+     */
+    List<Permission> findAllByDomainIdOrderBySortOrderAsc(String domainId);
 }
+

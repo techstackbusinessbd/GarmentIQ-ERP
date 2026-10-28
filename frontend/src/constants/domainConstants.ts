@@ -1,0 +1,109 @@
+/**
+ * [EN] Domain Registry & 2-Level Navigation Hierarchy (domainConstants.ts)
+ * [BN] ডোমেন রেজিস্ট্রি ও ২-লেভেল নেভিগেশন হায়ারার্কি কনস্ট্যান্টস (রুল ০৭, ১৫, ১৯ অনুবর্তী)
+ */
+
+import type { NavGroup } from './navigationConstants';
+
+/**
+ * [EN] Contract for top-level operational domain item in the secondary topbar.
+ * [BN] ২য় টপবারে প্রদর্শিত শীর্ষস্থানীয় অপারেশনাল ডোমেন ডেফিনেশন ইন্টারফেস।
+ */
+export interface DomainItem {
+  /** [EN] Unique domain identifier / [BN] অনন্য ডোমেন আইডেন্টিফায়ার */
+  readonly id: string;
+  /** [EN] Ultra-concise 1-word display label / [BN] ১-শব্দের সংক্ষিপ্ত লেবেল */
+  readonly label: string;
+  /** [EN] Target default landing URL / [BN] প্রাথমিক ল্যান্ডিং রুট পাথ */
+  readonly path: string;
+  /** [EN] Lucide React icon name / [BN] Lucide আইকন নেম */
+  readonly iconName: string;
+  /** [EN] URL prefix pattern for active route matching / [BN] সক্রিয় রুট ম্যাপিং প্রিফিক্স */
+  readonly rootPrefix: string;
+  /** [EN] Optional visual indicator badge / [BN] অপশনাল ব্যাজ */
+  readonly badge?: string | null;
+  /** [EN] 2-Level grouped navigation hierarchy for this domain / [BN] এই ডোমেনের ২-লেভেল মেনু ট্রি */
+  readonly groups: readonly NavGroup[];
+}
+
+/**
+ * [EN] 11 Core Factory Operational Domains (1-word concise names).
+ * [BN] গার্মেন্টস ফ্যাক্টরি অপারেশনের ১১টি মূল ডোমেন (১-শব্দের সংক্ষিপ্ত নাম)।
+ */
+export const ERP_DOMAINS: readonly DomainItem[] = [
+  {
+    id: 'overview',
+    label: 'Overview',
+    path: '/app/overview/dashboard',
+    iconName: 'LayoutDashboard',
+    rootPrefix: '/app/overview',
+    groups: [
+      {
+        id: 'overview-main',
+        title: 'Executive Insights',
+        items: [{ id: 'dashboard-kpi', label: 'Overview & Analytics', path: '/app/overview/dashboard', iconName: 'LayoutDashboard' }],
+      },
+    ],
+  },
+  {
+    id: 'admin',
+    label: 'Administration',
+    path: '/app/admin/users',
+    iconName: 'Shield',
+    rootPrefix: '/app/admin',
+    groups: [
+      {
+        id: 'admin-clients-group',
+        title: 'Client Management',
+        items: [
+          { id: 'admin-clients-list', label: 'Client Directory', path: '/app/admin/clients', iconName: 'Building2', permission: 'TENANT:MENU' },
+          { id: 'admin-clients-new', label: 'New Client', path: '/app/admin/clients/new', iconName: 'Plus', permission: 'TENANT:CREATE' },
+        ],
+      },
+      {
+        id: 'admin-users-group',
+        title: 'User Management',
+        items: [
+          { id: 'admin-users-list', label: 'User Directory', path: '/app/admin/users', iconName: 'Users', permission: 'USER:MENU' },
+          { id: 'admin-users-special-permissions', label: 'Special Permissions', path: '/app/admin/users/special-permissions', iconName: 'ShieldAlert', permission: 'SPECIAL_PERM:MENU' },
+          { id: 'admin-users-new', label: 'New User', path: '/app/admin/users/new', iconName: 'UserPlus', permission: 'USER:CREATE' },
+          { id: 'admin-password-reset', label: 'Password Reset', path: '/app/admin/users/reset-password', iconName: 'KeyRound', permission: 'PASSWORD_RESET:MENU' },
+          { id: 'admin-profile', label: 'User Profile', path: '/app/admin/profile', iconName: 'User', permission: 'PROFILE:MENU' },
+        ],
+      },
+      {
+        id: 'admin-privilege-group',
+        title: 'Privilege Management',
+        items: [
+          { id: 'admin-roles', label: 'Role Management', path: '/app/admin/roles', iconName: 'ShieldCheck', permission: 'ROLE:MENU' },
+          { id: 'admin-matrix', label: 'Role Access Matrix', path: '/app/admin/roles/matrix', iconName: 'SlidersHorizontal', permission: 'ROLE:MENU' },
+        ],
+      },
+      {
+        id: 'admin-settings-group',
+        title: 'Global Settings',
+        items: [
+          { id: 'admin-settings-autocode', label: 'Auto-Code Formats', path: '/app/admin/settings/auto-code', iconName: 'Binary', permission: 'SETTINGS:MENU' },
+          { id: 'admin-settings-shifts', label: 'Factory Shifts', path: '/app/admin/settings/shifts', iconName: 'Clock', permission: 'SETTINGS:MENU' },
+          { id: 'admin-settings-currencies', label: 'Currencies & Rates', path: '/app/admin/settings/currencies', iconName: 'DollarSign', permission: 'SETTINGS:MENU' },
+          { id: 'admin-settings-security', label: 'Platform Security', path: '/app/admin/settings/security', iconName: 'Shield', permission: 'SETTINGS:MENU' },
+          { id: 'admin-audit-logs', label: 'Audit Logs', path: '/app/admin/audit-logs', iconName: 'History', permission: 'SETTINGS:MENU' },
+        ],
+      },
+      {
+        id: 'admin-library-group',
+        title: 'Global Library',
+        items: [
+          { id: 'admin-library-units', label: 'Measurement Units', path: '/app/admin/library/units', iconName: 'Ruler', permission: 'LIBRARY:MENU' },
+          { id: 'admin-library-sizes', label: 'Garment Sizes', path: '/app/admin/library/sizes', iconName: 'Tag', permission: 'LIBRARY:MENU' },
+          { id: 'admin-library-items', label: 'Garment Items', path: '/app/admin/library/items', iconName: 'Shirt', permission: 'LIBRARY:MENU' },
+          { id: 'admin-library-colors', label: 'Colors & Pantones', path: '/app/admin/library/colors', iconName: 'Palette', permission: 'LIBRARY:MENU' },
+          { id: 'admin-library-seasons', label: 'Export Seasons', path: '/app/admin/library/seasons', iconName: 'Calendar', permission: 'LIBRARY:MENU' },
+          { id: 'admin-library-defects', label: 'Quality Defects', path: '/app/admin/library/defects', iconName: 'AlertTriangle', permission: 'LIBRARY:MENU' },
+        ],
+      },
+    ],
+  },
+];
+
+

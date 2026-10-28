@@ -57,6 +57,15 @@ class AuthServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private com.garments.erp.tenant.repository.TenantRepository tenantRepository;
+
+    @Mock
+    private SecuritySettingsService securitySettingsService;
+
+    @Mock
+    private com.garments.erp.settings.service.SystemAuditLogService auditLogService;
+
     @InjectMocks
     private AuthService authService;
 

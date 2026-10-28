@@ -78,6 +78,95 @@ public class Tenant implements Serializable {
     private String subscriptionTier;
 
     /**
+     * [EN] Corporate organizational structure (e.g. GROUP_OF_COMPANIES, STANDALONE_FACTORY)
+     * [BN] প্রাতিষ্ঠানিক কাঠামো (গ্রুপ অফ কোম্পানিজ অথবা একক কারখানা)
+     */
+    @Column(name = "company_type", nullable = false, length = 50)
+    private String companyType = "GROUP_OF_COMPANIES";
+
+    /**
+     * [EN] Hosting infrastructure model (e.g. CLOUD_SAAS, SELF_HOSTED)
+     * [BN] হোস্টিং মডেল (ক্লাউড সাউস অথবা সেলফ-হোস্টেড অন-প্রেমিসেস)
+     */
+    @Column(name = "hosting_type", nullable = false, length = 30)
+    private String hostingType = "CLOUD_SAAS";
+
+    /**
+     * [EN] Cloud tenant subdomain slug (e.g. hameem -> hameem.garmentiq.com)
+     * [BN] ক্লাউড টেন্যান্ট সাবডোমেন স্লাগ
+     */
+    @Column(name = "subdomain", length = 60)
+    private String subdomain;
+
+    /**
+     * [EN] Self-hosted / on-premise custom domain FQDN or private host IP
+     * [BN] অন-প্রেমিসেস ডেডিকেটেড ডোমেন বা হোস্ট আইপি
+     */
+    @Column(name = "custom_domain", length = 150)
+    private String customDomain;
+
+    /**
+     * [EN] Core apparel manufacturing domain (e.g. DENIM, WOVEN, COMPOSITE, INTEGRATED)
+     * [BN] মূল তৈরি পোশাক ও ডেনিম উৎপাদন ক্ষেত্র
+     */
+    @Column(name = "business_type", length = 50)
+    private String businessType;
+
+    /**
+     * [EN] Industrial cluster or manufacturing export processing zone (EPZ)
+     * [BN] শিল্প অঞ্চল বা রফতানি প্রক্রিয়াকরণ অঞ্চল (ইপিজেড)
+     */
+    @Column(name = "factory_zone", length = 100)
+    private String factoryZone;
+
+    /**
+     * [EN] Operational sewing line count on factory floors
+     * [BN] কারখানার ফ্লোরে সক্রিয় সুইং লাইনের সংখ্যা
+     */
+    @Column(name = "sewing_lines")
+    private Integer sewingLines;
+
+    /**
+     * [EN] Estimated daily garment production capacity in pieces
+     * [BN] দৈনিক প্রাক্কলিত পোশাক উৎপাদন সক্ষমতা (পিস)
+     */
+    @Column(name = "daily_capacity")
+    private Integer dailyCapacity;
+
+    /**
+     * [EN] Flag indicating in-house denim/garment washing plant capabilities
+     * [BN] কারখানায় নিজস্ব ডেনিম ওয়াশিং ও ডায়িং লন্ড্রি প্ল্যান্ট আছে কি না
+     */
+    @Column(name = "has_washing_plant")
+    private Boolean hasWashingPlant;
+
+    public Boolean getHasWashingPlant() {
+        return this.hasWashingPlant;
+    }
+
+    public Boolean isHasWashingPlant() {
+        return this.hasWashingPlant;
+    }
+
+    public void setHasWashingPlant(Boolean hasWashingPlant) {
+        this.hasWashingPlant = hasWashingPlant;
+    }
+
+    /**
+     * [EN] Government trade license or factory incorporation number
+     * [BN] সরকারি ট্রেড লাইসেন্স বা ইনকর্পোরেশন নম্বর
+     */
+    @Column(name = "trade_license_no", length = 100)
+    private String tradeLicenseNo;
+
+    /**
+     * [EN] BGMEA / BKMEA export association membership registration
+     * [BN] বিজিএমইএ বা বিকেএমইএ মেম্বারশিপ রেজিস্ট্রেশন নম্বর
+     */
+    @Column(name = "bgmea_reg_no", length = 100)
+    private String bgmeaRegNo;
+
+    /**
      * [EN] Operational status flag (true = active tenant, false = suspended)
      * [BN] টেন্যান্ট সক্রিয় বা স্থগিত কি না তা নির্দেশক বুলিয়ান ফ্ল্যাগ
      */

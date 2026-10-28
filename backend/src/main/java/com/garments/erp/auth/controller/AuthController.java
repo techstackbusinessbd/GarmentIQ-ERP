@@ -45,8 +45,11 @@ public class AuthController {
      * @return [EN] API response with JWT and user profile / [BN] টোকেন ও প্রোফাইলসহ রেসপন্স
      */
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
-        LoginResponse response = authService.login(request);
+    public ResponseEntity<ApiResponse<LoginResponse>> login(
+            @Valid @RequestBody LoginRequest request,
+            @RequestHeader(value = "X-Tenant-Subdomain", required = false) String subdomainHeader
+    ) {
+        LoginResponse response = authService.login(request, subdomainHeader);
         return ResponseEntity.ok(ApiResponse.success(response, "Login authenticated successfully"));
     }
 

@@ -7,6 +7,7 @@ import com.garments.erp.user.dto.CreateUserRequest;
 import com.garments.erp.user.dto.UserDto;
 import com.garments.erp.user.entity.User;
 import com.garments.erp.user.repository.UserRepository;
+import com.garments.erp.tenant.repository.TenantRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +44,13 @@ class UserServiceTest {
     private RoleRepository roleRepository;
 
     @Mock
+    private TenantRepository tenantRepository;
+
+    @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private com.garments.erp.settings.service.SystemAuditLogService auditLogService;
 
     @InjectMocks
     private UserService userService;
@@ -96,6 +103,7 @@ class UserServiceTest {
         );
         request.setRoles(Set.of("ROLE_ADMIN"));
 
+        when(tenantRepository.existsById(tenantId)).thenReturn(true);
         when(userRepository.existsByTenantIdAndUsernameAndIsDeletedFalse(tenantId, "sadia.ui"))
                 .thenReturn(false);
         when(userRepository.existsByTenantIdAndEmailAndIsDeletedFalse(tenantId, "sadia@tex.com"))
@@ -128,6 +136,7 @@ class UserServiceTest {
                 "existing.user", "email@tex.com", "pass12345", "Name", "IT", "Dev", "017"
         );
 
+        when(tenantRepository.existsById(tenantId)).thenReturn(true);
         when(userRepository.existsByTenantIdAndUsernameAndIsDeletedFalse(tenantId, "existing.user"))
                 .thenReturn(true);
 

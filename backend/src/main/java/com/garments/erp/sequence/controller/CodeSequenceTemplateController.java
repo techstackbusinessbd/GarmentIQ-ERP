@@ -7,6 +7,7 @@ import com.garments.erp.sequence.repository.CodeSequenceTemplateRepository;
 import com.garments.erp.sequence.service.DynamicCodeGeneratorService;
 import com.garments.erp.tenant.context.TenantContext;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -52,6 +53,7 @@ public class CodeSequenceTemplateController {
      * @return [EN] API response containing list of template DTOs / [BN] টেমপ্লেট তালিকার এপিআই রেসপন্স
      */
     @GetMapping
+    @PreAuthorize("hasAuthority('AUTO_CODE:VIEW') or hasAuthority('SETTINGS:VIEW') or hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<ApiResponse<List<CodeSequenceTemplateDto>>> getAllTemplates() {
         UUID tenantId = TenantContext.getTenantId();
         List<CodeSequenceTemplate> templates = (tenantId != null)
@@ -73,6 +75,7 @@ public class CodeSequenceTemplateController {
      * @return [EN] Rendered sample preview string / [BN] রেন্ডারকৃত নমুনা কোড
      */
     @PostMapping("/preview")
+    @PreAuthorize("hasAuthority('AUTO_CODE:VIEW') or hasAuthority('SETTINGS:VIEW') or hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<ApiResponse<String>> previewPattern(@RequestBody CodeSequenceTemplateDto request) {
         String preview = codeGeneratorService.previewPattern(
                 request.getPattern(),
@@ -92,6 +95,7 @@ public class CodeSequenceTemplateController {
      * @return [EN] Updated template DTO / [BN] পরিবর্তিত টেমপ্লেট ডিটিও
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('AUTO_CODE:EDIT') or hasAuthority('SETTINGS:EDIT') or hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     public ResponseEntity<ApiResponse<CodeSequenceTemplateDto>> updateTemplate(
             @PathVariable UUID id,
             @RequestBody CodeSequenceTemplateDto request) {

@@ -1,281 +1,289 @@
 /**
- * =============================================================================
- * [EN] Master Enterprise Application Shell (AppLayout)
- * [BN] মাস্টার এন্টারপ্রাইজ অ্যাপ্লিকেশন শেল (AppLayout)
- * =============================================================================
- * [EN] Reference: docs/specifications/design-system/06_THEME_LAYOUT_ARCHITECTURE.md
- * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 19 (Constants), Rule 20 (Tokens)
- * [BN] আর্কিটেকচারাল স্পেসিফিকেশন মেনে একক অভিন্ন মাস্টার শেল লেআউট কম্পোনেন্ট।
+ * [EN] Master Enterprise Application Shell (AppLayout) - Rules: 07 (<300 lines), 15, 19, 20
+ * [BN] একক টপবার এবং স্মার্ট সিঙ্গেল-অ্যাকর্ডিয়ন সংবলিত মাস্টার এন্টারপ্রাইজ শেল।
  */
-
-import React, { useState } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Shirt,
-  Layers,
-  Scissors,
-  Palette,
-  Activity,
-  Waves,
-  CheckCircle2,
-  PackageCheck,
-  Ship,
-  Users,
-  Binary,
-  Database,
-  Search,
-  Bell,
-  Menu,
-  X,
-  User,
-  ChevronDown,
+  LayoutDashboard, Shirt, Layers, Scissors, Palette, Activity, Waves, CheckCircle2, PackageCheck, Ship,
+  Users, User, UserPlus, Plus, Binary, Database, Building2, Shield, ShieldCheck, ShieldAlert, Settings, Library, Search, X, ChevronRight, ChevronDown, Folder, SlidersHorizontal, KeyRound, History, ChevronsDown, ChevronsUp, Clock, DollarSign, Ruler, Tag, Calendar, AlertTriangle,
 } from 'lucide-react';
-import {
-  NAVIGATION_GROUPS,
-  FACTORY_UNITS,
-  GLOBAL_SEARCH_HOTKEY,
-  APP_METADATA,
-  type NavItem,
-  type NavGroup,
-} from '@/constants';
-import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
+import { ERP_DOMAINS, APP_METADATA, type NavItem, type NavGroup, type DomainItem } from '@/constants';
+import { useAuthStore, useThemeStore } from '@/store';
+import { isPlatformSuperAdmin } from '@/routes';
+import { usePermission } from '@/features/privileges';
+import { isNavPathPermitted, getDomainLandingPath } from './navPermissionUtils';
+import { AppHeader } from './AppHeader';
+import { SidebarDomainPicker } from './SidebarDomainPicker';
+import { BrandLogo } from '@/components/ui';
 
-/**
- * [EN] Icon mapping table for dynamic sidebar Lucide components.
- * [BN] ডায়নামিক সাইডবার আইকন ম্যাপিং টেবিল (স্ট্রিং নাম থেকে রিঅ্যাক্ট কম্পোনেন্ট)।
- */
 const ICON_MAP: Record<string, React.FC<{ size?: number; className?: string }>> = {
-  LayoutDashboard,
-  Shirt,
-  Layers,
-  Scissors,
-  Palette,
-  Activity,
-  Waves,
-  CheckCircle2,
-  PackageCheck,
-  Ship,
-  Users,
-  Binary,
-  Database,
+  LayoutDashboard, Shirt, Layers, Scissors, Palette, Activity, Waves, CheckCircle2, PackageCheck, Ship,
+  Users, User, UserPlus, Plus, Binary, Database, Building2, Shield, ShieldCheck, ShieldAlert, Settings, Library, Folder, SlidersHorizontal, KeyRound, History, Clock, DollarSign, Ruler, Tag, Calendar, AlertTriangle,
 };
 
-/**
- * [EN] Properties interface for the Master Application Layout.
- * [BN] মাস্টার অ্যাপ্লিকেশন লেআউট প্রপস ইন্টারফেস।
- */
-interface AppLayoutProps {
-  /** [EN] Optional children components to render inside workspace canvas / [BN] মূল ক্যানভাসে রেন্ডার করার চিলড্রেন */
-  readonly children?: React.ReactNode;
-}
+interface AppLayoutProps { readonly children?: React.ReactNode; }
 
 /**
- * [EN] Unified Application Shell Component.
- * Encapsulates the collapsible master sidebar, sticky top header, and fluid content canvas.
- *
- * [BN] সমন্বিত অ্যাপ্লিকেশন শেল কম্পোনেন্ট।
- * কোল্যাপ্সিবল মাস্টার সাইডবার, স্টিকি টপ হেডার এবং ফ্লুইড কন্টেন্ট ক্যানভাস অন্তর্ভুক্ত করে।
- *
- * @param props [EN] Component properties / [BN] কম্পোনেন্ট প্রপার্টিজ
- * @returns [EN] Rendered unified application layout / [BN] রেন্ডারকৃত লেআউট
+ * [EN] Master Single-Topbar 3-Level Application Shell with Smart Single-Accordion.
+ * [BN] একক টপবার এবং স্মার্ট সিঙ্গেল-অ্যাকর্ডিয়ন সংবলিত মাস্টার এন্টারপ্রাইজ শেল।
  */
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  // [EN] Sidebar toggle state (Expanded: 256px / Collapsed: 80px)
-  // [BN] সাইডবার খোলা বা বন্ধের টগল স্টেট (প্রসারিত: ২৫৬px / সংকুচিত: ৮০px)
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [menuSearchQuery, setMenuSearchQuery] = useState<string>('');
+  const [collapsedModules, setCollapsedModules] = useState<Record<string, boolean>>({});
 
-  // [EN] Currently selected factory production plant unit
-  // [BN] বর্তমানে নির্বাচিত ফ্যাক্টরি প্রোডাকশন প্ল্যান্ট ইউনিট
-  const [selectedUnit, setSelectedUnit] = useState<string>(FACTORY_UNITS[0]?.id || '');
-
-  // [EN] Current browser routing location for active menu highlighting
-  // [BN] সক্রিয় মেনু আইটেম হাইলাইট করার জন্য চলতি ব্রাউজার রুট লোকেশন
+  const { user } = useAuthStore();
+  const { isSuperAdmin, hasPermission } = usePermission();
+  const { sidebarTheme, isDark } = useThemeStore();
+  const isSidebarDark = sidebarTheme === 'dark' || isDark;
+  const brandingBadge = isPlatformSuperAdmin(user) ? 'PLATFORM' : 'PORTAL';
   const location = useLocation();
+  const navigate = useNavigate();
 
-  /**
-   * [EN] Helper method to safely render dynamic Lucide icon by name.
-   * [BN] আইকন নাম দিয়ে নিরাপদে ডায়নামিক Lucide আইকন রেন্ডার করার সহায়ক মেথড।
-   */
+  // Match accessible Level 1 Domains for current user
+  const accessibleDomains = useMemo(() => {
+    if (isSuperAdmin) return ERP_DOMAINS;
+    return ERP_DOMAINS.filter((d) => d.id === 'overview' || d.groups.some((g) => g.items.some((it) => isNavPathPermitted(it.path, hasPermission, isSuperAdmin, it.permission))));
+  }, [isSuperAdmin, hasPermission]);
+
+  // Match active Level 1 Domain from current URL path
+  const matchedDomain: DomainItem = accessibleDomains.find((d) =>
+    d.rootPrefix === '/app/overview'
+      ? location.pathname.startsWith('/app/overview') || location.pathname === '/app/dashboard'
+      : location.pathname.startsWith(d.rootPrefix) || (d.id === 'admin' && location.pathname.startsWith('/app/settings'))
+  ) || (accessibleDomains[0] as DomainItem) || (ERP_DOMAINS[0] as DomainItem);
+
+  const activeNavGroups = matchedDomain?.groups || [];
+
+  // Real-time filter search & dynamic RBAC clearance
+  const filteredNavGroups = useMemo(() => {
+    const q = menuSearchQuery.trim().toLowerCase();
+    return activeNavGroups
+      .map((g) => {
+        const permitted = g.items.filter((it) => isNavPathPermitted(it.path, hasPermission, isSuperAdmin, it.permission));
+        const searched = q ? permitted.filter((it) => it.label.toLowerCase().includes(q) || it.children?.some((c) => c.label.toLowerCase().includes(q))) : permitted;
+        return { ...g, items: searched };
+      })
+      .filter((g) => g.items.length > 0);
+  }, [activeNavGroups, menuSearchQuery, hasPermission, isSuperAdmin]);
+
+  // Active item resolution (exact match prioritized over longest prefix to avoid dual selection)
+  const activeItemPath = useMemo(() => {
+    const allItems = activeNavGroups.flatMap((g) => g.items);
+    const exact = allItems.find((it) => it.path === location.pathname);
+    if (exact) return exact.path;
+    const matches = allItems.filter((it) => it.path !== '/' && location.pathname.startsWith(`${it.path}/`));
+    return matches.sort((a, b) => b.path.length - a.path.length)[0]?.path || null;
+  }, [activeNavGroups, location.pathname]);
+
+  // Active module group containing the current route
+  const activeGroupId = useMemo(() => {
+    if (!activeItemPath) return null;
+    return activeNavGroups.find((g) =>
+      g.items.some((it) => it.path === activeItemPath || it.children?.some((c) => c.path === activeItemPath))
+    )?.id || null;
+  }, [activeNavGroups, activeItemPath]);
+
+  // [EN] Smart Single-Accordion: Auto-expand only active module and collapse others on route change
+  // [BN] স্মার্ট সিঙ্গেল-অ্যাকর্ডিয়ন: পেজ লোড ও রাউট পরিবর্তনে শুধুমাত্র সক্রিয় মডিউল এক্সপ্যান্ড থাকবে
+  useEffect(() => {
+    if (!activeGroupId) return;
+    setCollapsedModules(() => {
+      const next: Record<string, boolean> = {};
+      activeNavGroups.forEach((g) => { next[g.id] = g.id !== activeGroupId; });
+      return next;
+    });
+  }, [activeGroupId, matchedDomain.id]);
+
+  // [EN] Accordion click: opening one closes all other modules; clicking an open one collapses it
+  // [BN] অ্যাকর্ডিয়ন ক্লিক: নতুন মডিউল খুললে বাকিগুলো বন্ধ হবে, খোলাটিতে ক্লিক করলে বন্ধ হবে
+  const toggleModuleCollapse = (groupId: string) => {
+    setCollapsedModules((prev) => {
+      const isCurrentlyCollapsed = prev[groupId] !== undefined ? prev[groupId] : groupId !== activeGroupId;
+      const next: Record<string, boolean> = {};
+      activeNavGroups.forEach((g) => {
+        next[g.id] = isCurrentlyCollapsed ? g.id !== groupId : true;
+      });
+      return next;
+    });
+  };
+
+  // [EN] Check if all visible groups are collapsed / [BN] সকল দৃশ্যমান মডিউল সংকুচিত কিনা যাচাই
+  const areAllModulesCollapsed = useMemo(() => {
+    if (filteredNavGroups.length === 0) return false;
+    return filteredNavGroups.every((g) => (collapsedModules[g.id] !== undefined ? collapsedModules[g.id] : g.id !== activeGroupId));
+  }, [filteredNavGroups, collapsedModules, activeGroupId]);
+
+  // [EN] Master 1-click toggle to expand or collapse all modules
+  // [BN] ১-ক্লিকে সকল মডিউল এক্সপ্যান্ড বা কলাপ্স করার মাস্টার টগল
+  const toggleAllModules = () => {
+    const shouldCollapse = !areAllModulesCollapsed;
+    setCollapsedModules(() => {
+      const next: Record<string, boolean> = {};
+      filteredNavGroups.forEach((g) => { next[g.id] = shouldCollapse; });
+      return next;
+    });
+  };
+
   const renderNavIcon = (iconName: string) => {
-    const IconComponent = ICON_MAP[iconName] || LayoutDashboard;
-    return <IconComponent size={18} className="shrink-0" />;
+    const Icon = ICON_MAP[iconName] || LayoutDashboard;
+    return <Icon size={16} className="shrink-0" />;
   };
 
   return (
-    <div className="min-h-screen flex bg-surface-base text-text-primary antialiased font-sans">
-      {/* =====================================================================
-       * [EN] 1. MASTER COLLAPSIBLE SIDEBAR (256px Expanded / 80px Collapsed)
-       * [BN] ১. মাস্টার কোল্যাপ্সিবল সাইডবার (২৫৬px প্রসারিত / ৮০px সংকুচিত)
-       * ===================================================================== */}
+    <div className="min-h-screen flex flex-col bg-surface-base text-text-primary antialiased font-sans">
+      {/* 3-Level Sidebar (100vh Full Viewport Height) */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-30 flex flex-col bg-brand-sidebar border-r border-brand-sidebar-border transition-all duration-300 ease-in-out select-none ${
-          isSidebarOpen ? 'w-64' : 'w-20'
-        }`}
+        className={`fixed top-0 bottom-0 left-0 z-30 flex flex-col bg-[var(--sidebar-bg)] border-r border-[var(--sidebar-border)] transition-all duration-300 ease-in-out select-none ${isSidebarOpen ? 'w-64' : 'w-16'}`}
       >
-        {/* [EN] Brand Header with Logo and Collapse Toggle / [BN] লোগো ও কোল্যাপ্স বাটন সহ ব্র্যান্ড হেডার */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-brand-sidebar-border bg-brand-sidebar-header shrink-0">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="h-9 w-9 rounded-sm bg-brand-accent flex items-center justify-center font-bold text-white shrink-0 shadow-xs tracking-wider">
-              R
-            </div>
-            {isSidebarOpen && (
-              <div className="flex flex-col truncate">
-                <span className="text-sm font-bold tracking-tight text-white leading-tight">
-                  {APP_METADATA.NAME}
-                </span>
-                <span className="text-[10px] text-slate-400 font-mono tracking-wider">
-                  {APP_METADATA.TAGLINE}
-                </span>
-              </div>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsSidebarOpen((prev) => !prev)}
-            className="text-slate-400 hover:text-white p-1 rounded-xs transition-colors cursor-pointer"
-            title={isSidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar'}
-          >
-            {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
+        {/* Brand Logo Header (Top of Sidebar, 64px) */}
+        <div className={`h-16 flex items-center border-b border-[var(--sidebar-border)] shrink-0 ${isSidebarOpen ? 'px-3.5' : 'justify-center'}`}>
+          <BrandLogo size="md" showText={isSidebarOpen} badgeText={brandingBadge} inverted={isSidebarDark} />
         </div>
 
-        {/* [EN] Grouped Navigation Items Tree / [BN] গ্রুপভিত্তিক অপারেশনাল নেভিগেশন লিংকসমূহ */}
-        <nav className="flex-1 overflow-y-auto px-2.5 py-3 space-y-4">
-          {NAVIGATION_GROUPS.map((group: NavGroup) => (
-            <div key={group.id} className="space-y-1">
-              {isSidebarOpen && (
-                <div className="px-3 pt-2 pb-1 text-[11px] font-semibold tracking-wider uppercase text-slate-400">
-                  {group.title}
-                </div>
-              )}
-              {group.items.map((item: NavItem) => {
-                const isActive =
-                  location.pathname === item.path ||
-                  (item.path !== '/' && location.pathname.startsWith(item.path));
+        {/* LEVEL 1: Domain Switcher Header */}
+        <SidebarDomainPicker
+          activeDomain={matchedDomain} domains={accessibleDomains} isSidebarOpen={isSidebarOpen}
+          onSelectDomain={(domain) => navigate(getDomainLandingPath(domain, hasPermission, isSuperAdmin))}
+          onExpandSidebar={() => setIsSidebarOpen(true)}
+        />
 
-                return (
-                  <NavLink
-                    key={item.id}
-                    to={item.path}
-                    title={!isSidebarOpen ? item.label : undefined}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-sm text-xs transition-all ${
-                      isActive
-                        ? 'bg-brand-accent text-white shadow-xs font-semibold'
-                        : 'text-slate-300 hover:text-white hover:bg-white/10'
-                    }`}
-                  >
-                    {renderNavIcon(item.iconName)}
-                    {isSidebarOpen && (
-                      <span className="truncate flex-1 text-left">{item.label}</span>
-                    )}
-                    {isSidebarOpen && item.badge && (
-                      <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-xs bg-brand-accent/20 text-brand-accent-light font-semibold border border-brand-accent/30">
-                        {item.badge}
-                      </span>
-                    )}
-                  </NavLink>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-
-        {/* [EN] Release SemVer Profile Footer / [BN] রিলিজ ভার্সন ও ইউজার প্রোফাইল ফুটার */}
+        {/* Quick Menu Search / Filter & Master Expand/Collapse Toggle */}
         {isSidebarOpen && (
-          <div className="p-3 border-t border-brand-sidebar-border bg-brand-sidebar-header/60 shrink-0 space-y-2">
-            <div className="flex items-center gap-2.5 p-2 rounded-sm bg-white/5 border border-white/10">
-              <div className="h-7 w-7 rounded-sm bg-white/10 flex items-center justify-center text-slate-300 shrink-0">
-                <User size={15} />
+          <div className="px-2.5 pt-2 pb-1 border-b border-[var(--sidebar-border)]/50">
+            <div className="flex items-center gap-1.5">
+              <div className="relative flex-1 flex items-center">
+                <Search size={12} className="absolute left-2.5 text-[var(--sidebar-text-muted)] pointer-events-none" />
+                <input
+                  type="text"
+                  value={menuSearchQuery}
+                  onChange={(e) => setMenuSearchQuery(e.target.value)}
+                  placeholder="Filter menus..."
+                  className="w-full pl-7 pr-6 py-1 text-[11px] bg-[var(--sidebar-hover-bg)] border border-[var(--sidebar-border)] text-[var(--sidebar-text)] placeholder:text-[var(--sidebar-text-muted)] rounded-sm focus:outline-hidden focus:border-accent transition-all shadow-2xs"
+                />
+                {menuSearchQuery && (
+                  <button type="button" onClick={() => setMenuSearchQuery('')} className="absolute right-1.5 p-0.5 text-[var(--sidebar-text-muted)] hover:text-[var(--sidebar-text)] cursor-pointer">
+                    <X size={10} />
+                  </button>
+                )}
               </div>
-              <div className="flex flex-col truncate">
-                <span className="text-xs font-medium text-white truncate">Enterprise Admin</span>
-                <span className="text-[10px] text-slate-400 truncate">Woven & Denim Lead</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between px-1 text-[10px] text-slate-400 font-mono">
-              <span>{APP_METADATA.SHORT_NAME}</span>
-              <span className="px-1.5 py-0.5 rounded-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
-                {APP_METADATA.VERSION}
-              </span>
+              <button
+                type="button"
+                onClick={toggleAllModules}
+                title={areAllModulesCollapsed ? 'Expand All Modules' : 'Collapse All Modules'}
+                className="shrink-0 p-1 text-[var(--sidebar-text-muted)] hover:text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover-bg)] border border-[var(--sidebar-border)] rounded-sm transition-colors cursor-pointer"
+              >
+                {areAllModulesCollapsed ? <ChevronsDown size={13} /> : <ChevronsUp size={13} />}
+              </button>
             </div>
           </div>
         )}
+
+        {/* LEVEL 2 & LEVEL 3: Grouped Module Accordions & Menu Tree */}
+        <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-2">
+          {filteredNavGroups.length === 0 ? (
+            <div className="px-3 py-6 text-center text-xs text-[var(--sidebar-text-muted)]">
+              No menus matching &quot;{menuSearchQuery}&quot;
+            </div>
+          ) : (
+            filteredNavGroups.map((group: NavGroup) => {
+              const isModuleCollapsed = menuSearchQuery.trim()
+                ? false
+                : (collapsedModules[group.id] !== undefined ? collapsedModules[group.id] : group.id !== activeGroupId);
+
+              return (
+                <div key={group.id} className="space-y-0.5">
+                  {/* LEVEL 2: Module Header (Accordion Toggle) */}
+                  {isSidebarOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => toggleModuleCollapse(group.id)}
+                      className="w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--sidebar-text-muted)] hover:text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover-bg)] rounded-xs transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-1.5 truncate">
+                        <Folder size={12} className="text-[var(--sidebar-text-muted)] shrink-0" />
+                        <span className="truncate">{group.title}</span>
+                      </div>
+                      {isModuleCollapsed ? <ChevronRight size={12} className="text-[var(--sidebar-text-muted)] shrink-0" /> : <ChevronDown size={12} className="text-[var(--sidebar-text-muted)] shrink-0" />}
+                    </button>
+                  ) : (
+                    <div className="my-1.5 border-t border-[var(--sidebar-border)] mx-1" />
+                  )}
+
+                  {/* LEVEL 3: Menu Items inside Module */}
+                  {!isModuleCollapsed && (
+                    <div className="space-y-0.5">
+                      {group.items.map((item: NavItem) => {
+                        const isItemActive = activeItemPath === item.path;
+
+                        return (
+                          <div key={item.id} className="space-y-0.5">
+                            <NavLink
+                              to={item.path}
+                              title={!isSidebarOpen ? item.label : undefined}
+                              className={`flex items-center rounded-sm text-xs transition-all ${
+                                isSidebarOpen ? 'gap-2.5 px-3 py-1.5' : 'justify-center p-2.5'
+                              } ${isItemActive ? 'bg-accent text-white shadow-xs font-semibold' : 'text-[var(--sidebar-text-muted)] hover:text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover-bg)]'}`}
+                            >
+                              {renderNavIcon(item.iconName)}
+                              {isSidebarOpen && <span className="truncate flex-1 text-left">{item.label}</span>}
+                              {isSidebarOpen && item.badge && (
+                                <span className="text-[10px] font-mono uppercase px-1 py-0.2 rounded-xs font-semibold bg-accent/30 text-white border border-accent/60 shadow-xs">{item.badge}</span>
+                              )}
+                            </NavLink>
+
+                            {/* Sub-children leaf actions if present */}
+                            {isSidebarOpen && item.children && isItemActive && (
+                              <div className="ml-6 my-0.5 pl-2 space-y-0.5 border-l border-[var(--sidebar-border)]">
+                                {item.children.map((child) => (
+                                  <NavLink
+                                    key={child.id}
+                                    to={child.path}
+                                    className={`block px-2 py-1 text-[11px] rounded-xs transition-colors ${
+                                      location.pathname === child.path ? 'text-accent font-semibold bg-accent/15 border-l-2 border-accent' : 'text-[var(--sidebar-text-muted)] hover:text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover-bg)]'
+                                    }`}
+                                  >
+                                    {child.label}
+                                  </NavLink>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }))}
+        </nav>
+
+        {/* Footer: System Status */}
+        <div className="p-2.5 border-t border-[var(--sidebar-border)] bg-[var(--sidebar-bg)] shrink-0">
+          {isSidebarOpen ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[var(--sidebar-text-muted)]">
+                <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" /><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" /></span>
+                <span>System Operational</span>
+              </div>
+              <span className="px-1.5 py-0.5 rounded-[2px] font-mono text-[10px] font-semibold border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">{APP_METADATA.VERSION}</span>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-1">
+              <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" /><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" /></span>
+              <span className="text-[8px] font-mono px-1 py-0.2 rounded-[2px] border font-semibold bg-emerald-500/10 text-emerald-400 border-emerald-500/20">{APP_METADATA.VERSION.replace(/-.*$/, '')}</span>
+            </div>
+          )}
+        </div>
       </aside>
 
-      {/* =====================================================================
-       * [EN] 2. MAIN APPLICATION WORKSPACE CANVAS (PageShell)
-       * [BN] ২. মূল অ্যাপ্লিকেশন ওয়ার্কস্পেস ক্যানভাস (PageShell)
-       * ===================================================================== */}
-      <div
-        role="main"
-        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? 'pl-64' : 'pl-20'
-        }`}
-      >
-        {/* [EN] Top Application Header (Fixed 64px, Sticky z-20) / [BN] টপ অ্যাপ্লিকেশন হেডার (৬৪px ফিক্সড) */}
-        <header className="h-16 sticky top-0 z-20 flex items-center justify-between px-6 bg-surface-card border-b border-border-subtle shrink-0 shadow-xs">
-          {/* [EN] Left Section: Factory Production Unit Selector / [BN] বাম পাশ: ফ্যাক্টরি প্ল্যান্ট ইউনিট সিলেক্টর */}
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <select
-                value={selectedUnit}
-                onChange={(e) => setSelectedUnit(e.target.value)}
-                className="appearance-none text-xs font-semibold bg-surface-muted border border-border-subtle rounded-sm pl-3 pr-8 py-1.5 text-text-primary focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 cursor-pointer shadow-xs"
-              >
-                {FACTORY_UNITS.map((unit) => (
-                  <option key={unit.id} value={unit.id}>
-                    {unit.code} • {unit.name}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown
-                size={14}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted"
-              />
-            </div>
-          </div>
+      {/* Docked Topbar (64px) */}
+      <AppHeader isSidebarOpen={isSidebarOpen} onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
 
-          {/* [EN] Right Section: Search, Theme Switcher, Alerts & Avatar / [BN] ডান পাশ: সার্চ, থিম, অ্যালার্ট ও অবতার */}
-          <div className="flex items-center gap-3">
-            {/* [EN] Global Search Bar with Shortcut / [BN] শর্টকাট সহ গ্লোবাল সার্চ ইনপুট */}
-            <div className="relative hidden md:block">
-              <Search
-                size={14}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-              />
-              <input
-                type="text"
-                placeholder="Search styles, PO, roll barcode..."
-                className="pl-8 pr-14 py-1.5 text-xs bg-surface-muted border border-border-subtle rounded-sm w-64 text-text-primary placeholder:text-text-muted focus:outline-hidden focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent transition-colors shadow-xs"
-              />
-              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1 py-0.5 rounded-xs bg-surface-card border border-border-subtle text-text-muted pointer-events-none">
-                {GLOBAL_SEARCH_HOTKEY}
-              </span>
-            </div>
-
-            {/* [EN] Eye-Comfort Theme Switcher / [BN] ৪টি চোখের স্বাচ্ছন্দ্যপূর্ণ থিম সুইচার */}
-            <ThemeSwitcher />
-
-            {/* [EN] Notification Bell with 8px Danger Pulse Dot / [BN] ৮px লাল পালস ডট সহ নোটিফিকেশন বেল */}
-            <button
-              type="button"
-              className="p-1.5 rounded-sm text-text-muted hover:text-text-primary hover:bg-surface-muted transition-colors relative cursor-pointer"
-              title="System Alerts & QC Notifications"
-            >
-              <Bell size={18} />
-              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-status-danger ring-2 ring-surface-card animate-pulse" />
-            </button>
-
-            {/* [EN] User Quick Profile Avatar / [BN] ইউজার কুইক প্রোফাইল অবতার */}
-            <div className="h-8 w-8 rounded-sm bg-brand-accent/10 border border-brand-accent/20 text-brand-accent flex items-center justify-center font-bold text-xs shrink-0">
-              AD
-            </div>
-          </div>
-        </header>
-
-        {/* [EN] Page Content Canvas (Fluid clamped to max-w-[1920px]) / [BN] পেজ কন্টেন্ট ক্যানভাস */}
-        <main className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 max-w-[1920px] w-full mx-auto">
+      {/* Main Workspace Canvas (Top-16 dock) */}
+      <div role="main" className={`flex-1 flex flex-col min-w-0 pt-16 transition-all duration-300 ease-in-out ${isSidebarOpen ? 'pl-64' : 'pl-16'}`}>
+        <main className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 max-w-[1920px] w-full mx-auto">
           {children || <Outlet />}
         </main>
       </div>

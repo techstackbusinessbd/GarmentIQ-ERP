@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -12,6 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 /**
  * =============================================================================
@@ -27,6 +33,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -52,6 +59,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // [EN] Enable CORS with defined configuration source
+                // [BN] সংজ্ঞায়িত কনফিগারেশন উৎস সহ CORS সক্রিয়করণ
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
                 // [EN] Disable CSRF because REST clients use stateless Bearer tokens
                 // [BN] CSRF নিষ্ক্রিয় করা হলো কারণ REST ক্লায়েন্ট স্টেটলেস Bearer টোকেন ব্যবহার করে
                 .csrf(csrf -> csrf.disable())
@@ -70,7 +81,7 @@ public class SecurityConfig {
                                 "/actuator/**",
                                 "/api/v1/auth/**"
                         ).permitAll()
-                        .anyRequest().permitAll() // [EN] Permissive during bootstrap / [BN] বুটস্ট্র্যাপ চলাকালে সাময়িক অনুমতি
+                        .anyRequest().authenticated()
                 )
 
                 // [EN] Attach JWT authentication and tenant-context filter before UsernamePasswordAuthenticationFilter
@@ -103,4 +114,33 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    /**
+     * [EN] Production CORS configuration allowing enterprise browser clients
+     * [BN] এন্টারপ্রাইজ ব্রাউজার ক্লায়েন্টদের জন্য প্রডাকশন CORS কনফিগারেশন
+     *
+     * @return [EN] Configured CorsConfigurationSource / [BN] কনফিগার করা CORS সোর্স
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:*",
+                "http://*.localhost:*",
+                "http://127.0.0.1:*",
+                "http://[::1]:*",
+                "https://*.garmentiq.com",
+                "https://garmentiq.com"
+        ));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization", "X-Tenant-ID", "X-Tenant-Subdomain"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
+

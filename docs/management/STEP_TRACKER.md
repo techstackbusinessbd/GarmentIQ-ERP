@@ -17,7 +17,7 @@
 ## 🎯 বর্তমান সক্রিয় ডোমেন (Current Active Domain)
 
 | সক্রিয় ডোমেন | ডোমেন নাম | ডেডিকেটেড ট্র্যাকার ফাইল | বর্তমান স্ট্যাটাস |
-| :---: | :--- | :--- | :---: |
+| :---: | :--- | :--- | :--- |
 | **Domain 0** | **Foundation & Core Platform** | 👉 **[STEP_TRACKER_DOMAIN_00_FOUNDATION.md](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_00_FOUNDATION.md)** | 🟢 **ACTIVE (চলমান)** |
 
 ---
@@ -25,10 +25,10 @@
 ## 📋 এন্টারপ্রাইজ ডোমেন পাইপলাইন মাস্টার ইনডেক্স (All ERP Domains)
 
 | ডোমেন আইডি | ডোমেনের নাম ও মূল ফোকাস | ডেডিকেটেড ট্র্যাকার পাথ | স্ট্যাটাস | লকিং স্টেট |
-| :---: | :--- | :--- | :---: | :---: |
+| :---: | :--- | :--- | :--- | :---: |
 | **`Domain 0`** | **Foundation, Master Data & IAM** | [STEP_TRACKER_DOMAIN_00_FOUNDATION.md](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_00_FOUNDATION.md) | 🟢 **ACTIVE** | 🔓 উন্মুক্ত (চলমান) |
 | **`Domain 1`** | **Merchandising & Style Master** | `docs/.../STEP_TRACKER_DOMAIN_01_MERCHANDISING.md` | ⚪ QUEUED | 🔒 লকড (Domain 0-এর অপেক্ষায়) |
-| **`Domain 2`** | **Fabric Sourcing & Raw Material** | `docs/.../STEP_TRACKER_DOMAIN_02_FABRIC.md` | ⚪ QUEUED | 🔒 লকড |
+| **`Domain 2`** | **Fabric Sourcing & Raw Material** | `docs/.../STEP_TRACKER_DOMAIN_02_FABRIC.md` | ⚪ QUEUED | 🔒 লকড (Domain 1-এর অপেক্ষায়) |
 | **`Domain 3`** | **Cutting Room & Marker Planning** | `docs/.../STEP_TRACKER_DOMAIN_03_CUTTING.md` | ⚪ QUEUED | 🔒 লকড |
 | **`Domain 4`** | **Sewing Floor & RFID Tracking** | `docs/.../STEP_TRACKER_DOMAIN_04_SEWING.md` | ⚪ QUEUED | 🔒 লকড |
 | **`Domain 5`** | **Laundry & Denim Washing Plant** | `docs/.../STEP_TRACKER_DOMAIN_05_WASHING.md` | ⚪ QUEUED | 🔒 লকড |

@@ -187,7 +187,7 @@ VALUES (
     '019472ba-7000-7000-8000-000000000001',
     'superadmin',
     'superadmin@garmentserp.com',
-    '$2a$12$6uX7eWwMhA.wZz/xZ5Z5.e6gM5l8Q1l4t.VlJ2xZ0h0i8a7k6y5i.', -- [EN] BCrypt: Password@123
+    '$2a$10$CuX2DpnjDYCTzVvLqeMbaeKuUuUefN/aIvYJjk.N2yDJ1PIgcjdpO', -- [EN] BCrypt: Password@123
     'System Super Administrator',
     'IT & SYSTEMS',
     'Chief Technology Officer',

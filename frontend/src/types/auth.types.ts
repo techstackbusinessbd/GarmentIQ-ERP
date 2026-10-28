@@ -9,7 +9,7 @@
  * [EN] User lifecycle status enumeration.
  * [BN] ব্যবহারকারীর বর্তমান সক্রিয়তা বা অবস্থা নির্দেশক এনাম।
  */
-export type UserStatus = 'ACTIVE' | 'SUSPENDED' | 'INVITED' | 'INACTIVE';
+export type UserStatus = 'ACTIVE' | 'SUSPENDED' | 'INVITED' | 'INACTIVE' | 'LOCKED';
 
 /**
  * [EN] Granular system permission representation.
@@ -54,6 +54,10 @@ export interface Role {
 
   /** [EN] Associated granular permissions / [BN] অন্তর্ভুক্ত পারমিশনের তালিকা */
   permissions?: Permission[];
+
+  /** [EN] Soft-deleted flag / [BN] সফট-ডিলিট চিহ্নিতকরণ */
+  isDeleted?: boolean;
+  deleted?: boolean;
 }
 
 /**
@@ -66,6 +70,12 @@ export interface User {
 
   /** [EN] Owning tenant UUID / [BN] প্রতিষ্ঠানের টেন্যান্ট আইডি */
   tenantId: string;
+
+  /** [EN] Tenant business code (e.g. FACTORY1) / [BN] প্যারেন্ট টেন্যান্ট কোড */
+  tenantCode?: string;
+
+  /** [EN] Registered factory tenant name / [BN] প্যারেন্ট টেন্যান্টের নাম */
+  tenantName?: string;
 
   /** [EN] Unique username for login / [BN] লগইন ইউজারনেম */
   username: string;
@@ -82,17 +92,27 @@ export interface User {
   /** [EN] Corporate job designation / [BN] পদবী */
   designation?: string;
 
+  /** [EN] Factory employee punch/RFID card number / [BN] এমপ্লয়ি কার্ড নম্বর */
+  employeeCardNo?: string;
+
   /** [EN] User status enum / [BN] বর্তমান স্ট্যাটাস */
   status: UserStatus;
 
   /** [EN] List of assigned role codes / [BN] নির্ধারিত রোল কোডের তালিকা */
   roles: string[];
 
+  /** [EN] Direct or resolved functional permissions / [BN] ব্যবহারকারীর কার্যকর পারমিশন কোডের তালিকা */
+  permissions?: string[];
+
   /** [EN] Account creation timestamp / [BN] অ্যাকাউন্ট তৈরির সময় */
   createdAt: string;
 
   /** [EN] Last profile update timestamp / [BN] সর্বশেষ আপডেটের সময় */
   updatedAt?: string;
+
+  /** [EN] Soft-deleted flag / [BN] সফট-ডিলিট চিহ্নিতকরণ */
+  isDeleted?: boolean;
+  deleted?: boolean;
 }
 
 /**
@@ -100,11 +120,14 @@ export interface User {
  * [BN] ব্যবহারকারী লগইনের জন্য প্রেরিত ক্রেডেনশিয়াল ডেটা।
  */
 export interface LoginRequest {
-  /** [EN] Username / [BN] ইউজারনেম */
+  /** [EN] Username or corporate email / [BN] ইউজারনেম বা প্রাতিষ্ঠানিক ইমেইল */
   username: string;
 
   /** [EN] Password / [BN] পাসওয়ার্ড */
   password: string;
+
+  /** [EN] Optional tenant code or workspace subdomain / [BN] কারখানা কোড বা সাবডোমেন */
+  tenantCode?: string;
 }
 
 /**
@@ -142,6 +165,9 @@ export interface RefreshTokenRequest {
  * [BN] নতুন ব্যবহারকারী তৈরির জন্য রিকোয়েস্ট পে-লোড।
  */
 export interface CreateUserRequest {
+  /** [EN] Target client factory tenant UUID (super admin only) / [BN] টার্গেট টেন্যান্ট আইডি */
+  tenantId?: string;
+
   /** [EN] Unique username / [BN] ইউজারনেম */
   username: string;
 
@@ -160,7 +186,16 @@ export interface CreateUserRequest {
   /** [EN] Organizational designation / [BN] পদবী */
   designation?: string;
 
+  /** [EN] Factory employee punch/RFID card number / [BN] এমপ্লয়ি কার্ড নম্বর */
+  employeeCardNo?: string;
+
+  /** [EN] Initial operational status (default ACTIVE) / [BN] প্রাথমিক স্ট্যাটাস */
+  status?: UserStatus;
+
   /** [EN] Array of role codes to assign / [BN] রোলের কোড তালিকা */
+  roles?: string[];
+
+  /** [EN] Alias for role codes to assign / [BN] রোলের কোড তালিকা এলিয়াস */
   roleCodes?: string[];
 }
 
@@ -169,6 +204,9 @@ export interface CreateUserRequest {
  * [BN] বিদ্যমান ব্যবহারকারীর তথ্য সংশোধনের জন্য রিকোয়েস্ট।
  */
 export interface UpdateUserRequest {
+  /** [EN] Target client factory tenant UUID (super admin only) / [BN] টার্গেট টেন্যান্ট আইডি */
+  tenantId?: string;
+
   /** [EN] Updated email address / [BN] পরিবর্তিত ইমেইল */
   email?: string;
 
@@ -181,9 +219,29 @@ export interface UpdateUserRequest {
   /** [EN] Updated designation / [BN] পরিবর্তিত পদবী */
   designation?: string;
 
+  /** [EN] Updated factory employee card number / [BN] পরিবর্তিত এমপ্লয়ি কার্ড নম্বর */
+  employeeCardNo?: string;
+
   /** [EN] Updated user lifecycle status / [BN] পরিবর্তিত স্ট্যাটাস */
   status?: UserStatus;
 
   /** [EN] Updated role codes / [BN] পরিবর্তিত রোল কোড */
+  roles?: string[];
+
+  /** [EN] Alias for updated role codes / [BN] পরিবর্তিত রোল কোড এলিয়াস */
   roleCodes?: string[];
+}
+
+/**
+ * [EN] User-specific direct custom permission override.
+ * [BN] ব্যবহারকারীভিত্তিক কাস্টম ওভাররাইড পারমিশন মডেল।
+ */
+export interface UserCustomPermission {
+  id?: string;
+  userId?: string;
+  permissionCode: string;
+  isGranted?: boolean;
+  granted?: boolean;
+  createdAt?: string;
+  createdBy?: string;
 }

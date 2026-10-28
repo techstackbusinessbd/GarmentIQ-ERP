@@ -45,6 +45,15 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
     List<Role> findAllByTenantIdAndIsDeletedFalseOrderByRoleNameAsc(UUID tenantId);
 
     /**
+     * [EN] Finds first active role by standard role code (system fallback)
+     * [BN] স্ট্যান্ডার্ড রোল কোড দিয়ে প্রথম সক্রিয় রোল রেকর্ড অনুসন্ধান করে (সিস্টেম ফলব্যাক)
+     *
+     * @param roleCode [EN] Standard role code / [BN] রোল কোড
+     * @return [EN] Optional matching role / [BN] প্রাপ্ত রোল রেকর্ড
+     */
+    Optional<Role> findFirstByRoleCodeAndIsDeletedFalse(String roleCode);
+
+    /**
      * [EN] Eagerly fetches role with bound permissions using LEFT JOIN FETCH
      * [BN] পারমিশনসহ রোল রেকর্ড সরাসরি লোড করার জন্য অপ্টিমাইজড কুয়েরি
      *
@@ -79,4 +88,60 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
      * @return [EN] true if exists, false otherwise / [BN] বিদ্যমান থাকলে true
      */
     boolean existsByTenantIdAndRoleCodeAndIsDeletedFalse(UUID tenantId, String roleCode);
+
+    /**
+     * [EN] Retrieves all active roles for the active tenant and system baseline roles
+     * [BN] বর্তমান টেন্যান্ট এবং সিস্টেম রুট রোলের সম্মিলিত তালিকা সংগ্রহ করে
+     */
+    @Query("SELECT DISTINCT r FROM Role r LEFT JOIN FETCH r.permissions " +
+           "WHERE (r.tenantId = :tenantId OR r.tenantId = :systemTenantId) AND r.isDeleted = false " +
+           "ORDER BY r.roleName ASC")
+    List<Role> findAllForTenantOrSystem(@Param("tenantId") UUID tenantId, @Param("systemTenantId") UUID systemTenantId);
+
+    /**
+     * [EN] Retrieves all active roles across the entire platform for Super Admin
+     * [BN] প্ল্যাটফর্ম সুপারএডমিনের জন্য সমগ্র সিস্টেমের সমস্ত রোলের পূর্ণাঙ্গ তালিকা
+     */
+    @Query("SELECT DISTINCT r FROM Role r LEFT JOIN FETCH r.permissions " +
+           "WHERE r.isDeleted = false " +
+           "ORDER BY r.roleName ASC")
+    List<Role> findAllWithPermissionsByIsDeletedFalse();
+
+    /**
+     * [EN] Eagerly fetches role with bound permissions by role code across tenant/system
+     * [BN] রোল কোড দিয়ে পারমিশনসহ রোল অবজেক্ট সরাসরি লোড করে
+     */
+    @Query("SELECT r FROM Role r LEFT JOIN FETCH r.permissions " +
+           "WHERE r.roleCode = :roleCode AND r.isDeleted = false")
+    Optional<Role> findFirstWithPermissionsByRoleCode(@Param("roleCode") String roleCode);
+
+    /**
+     * [EN] Counts active users associated with a specific role
+     * [BN] নির্দিষ্ট রোলের সাথে যুক্ত সক্রিয় ব্যবহারকারীর সংখ্যা গণনা করে
+     */
+    @Query("SELECT COUNT(u) FROM User u JOIN u.roles r WHERE r.id = :roleId AND u.isDeleted = false")
+    long countUsersByRoleId(@Param("roleId") UUID roleId);
+
+    /**
+     * [EN] Retrieves all roles (including deleted) with permissions across platform
+     * [BN] প্ল্যাটফর্মের সকল রোল (ডিলিটকৃতসহ) পারমিশনসহ সংগ্রহ করে
+     */
+    @Query("SELECT DISTINCT r FROM Role r LEFT JOIN FETCH r.permissions ORDER BY r.roleName ASC")
+    List<Role> findAllWithPermissions();
+
+    /**
+     * [EN] Retrieves all roles (including deleted) for tenant or system
+     * [BN] টেন্যান্ট বা সিস্টেমের সকল রোল (ডিলিটকৃতসহ) সংগ্রহ করে
+     */
+    @Query("SELECT DISTINCT r FROM Role r LEFT JOIN FETCH r.permissions " +
+           "WHERE (r.tenantId = :tenantId OR r.tenantId = :systemTenantId) ORDER BY r.roleName ASC")
+    List<Role> findAllForTenantOrSystemWithDeleted(@Param("tenantId") UUID tenantId, @Param("systemTenantId") UUID systemTenantId);
+
+    /**
+     * [EN] Fetches role with permissions by role code even if soft-deleted
+     * [BN] সফট-ডিলিট হলেও রোল কোড দ্বারা পারমিশনসহ রোল নিয়ে আসে
+     */
+    @Query("SELECT r FROM Role r LEFT JOIN FETCH r.permissions WHERE r.roleCode = :roleCode")
+    Optional<Role> findFirstWithPermissionsByRoleCodeAllowDeleted(@Param("roleCode") String roleCode);
 }
+

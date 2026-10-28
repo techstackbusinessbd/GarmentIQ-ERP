@@ -51,6 +51,20 @@ public class RoleDto implements Serializable {
      * [BN] সিস্টেম রোল কি না
      */
     private boolean isSystemRole;
+    private boolean isDeleted;
+    private UUID tenantId;
+
+    /**
+     * [EN] Scoped tenant business code (e.g. CLT-0001)
+     * [BN] সংশ্লিষ্ট কারখানার ব্যবসায়িক কোড
+     */
+    private String tenantCode;
+
+    /**
+     * [EN] Scoped tenant display name (e.g. TexTech Apparels)
+     * [BN] সংশ্লিষ্ট কারখানার নাম
+     */
+    private String tenantName;
 
     /**
      * [EN] Set of permission codes assigned to this role

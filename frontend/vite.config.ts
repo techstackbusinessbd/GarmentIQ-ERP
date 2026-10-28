@@ -32,9 +32,24 @@ export default defineConfig({
     port: 5173,
     host: '0.0.0.0', // [EN] Bind to all interfaces for Docker compatibility / [BN] ডকার সামঞ্জস্যের জন্য 0.0.0.0
     strictPort: true,
+    allowedHosts: true, // [EN] Allow *.localhost subdomains / [BN] সাবডোমেন রাউটিং সক্রিয়করণ
+    watch: {
+      usePolling: true,
+      interval: 300, // [EN] 300ms polling for instant Windows-to-Docker HMR / [BN] ইনস্ট্যান্ট লাইভ রিফ্রেশ
+    },
+    hmr: {
+      clientPort: 5173, // [EN] WebSocket port for Docker / [BN] ডকার এইচএমআর সকেট পোর্ট
+    },
+    proxy: {
+      '/api': {
+        target: 'http://backend:8080',
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     port: 5173,
     host: '0.0.0.0',
+    allowedHosts: true,
   },
 });

@@ -9,8 +9,10 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import './index.css';
+import { queryClient } from './services/queryClient';
 
 // [EN] Locate root DOM container in index.html
 // [BN] index.html ফাইলে রুট DOM কন্টেইনার চিহ্নিত করা
@@ -20,10 +22,12 @@ if (!rootElement) {
   throw new Error('Failed to find the root element in index.html');
 }
 
-// [EN] Mount root React application within StrictMode
-// [BN] StrictMode সহ রুট রিঅ্যাক্ট অ্যাপ্লিকেশন মাউন্ট করা
+// [EN] Mount root React application within StrictMode and QueryClientProvider
+// [BN] StrictMode এবং QueryClientProvider সহ রুট অ্যাপ্লিকেশন মাউন্ট করা
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>
 );

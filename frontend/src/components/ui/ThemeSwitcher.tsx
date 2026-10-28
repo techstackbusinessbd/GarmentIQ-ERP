@@ -85,7 +85,7 @@ export const ThemeSwitcher: React.FC = () => {
               <span>Enterprise Themes</span>
             </div>
             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-xs bg-surface-muted text-text-muted">
-              4 Palettes
+              {availableThemes.length} Palettes
             </span>
           </div>
 

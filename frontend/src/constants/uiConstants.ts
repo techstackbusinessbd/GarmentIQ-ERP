@@ -13,7 +13,7 @@
  */
 export interface ThemeMetadata {
   /** [EN] Theme unique identifier / [BN] থিমের অনন্য আইডেন্টিফায়ার */
-  readonly id: 'indigo' | 'sapphire' | 'emerald' | 'obsidian';
+  readonly id: 'executive' | 'obsidian';
 
   /** [EN] Display name of the theme / [BN] থিমের প্রদর্শিত নাম */
   readonly name: string;
@@ -32,46 +32,30 @@ export interface ThemeMetadata {
 }
 
 /**
- * [EN] 4 Eye-Comfort Enterprise Themes conforming to design specifications.
- * [BN] ডিজাইন স্পেসিফিকেশন অনুবর্তী ৪টি এন্টারপ্রাইজ থিম কনফিগারেশন।
+ * [EN] Official GarmentIQ Eye-Comfort Theme configuration (Light & Optional Dark).
+ * [BN] অফিশিয়াল গার্মেন্টআইকিউ আই-কমফোর্ট থিম কনফিগারেশন (লাইট ও ঐচ্ছিক ডার্ক)।
  */
 export const AVAILABLE_THEMES: readonly ThemeMetadata[] = [
   {
-    id: 'indigo',
-    name: 'Royal Indigo & Denim',
-    subtitle: 'Merchandising & Core Denim O2S',
-    accentColor: '#4f46e5',
-    sidebarColor: '#0f172a',
-    isDark: false,
-  },
-  {
-    id: 'sapphire',
-    name: 'Sapphire Corporate',
-    subtitle: 'Commercial, Finance & Executive',
-    accentColor: '#2563eb',
-    sidebarColor: '#0f172a',
-    isDark: false,
-  },
-  {
-    id: 'emerald',
-    name: 'Emerald Sustainable',
-    subtitle: 'Eco-Audit, GOTS & Green Factory',
-    accentColor: '#059669',
-    sidebarColor: '#022c22',
+    id: 'executive',
+    name: 'GarmentIQ Eye-Comfort',
+    subtitle: 'Refined Midnight Navy, Soft Slate & Teal',
+    accentColor: '#0F766E',
+    sidebarColor: '#142B45',
     isDark: false,
   },
   {
     id: 'obsidian',
-    name: 'Midnight Obsidian',
-    subtitle: 'Floor Touchscreens & Night Shift',
-    accentColor: '#6366f1',
-    sidebarColor: '#0b0f19',
+    name: 'GarmentIQ Dark Mode',
+    subtitle: 'Deep Navy Canvas & Radiant Teal',
+    accentColor: '#5EE0CF',
+    sidebarColor: '#0E1620',
     isDark: true,
   },
 ];
 
 /** [EN] Default theme identifier for new sessions / [BN] নতুন সেশনের জন্য ডিফল্ট থিম আইডেন্টিফায়ার */
-export const DEFAULT_THEME: ThemeMetadata['id'] = 'indigo';
+export const DEFAULT_THEME: ThemeMetadata['id'] = 'executive';
 
 /** [EN] Local storage key for theme persistence / [BN] থিম সংরক্ষণের লোকাল স্টোরেজ কি */
 export const THEME_STORAGE_KEY = 'garments_erp_theme';
@@ -81,6 +65,15 @@ export const AUTH_STORAGE_KEY = 'garments_erp_auth_token';
 
 /** [EN] Local storage key for JWT refresh token / [BN] রিফ্রেশ টোকেন লোকাল স্টোরেজ কি */
 export const REFRESH_TOKEN_KEY = 'garments_erp_refresh_token';
+
+/** [EN] Local storage key for active tenant identifier / [BN] সক্রিয় টেন্যান্ট আইডেন্টিফায়ার লোকাল স্টোরেজ কি */
+export const TENANT_STORAGE_KEY = 'garments_erp_tenant_id';
+
+/** [EN] Browser session cookie key for tab-sharing and browser-close logout / [BN] ব্রাউজার সেশন কুকি কি */
+export const SESSION_COOKIE_KEY = 'garments_erp_session_active';
+
+/** [EN] Cross-tab BroadcastChannel name for auth state synchronization / [BN] ক্রস-ট্যাব অথ সিঙ্ক চ্যানেল */
+export const SESSION_SYNC_CHANNEL = 'garments_erp_session_sync';
 
 /** [EN] Standard pagination page size dropdown options / [BN] টেবিল পেজ সাইজ ড্রপডাউন অপশন তালিকা */
 export const TABLE_PAGE_SIZES: readonly number[] = [10, 25, 50, 100];
@@ -102,11 +95,11 @@ export const DATE_FORMATS = {
 
 /** [EN] System branding and release SemVer metadata / [BN] সিস্টেম ব্র্যান্ডিং ও রিলিজ মেটাডেটা */
 export const APP_METADATA = {
-  NAME: 'Garments ERP',
+  NAME: 'GarmentIQ ERP',
   SHORT_NAME: 'GarmentIQ',
   TAGLINE: 'RMG Enterprise Platform',
   VERSION: 'v1.0.0-PROD',
-  COPYRIGHT: '© 2026 Garments ERP. Enterprise Grade RMG Execution Platform.',
+  COPYRIGHT: '© 2026 GarmentIQ ERP. Enterprise Grade RMG Execution Platform.',
 } as const;
 
 /** [EN] Global search input debounce delay in milliseconds / [BN] গ্লোবাল সার্চ ডেবউন্স বিলম্ব (মি.সে.) */
