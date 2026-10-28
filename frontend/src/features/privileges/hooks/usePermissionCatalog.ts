@@ -9,6 +9,8 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+import { useAuthStore } from '@/store';
+import { isPlatformSuperAdmin } from '@/routes';
 import { permissionService } from '../services/permissionService';
 import type { MatrixDomainDef } from '../constants/accessMatrixTypes';
 
@@ -20,7 +22,7 @@ import type { MatrixDomainDef } from '../constants/accessMatrixTypes';
  */
 export const usePermissionCatalog = (domain: string = 'admin') => {
   return useQuery<MatrixDomainDef[], Error>({
-    queryKey: ['permission-catalog', domain],
+    queryKey: ['permission-catalog', domain, isPlatformSuperAdmin(useAuthStore.getState().user) ? 'super' : 'tenant'],
     queryFn: () => permissionService.getPermissionCatalog(domain),
     staleTime: 5 * 60 * 1000, // [EN] 5 minutes cache / [BN] ৫ মিনিট ক্যাশ
   });

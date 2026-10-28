@@ -31,10 +31,23 @@ export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, o
   const { isSuperAdmin: isCallerSuperAdmin } = usePermission();
   const { data: rawCatalog = [], isLoading: isCatalogLoading } = usePermissionCatalog('admin');
 
-  // Filter out platform root modules (client_mgmt) for tenant operators
+  // Filter out platform root modules (client_mgmt) and root purge permissions for tenant operators
   const catalogDomains = useMemo(() => isCallerSuperAdmin
     ? rawCatalog
-    : rawCatalog.map((d) => ({ ...d, modules: d.modules.filter((m) => m.id !== 'client_mgmt') })),
+    : rawCatalog
+      .map((d) => ({
+        ...d,
+        modules: d.modules
+          .filter((m) => m.id !== 'client_mgmt')
+          .map((m) => ({
+            ...m,
+            features: m.features.map((f) => ({
+              ...f,
+              actions: { ...f.actions, purge: null },
+            })),
+          })),
+      }))
+      .filter((d) => d.modules.length > 0),
     [rawCatalog, isCallerSuperAdmin]
   );
   const allCatalogCodes = useMemo(() => extractCatalogPermissionCodes(catalogDomains), [catalogDomains]);

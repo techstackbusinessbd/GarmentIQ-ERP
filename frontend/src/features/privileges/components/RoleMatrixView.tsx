@@ -27,9 +27,23 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
   const { isSuperAdmin: isCallerSuperAdmin } = usePermission();
   const { data: rawCatalog = [], isLoading: isCatalogLoading } = usePermissionCatalog('admin');
 
+  // Filter out platform root modules (client_mgmt) and root purge permissions for tenant operators
   const catalogDomains = useMemo(() => {
     if (isCallerSuperAdmin) return rawCatalog;
-    return rawCatalog.map((d) => ({ ...d, modules: d.modules.filter((m) => m.id !== 'client_mgmt') }));
+    return rawCatalog
+      .map((d) => ({
+        ...d,
+        modules: d.modules
+          .filter((m) => m.id !== 'client_mgmt')
+          .map((m) => ({
+            ...m,
+            features: m.features.map((f) => ({
+              ...f,
+              actions: { ...f.actions, purge: null },
+            })),
+          })),
+      }))
+      .filter((d) => d.modules.length > 0);
   }, [rawCatalog, isCallerSuperAdmin]);
 
   const allCatalogCodes = useMemo(() => extractCatalogPermissionCodes(catalogDomains), [catalogDomains]);
@@ -61,16 +75,12 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
     }).catch(() => toast.error('Failed to load roles from database.')).finally(() => setIsLoading(false));
   }, [isCallerSuperAdmin]);
 
-  const visibleRoles = useMemo(() => {
-    return isCallerSuperAdmin ? roles : roles.filter((r) => r.roleCode !== 'ROLE_SUPER_ADMIN');
-  }, [roles, isCallerSuperAdmin]);
-
+  const visibleRoles = useMemo(() => isCallerSuperAdmin ? roles : roles.filter((r) => r.roleCode !== 'ROLE_SUPER_ADMIN'), [roles, isCallerSuperAdmin]);
   const isSuperAdmin = selectedRoleCode === 'ROLE_SUPER_ADMIN';
   const activeRole = roles.find((r) => r.roleCode === selectedRoleCode);
   const roleName = activeRole ? activeRole.roleName : selectedRoleCode;
   const activePermsSet = useMemo(() => new Set(rolePermissions[selectedRoleCode] || []), [rolePermissions, selectedRoleCode]);
 
-  // Dirty State Calculation
   const dirtyRoleCodes = useMemo(() => {
     const dirty = new Set<string>();
     Object.keys(rolePermissions).forEach((code) => {
@@ -124,10 +134,7 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
   }, [isSuperAdmin, selectedRoleCode]);
 
   const handleResetFilters = useCallback(() => {
-    setSelectedDomainId('all');
-    setSelectedModuleId('all');
-    setSelectedFeatureId('all');
-    setSearchQuery('');
+    setSelectedDomainId('all'); setSelectedModuleId('all'); setSelectedFeatureId('all'); setSearchQuery('');
   }, []);
 
   const handleReadOnly = () => {
@@ -228,39 +235,23 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
     <div className="w-full space-y-3 pb-12">
       {/* 1. Unified Single Active Role Header & Dropdown Card */}
       <MasterDetailActionHeader
-        roles={visibleRoles}
-        selectedRoleCode={selectedRoleCode}
-        onSelectRoleCode={setSelectedRoleCode}
-        role={activeRole}
-        grantedCount={isSuperAdmin ? allCatalogCodes.length : activePermsSet.size}
-        totalCatalogCount={allCatalogCodes.length}
-        isSuperAdmin={isSuperAdmin}
-        isDirty={dirtyRoleCodes.has(selectedRoleCode)}
-        dirtyRoleCodes={dirtyRoleCodes}
-        modifiedCount={activeRoleModifiedCount}
-        isSaving={isSaving}
-        onReadOnly={handleReadOnly}
-        onFullAccess={handleFullAccess}
-        onResetDefaults={handleResetDefaults}
-        onClearAll={handleClearAll}
-        onDiscard={handleDiscard}
-        onSave={handleSave}
+        roles={visibleRoles} selectedRoleCode={selectedRoleCode} onSelectRoleCode={setSelectedRoleCode}
+        role={activeRole} grantedCount={isSuperAdmin ? allCatalogCodes.length : activePermsSet.size}
+        totalCatalogCount={allCatalogCodes.length} isSuperAdmin={isSuperAdmin}
+        isDirty={dirtyRoleCodes.has(selectedRoleCode)} dirtyRoleCodes={dirtyRoleCodes}
+        modifiedCount={activeRoleModifiedCount} isSaving={isSaving}
+        onReadOnly={handleReadOnly} onFullAccess={handleFullAccess} onResetDefaults={handleResetDefaults}
+        onClearAll={handleClearAll} onDiscard={handleDiscard} onSave={handleSave}
       />
 
       {/* 2. 3-Tier Cascading Clearance Filters Bar */}
       <MasterDetailFilterBar
         domains={catalogDomains}
-        selectedDomainId={selectedDomainId}
-        onSelectDomainId={setSelectedDomainId}
-        selectedModuleId={selectedModuleId}
-        onSelectModuleId={setSelectedModuleId}
-        selectedFeatureId={selectedFeatureId}
-        onSelectFeatureId={setSelectedFeatureId}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onResetFilters={handleResetFilters}
-        isAllExpanded={isAllExpanded}
-        onToggleAllCollapse={handleToggleAllCollapse}
+        selectedDomainId={selectedDomainId} onSelectDomainId={setSelectedDomainId}
+        selectedModuleId={selectedModuleId} onSelectModuleId={setSelectedModuleId}
+        selectedFeatureId={selectedFeatureId} onSelectFeatureId={setSelectedFeatureId}
+        searchQuery={searchQuery} onSearchChange={setSearchQuery}
+        onResetFilters={handleResetFilters} isAllExpanded={isAllExpanded} onToggleAllCollapse={handleToggleAllCollapse}
       />
 
       {/* 3. Full-Width Smart Group Banner Matrix Table */}
@@ -290,9 +281,13 @@ export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode 
         ))}
 
         {displayedDomains.length === 0 && (
-          <div className="p-12 text-center text-xs text-text-muted bg-surface-card border border-border-subtle rounded-[4px]">No matching modules or actions found.</div>
+          <div className="p-12 text-center text-xs text-text-muted bg-surface-card border border-border-subtle rounded-[4px]">
+            No matching modules or actions found.
+          </div>
         )}
       </div>
     </div>
   );
 };
+
+export default RoleMatrixView;

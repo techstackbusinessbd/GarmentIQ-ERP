@@ -47,7 +47,9 @@ public final class SecurityUtils {
             return false;
         }
         String clean = permissionCode.trim().toUpperCase();
-        return clean.startsWith(PERM_PREFIX_TENANT) || clean.startsWith("CLIENT:");
+        return clean.startsWith(PERM_PREFIX_TENANT)
+                || clean.startsWith("CLIENT:")
+                || clean.endsWith(":PURGE");
     }
 
     /**
