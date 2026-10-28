@@ -92,7 +92,11 @@ export const UserDetailActionHeader: React.FC<UserDetailActionHeaderProps> = ({
                 <span>0 custom</span>
               )}
               <span>•</span>
-              <span><strong className="text-accent font-sans">{effectiveCount}/{totalCatalogCount}</strong> total</span>
+              <span>
+                <strong className="text-accent font-sans tabular-nums">{effectiveCount}</strong>{' '}
+                <span className="text-[10px] text-text-muted">of</span>{' '}
+                <span className="text-text-secondary font-sans tabular-nums font-semibold">{totalCatalogCount}</span> total
+              </span>
             </div>
           </div>
         </div>

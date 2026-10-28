@@ -111,11 +111,20 @@ export const MasterDetailActionHeader: React.FC<MasterDetailActionHeaderProps> =
 
       {/* Bottom Row: Quick Presets & Coverage Bar (Ultra-Minimal) */}
       <div className="pt-2 border-t border-border-subtle/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-        <div className="flex items-center gap-2 font-mono text-[11px] text-text-muted">
-          <span>Clearance:</span>
-          <span className="font-bold text-text-primary">
-            {grantedCount}/{totalCatalogCount}
-          </span>
+        <div className="flex items-center gap-1.5 text-xs text-text-muted">
+          <span className="text-[11px] font-medium text-text-muted">Clearance:</span>
+          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] bg-accent/10 border border-accent/20">
+            <span className="font-bold text-accent font-sans tabular-nums text-xs">
+              {grantedCount}
+            </span>
+            <span className="text-[10px] text-text-muted font-sans px-0.5">of</span>
+            <span className="font-medium text-text-secondary font-sans tabular-nums text-xs">
+              {totalCatalogCount}
+            </span>
+            <span className="text-[10px] text-text-muted font-mono ml-0.5">
+              ({Math.round((grantedCount / (totalCatalogCount || 1)) * 100)}%)
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center gap-1.5 flex-wrap">
