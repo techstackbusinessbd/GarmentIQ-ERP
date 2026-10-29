@@ -33,7 +33,7 @@
 
 | Step ID | Task Description | Depends On | Target / Deliverable | Owner | Status |
 | :--- | :--- | :--- | :--- | :---: | :---: |
-| `S1-M1-DOC-01` | বায়ার ও ব্র্যান্ড ডিটেইল স্পেক্স ও PostgreSQL স্কিমা ড্রাফট | ডোমেন ০০ সিলগালা | V27 Flyway Schema Draft (buyers, buyer_brands) | আরিফুল ও তানভীর | 🔒 **LOCKED (প্রস্তুত)** |
+| `S1-M1-DOC-01` | বায়ার ও ব্র্যান্ড ডিটেইল স্পেক্স ও PostgreSQL স্কিমা ড্রাফট | ডোমেন ০০ সিলগালা | V27 Flyway Schema Draft (buyers, buyer_brands) | আরিফুল ও তানভীর | ✅ **COMPLETED** |
 | `S1-M1-BE-02` | ব্যাকএন্ড JPA Entities, Repositories, UUIDv7 ও Auditing | `S1-M1-DOC-01` | `Buyer.java`, `BuyerBrand.java`, AuditableBase | আরিফুল | 🔒 **LOCKED** |
 | `S1-M1-BE-03` | DTOs, অটো-কোড জেনারেটর (`BYR-xxxx`), Service ও Controller | `S1-M1-BE-02` | `BuyerService.java`, REST Endpoints, RBAC | আরিফুল | 🔒 **LOCKED** |
 | `S1-M1-FE-04` | ফ্রন্টএন্ড বায়ার ও ব্র্যান্ড ডিরেক্টরি, সাব-ড্রয়ার ও অ্যাকশনস | `S1-M1-BE-03` | React 19 Table, Sub-Brand Drawer, Single-Word Buttons | সাদিয়া | 🔒 **LOCKED** |
@@ -129,3 +129,4 @@
 > প্রস্তুতকারক: 👩‍💼 নাসরিন সুলতানা (Technical Writer) ও 👨‍💼 তানভীর আহমেদ (Chief Solutions Architect)  
 > পর্যালোচক: 👨‍💻 আরিফুল ইসলাম (Tech Lead) ও 👩‍💻 সাদিয়া জাহান (Frontend Lead)  
 > চূড়ান্ত অনুমোদন ও আনলক গেটকিপার: 👨‍💼 **Product Director / CTO (স্যার)**
+
