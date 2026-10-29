@@ -228,3 +228,4 @@ public class Buyer implements Serializable {
         return Objects.hash(tenantId, buyerCode);
     }
 }
+

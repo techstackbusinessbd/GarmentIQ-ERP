@@ -58,6 +58,24 @@ public interface BuyerRepository extends JpaRepository<Buyer, UUID> {
     List<Buyer> findByTenantIdAndStatusAndDeletedAtIsNullOrderByBuyerNameAsc(UUID tenantId, String status);
 
     /**
+     * [EN] Fast retrieval when no free-text search query is provided
+     * [BN] সার্চ টেক্সট ছাড়া স্ট্যাটাস ও বায়ার টাইপ ফিল্টার সহ দ্রুত কোয়েরি
+     */
+    @Query("""
+        SELECT b FROM Buyer b
+        WHERE b.tenantId = :tenantId
+          AND b.deletedAt IS NULL
+          AND (:status IS NULL OR b.status = :status)
+          AND (:buyerType IS NULL OR b.buyerType = :buyerType)
+    """)
+    Page<Buyer> findByTenantIdAndFilters(
+            @Param("tenantId") UUID tenantId,
+            @Param("status") String status,
+            @Param("buyerType") String buyerType,
+            Pageable pageable
+    );
+
+    /**
      * [EN] Multi-predicate search query across code, name, country, and status
      * [BN] কোড, নাম, দেশ ও স্ট্যাটাস অনুযায়ী মাল্টি-সার্চ কুয়েরি
      */
@@ -67,10 +85,10 @@ public interface BuyerRepository extends JpaRepository<Buyer, UUID> {
           AND b.deletedAt IS NULL
           AND (:status IS NULL OR b.status = :status)
           AND (:buyerType IS NULL OR b.buyerType = :buyerType)
-          AND (:search IS NULL OR LOWER(b.buyerName) LIKE LOWER(CONCAT('%', :search, '%'))
-                             OR LOWER(b.buyerCode) LIKE LOWER(CONCAT('%', :search, '%'))
-                             OR LOWER(b.countryOfOrigin) LIKE LOWER(CONCAT('%', :search, '%'))
-                             OR LOWER(b.contactPersonName) LIKE LOWER(CONCAT('%', :search, '%')))
+          AND (LOWER(b.buyerName) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(b.buyerCode) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(b.countryOfOrigin) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(b.contactPersonName) LIKE LOWER(CONCAT('%', :search, '%')))
     """)
     Page<Buyer> searchBuyers(
             @Param("tenantId") UUID tenantId,
@@ -86,3 +104,4 @@ public interface BuyerRepository extends JpaRepository<Buyer, UUID> {
      */
     long countByTenantIdAndStatusAndDeletedAtIsNull(UUID tenantId, String status);
 }
+

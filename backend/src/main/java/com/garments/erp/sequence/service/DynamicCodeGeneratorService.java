@@ -119,6 +119,7 @@ public class DynamicCodeGeneratorService {
     private CodeSequenceTemplate createDefaultTemplate(UUID tenantId, EntityTypeCode entityType) {
         return switch (entityType) {
             case BUYER -> new CodeSequenceTemplate(tenantId, "BUYER", "BYR-{SEQ:4}", "BYR", 4, ResetFrequency.NEVER);
+            case BRAND -> new CodeSequenceTemplate(tenantId, "BRAND", "BRD-{SEQ:4}", "BRD", 4, ResetFrequency.NEVER);
             case STYLE -> new CodeSequenceTemplate(tenantId, "STYLE", "STY-{YYYY}-{SEQ:5}", "STY", 5, ResetFrequency.YEARLY);
             case PO -> new CodeSequenceTemplate(tenantId, "PO", "PO-{YYYY}{MM}-{SEQ:4}", "PO", 4, ResetFrequency.MONTHLY);
             case CUTTING_ORDER -> new CodeSequenceTemplate(tenantId, "CUTTING_ORDER", "CUT-{YYYY}{MM}-{SEQ:4}", "CUT", 4, ResetFrequency.MONTHLY);

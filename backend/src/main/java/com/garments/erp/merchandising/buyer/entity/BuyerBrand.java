@@ -174,3 +174,4 @@ public class BuyerBrand implements Serializable {
         return Objects.hash(tenantId, brandCode);
     }
 }
+

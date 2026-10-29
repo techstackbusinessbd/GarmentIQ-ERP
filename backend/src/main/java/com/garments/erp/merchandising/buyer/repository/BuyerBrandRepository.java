@@ -70,3 +70,4 @@ public interface BuyerBrandRepository extends JpaRepository<BuyerBrand, UUID> {
     @Query("SELECT COUNT(b) FROM BuyerBrand b WHERE b.buyer.id = :buyerId AND b.deletedAt IS NULL")
     long countByBuyerIdAndDeletedAtIsNull(@Param("buyerId") UUID buyerId);
 }
+

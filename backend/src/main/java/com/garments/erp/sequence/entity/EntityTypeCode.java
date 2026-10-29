@@ -19,6 +19,12 @@ public enum EntityTypeCode {
     BUYER("BUYER", "Buyer Organization Code"),
 
     /**
+     * [EN] Buyer sub-brand portfolio code (e.g. BRD-0001)
+     * [BN] বায়ার সাব-ব্র্যান্ড পোর্টফোলিও ব্যবসায়িক কোড
+     */
+    BRAND("BRAND", "Buyer Sub-Brand Code"),
+
+    /**
      * [EN] Garment style development code (e.g. STY-2026-00042)
      * [BN] তৈরি পোশাকের স্টাইল ডেভেলপমেন্ট কোড
      */
