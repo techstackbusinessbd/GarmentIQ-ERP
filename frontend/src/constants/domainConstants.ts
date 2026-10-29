@@ -1,6 +1,8 @@
 /**
+ * =============================================================================
  * [EN] Domain Registry & 2-Level Navigation Hierarchy (domainConstants.ts)
  * [BN] ডোমেন রেজিস্ট্রি ও ২-লেভেল নেভিগেশন হায়ারার্কি কনস্ট্যান্টস (রুল ০৭, ১৫, ১৯ অনুবর্তী)
+ * =============================================================================
  */
 
 import type { NavGroup } from './navigationConstants';
@@ -10,25 +12,18 @@ import type { NavGroup } from './navigationConstants';
  * [BN] ২য় টপবারে প্রদর্শিত শীর্ষস্থানীয় অপারেশনাল ডোমেন ডেফিনেশন ইন্টারফেস।
  */
 export interface DomainItem {
-  /** [EN] Unique domain identifier / [BN] অনন্য ডোমেন আইডেন্টিফায়ার */
   readonly id: string;
-  /** [EN] Ultra-concise 1-word display label / [BN] ১-শব্দের সংক্ষিপ্ত লেবেল */
   readonly label: string;
-  /** [EN] Target default landing URL / [BN] প্রাথমিক ল্যান্ডিং রুট পাথ */
   readonly path: string;
-  /** [EN] Lucide React icon name / [BN] Lucide আইকন নেম */
   readonly iconName: string;
-  /** [EN] URL prefix pattern for active route matching / [BN] সক্রিয় রুট ম্যাপিং প্রিফিক্স */
   readonly rootPrefix: string;
-  /** [EN] Optional visual indicator badge / [BN] অপশনাল ব্যাজ */
   readonly badge?: string | null;
-  /** [EN] 2-Level grouped navigation hierarchy for this domain / [BN] এই ডোমেনের ২-লেভেল মেনু ট্রি */
   readonly groups: readonly NavGroup[];
 }
 
 /**
- * [EN] 11 Core Factory Operational Domains (1-word concise names).
- * [BN] গার্মেন্টস ফ্যাক্টরি অপারেশনের ১১টি মূল ডোমেন (১-শব্দের সংক্ষিপ্ত নাম)।
+ * [EN] Core Factory Operational Domains (1-word concise names).
+ * [BN] গার্মেন্টস ফ্যাক্টরি অপারেশনের মূল ডোমেনসমূহ (১-শব্দের সংক্ষিপ্ত নাম)।
  */
 export const ERP_DOMAINS: readonly DomainItem[] = [
   {
@@ -42,6 +37,52 @@ export const ERP_DOMAINS: readonly DomainItem[] = [
         id: 'overview-main',
         title: 'Executive Insights',
         items: [{ id: 'dashboard-kpi', label: 'Overview & Analytics', path: '/app/overview/dashboard', iconName: 'LayoutDashboard' }],
+      },
+    ],
+  },
+  {
+    id: 'merchandising',
+    label: 'Merchandising',
+    path: '/app/merchandising/buyers',
+    iconName: 'Shirt',
+    rootPrefix: '/app/merchandising',
+    groups: [
+      {
+        id: 'merch-buyer-group',
+        title: 'Buyer & Brand',
+        items: [
+          {
+            id: 'merch-buyers-list',
+            label: 'Buyer Directory',
+            path: '/app/merchandising/buyers',
+            iconName: 'Building2',
+            permission: 'BUYER:MENU',
+          },
+        ],
+      },
+      {
+        id: 'merch-orders-group',
+        title: 'Orders & Costing',
+        items: [
+          {
+            id: 'merch-orders-list',
+            label: 'Buyer Orders (PO)',
+            path: '/app/merchandising/orders',
+            iconName: 'Layers',
+          },
+          {
+            id: 'merch-styles-list',
+            label: 'Styles & Tech-Packs',
+            path: '/app/merchandising/styles',
+            iconName: 'Shirt',
+          },
+          {
+            id: 'merch-costing-list',
+            label: 'BOM & Costing',
+            path: '/app/merchandising/costing',
+            iconName: 'DollarSign',
+          },
+        ],
       },
     ],
   },
@@ -105,5 +146,3 @@ export const ERP_DOMAINS: readonly DomainItem[] = [
     ],
   },
 ];
-
-
