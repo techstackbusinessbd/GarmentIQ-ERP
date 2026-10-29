@@ -11,6 +11,7 @@
 import React from 'react';
 import { Route, Navigate } from 'react-router-dom';
 import { DashboardOverviewPage, ModulePlaceholderPage } from '@/pages';
+import { BuyerDirectoryPage } from '@/features/merchandising';
 
 export const renderCoreWorkflowRoutes = (): React.ReactNode => (
   <>
@@ -20,16 +21,8 @@ export const renderCoreWorkflowRoutes = (): React.ReactNode => (
     <Route path="/app/dashboard" element={<Navigate to="/app/overview/dashboard" replace />} />
 
     {/* Merchandising & Orders */}
-    <Route
-      path="/app/merchandising"
-      element={
-        <ModulePlaceholderPage
-          title="Merchandising & Orders"
-          domain="Domain 01: Merchandising"
-          description="Buyer purchase order booking, tech-pack style matrices, consumption formulas, and cost sheet budgeting."
-        />
-      }
-    />
+    <Route path="/app/merchandising" element={<Navigate to="/app/merchandising/buyers" replace />} />
+    <Route path="/app/merchandising/buyers" element={<BuyerDirectoryPage />} />
     <Route
       path="/app/merchandising/orders"
       element={
@@ -116,6 +109,7 @@ export const renderCoreWorkflowRoutes = (): React.ReactNode => (
     {/* Backward Compatibility Redirect Aliases */}
     <Route path="/dashboard" element={<Navigate to="/app/dashboard" replace />} />
     <Route path="/merchandising" element={<Navigate to="/app/merchandising" replace />} />
+    <Route path="/merchandising/buyers" element={<Navigate to="/app/merchandising/buyers" replace />} />
     <Route path="/merchandising/orders" element={<Navigate to="/app/merchandising/orders" replace />} />
     <Route path="/merchandising/styles" element={<Navigate to="/app/merchandising/styles" replace />} />
     <Route path="/merchandising/costing" element={<Navigate to="/app/merchandising/costing" replace />} />

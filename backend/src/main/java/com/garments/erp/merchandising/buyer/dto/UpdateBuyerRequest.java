@@ -71,3 +71,4 @@ public class UpdateBuyerRequest implements Serializable {
 
     private String notes;
 }
+

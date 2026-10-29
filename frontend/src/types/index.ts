@@ -13,3 +13,4 @@ export * from './auth.types';
 export * from './sequence.types';
 export * from './master.types';
 export * from './widget.types';
+export * from './merchandising.types';

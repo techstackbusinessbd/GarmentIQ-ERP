@@ -94,3 +94,4 @@ public class BuyerDto implements Serializable {
                 .build();
     }
 }
+

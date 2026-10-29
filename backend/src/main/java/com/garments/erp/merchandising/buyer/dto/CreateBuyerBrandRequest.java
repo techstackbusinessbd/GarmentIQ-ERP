@@ -49,3 +49,4 @@ public class CreateBuyerBrandRequest implements Serializable {
 
     private String notes;
 }
+

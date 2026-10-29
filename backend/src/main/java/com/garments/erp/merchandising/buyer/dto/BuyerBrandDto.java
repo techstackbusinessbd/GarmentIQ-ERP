@@ -57,3 +57,4 @@ public class BuyerBrandDto implements Serializable {
                 .build();
     }
 }
+

@@ -74,3 +74,4 @@ public class CreateBuyerRequest implements Serializable {
 
     private String notes;
 }
+

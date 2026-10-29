@@ -12,25 +12,12 @@
  * [BN] একক নেভিগেশন রুট আইটেমের অবজেক্ট টাইপ।
  */
 export interface NavItem {
-  /** [EN] Unique route identifier / [BN] অনন্য রুট আইডেন্টিফায়ার */
   readonly id: string;
-
-  /** [EN] Human-readable English label for UI / [BN] ইউআইয়ের জন্য ইংরেজি লেবেল */
   readonly label: string;
-
-  /** [EN] Target browser URL path / [BN] ব্রাউজারের পাথ */
   readonly path: string;
-
-  /** [EN] Lucide React icon component identifier / [BN] Lucide আইকন নেম */
   readonly iconName: string;
-
-  /** [EN] Optional visual indicator badge / [BN] অপশনাল ব্যাজ */
   readonly badge?: string | null;
-
-  /** [EN] Required RBAC permission code / [BN] প্রয়োজনীয় পারমিশন কোড */
   readonly permission?: string;
-
-  /** [EN] Nested sub-navigation links / [BN] সাব-মেনু লিংকসমূহ */
   readonly children?: readonly {
     readonly id: string;
     readonly label: string;
@@ -44,13 +31,8 @@ export interface NavItem {
  * [BN] মাস্টার সাইডবারের গ্রুপ সেকশন অবজেক্ট টাইপ।
  */
 export interface NavGroup {
-  /** [EN] Unique domain group identifier / [BN] অনন্য ডোমেন গ্রুপ আইডেন্টিফায়ার */
   readonly id: string;
-
-  /** [EN] English section header title / [BN] সেকশন হেডার শিরোনাম */
   readonly title: string;
-
-  /** [EN] Array of navigation route items within group / [BN] গ্রুপের অন্তর্গত নেভিগেশন রুট তালিকা */
   readonly items: readonly NavItem[];
 }
 
@@ -72,7 +54,19 @@ export const NAVIGATION_GROUPS: readonly NavGroup[] = [
       },
     ],
   },
-
+  {
+    id: 'merchandising',
+    title: 'Merchandising',
+    items: [
+      {
+        id: 'buyers',
+        label: 'Buyers & Brands',
+        path: '/app/merchandising/buyers',
+        iconName: 'Building2',
+        permission: 'BUYER:MENU',
+      },
+    ],
+  },
   {
     id: 'admin-access',
     title: 'Users & Access Control',
@@ -150,21 +144,10 @@ export const NAVIGATION_GROUPS: readonly NavGroup[] = [
   },
 ];
 
-/**
- * [EN] Multi-factory plant units for header switcher.
- * [BN] টপ হেডারের জন্য মাল্টি-ফ্যাক্টরি প্ল্যান্ট ইউনিট তালিকা।
- */
 export interface FactoryUnit {
-  /** [EN] Internal unit identifier / [BN] অভ্যন্তরীণ ইউনিট আইডি */
   readonly id: string;
-
-  /** [EN] Short factory unit code / [BN] সংক্ষিপ্ত ফ্যাক্টরি ইউনিট কোড */
   readonly code: string;
-
-  /** [EN] Full plant name / [BN] সম্পূর্ণ প্ল্যান্টের নাম */
   readonly name: string;
-
-  /** [EN] Geographic factory location / [BN] কারখানার ভৌগোলিক অবস্থান */
   readonly location: string;
 }
 
@@ -189,8 +172,4 @@ export const FACTORY_UNITS: readonly FactoryUnit[] = [
   },
 ];
 
-/**
- * [EN] Global Hotkey for Omnibox / Instant Search.
- * [BN] গ্লোবাল অমনিবক্স ও ইন্সট্যান্ট সার্চ শর্টকাট।
- */
 export const GLOBAL_SEARCH_HOTKEY = 'Ctrl+K';

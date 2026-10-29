@@ -46,3 +46,4 @@ public class UpdateBuyerBrandRequest implements Serializable {
 
     private String notes;
 }
+
