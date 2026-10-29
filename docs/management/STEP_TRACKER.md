@@ -18,7 +18,7 @@
 
 | সক্রিয় ডোমেন | ডোমেন নাম | ডেডিকেটেড ট্র্যাকার ফাইল | বর্তমান স্ট্যাটাস |
 | :---: | :--- | :--- | :--- |
-| **Domain 0** | **Foundation & Core Platform** | 👉 **[STEP_TRACKER_DOMAIN_00_FOUNDATION.md](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_00_FOUNDATION.md)** | 🟢 **ACTIVE (চলমান)** |
+| **Domain 1** | **Merchandising, Costing & Orders** | 👉 **[STEP_TRACKER_DOMAIN_01_MERCHANDISING.md](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_01_MERCHANDISING.md)** | 🟢 **ACTIVE (স্পেসিফিকেশন ও স্কিমা পর্ব)** |
 
 ---
 
@@ -38,4 +38,4 @@
 ---
 
 > 💡 **নোট**: বর্তমানে চলমান কাজের ক্ষুদ্র ক্ষুদ্র মাইক্রো-স্টেপ দেখতে সরাসরি প্রবেশ করুন:  
-> 👉 **[ডোমেন ০ স্টেপ ট্র্যাকার (STEP_TRACKER_DOMAIN_00_FOUNDATION.md)](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_00_FOUNDATION.md)**
+> 👉 **[ডোমেন ০১ স্টেপ ট্র্যাকার (STEP_TRACKER_DOMAIN_01_MERCHANDISING.md)](file:///g:/ERP-Software/Garments-ERP/docs/management/step-tracking/STEP_TRACKER_DOMAIN_01_MERCHANDISING.md)**
