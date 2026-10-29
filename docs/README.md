@@ -39,6 +39,7 @@
 - [SRS.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/SRS.md) — মাস্টার সফটওয়্যার রিকোয়ারমেন্টস পোর্টাল (IEEE 830)।
   - [SRS-00: ফাউন্ডেশন ও টেক স্ট্যাক](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_00_FOUNDATION.md)
   - [SRS-01: মার্চেন্ডাইজিং ও অর্ডার](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_01_MERCHANDISING.md)
+  - [DOMAIN_01_MODULE_SUBMODULE_FEATURE_MATRIX.md](file:///g:/ERP-Software/Garments-ERP/docs/requirements/DOMAIN_01_MODULE_SUBMODULE_FEATURE_MATRIX.md) — **ডোমেন ০১-এর ৮টি কোর মডিউল ও ১৮টি সাব-মডিউল পূর্ণাঙ্গ স্পেসিফিকেশন**।
   - [SRS-02: ফেব্রিক ও ট্রিমস ইনভেন্টরি](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_02_FABRIC_INVENTORY.md)
   - [SRS-03: প্রোডাকশন প্ল্যানিং ও শপ ফ্লোর](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_03_PRODUCTION_PLANNING.md)
   - [SRS-04: কোয়ালিটি কন্ট্রোল (QC/QA)](file:///g:/ERP-Software/Garments-ERP/docs/requirements/srs/SRS_04_QUALITY_CONTROL.md)
