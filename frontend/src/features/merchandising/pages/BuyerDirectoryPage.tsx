@@ -3,31 +3,31 @@
  * [EN] Global Buyer Directory Page (BuyerDirectoryPage.tsx)
  * [BN] গ্লোবাল বায়ার ডিরেক্টরি পেজ (BuyerDirectoryPage.tsx)
  * =============================================================================
- * [EN] Reference: Domain 01 Merchandising, Rule 05 (Zero Static), Rule 28 (Single-word buttons)
+ * [EN] Reference: Domain 01 Merchandising, Rule 05 (Zero Static), Rule 27 (Full Page), Rule 28 (Single-word buttons)
+ * [BN] বায়ার মাস্টার তালিকা ও সাব-ব্র্যান্ড পোর্টফোলিও ব্যবস্থাপনা স্ক্রিন।
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw, Building2 } from 'lucide-react';
 import { Button, TextInput, Select, DataTable } from '@/components/ui';
 import type { Buyer } from '@/types';
 import { buyerService } from '../services/buyerService';
 import { useBuyerColumns } from '../components/useBuyerColumns';
-import { BuyerCreateModal } from '../components/BuyerCreateModal';
-import { BuyerEditModal } from '../components/BuyerEditModal';
 import { BuyerDeleteModal } from '../components/BuyerDeleteModal';
 import { BuyerBrandDrawer } from '../components/BuyerBrandDrawer';
 import { BUYER_TYPE_OPTIONS, STATUS_OPTIONS } from '../constants/buyerConstants';
 
 export const BuyerDirectoryPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [buyers, setBuyers] = useState<Buyer[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [typeFilter, setTypeFilter] = useState<string>('ALL');
 
-  // Modals state
-  const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
-  const [buyerToEdit, setBuyerToEdit] = useState<Buyer | null>(null);
+  // Modals & Drawer state
   const [buyerToDelete, setBuyerToDelete] = useState<Buyer | null>(null);
   const [brandDrawerBuyer, setBrandDrawerBuyer] = useState<Buyer | null>(null);
 
@@ -53,16 +53,16 @@ export const BuyerDirectoryPage: React.FC = () => {
 
   const columns = useBuyerColumns({
     onOpenBrands: (b) => setBrandDrawerBuyer(b),
-    onEditBuyer: (b) => setBuyerToEdit(b),
+    onEditBuyer: (b) => navigate(`/app/merchandising/buyers/${b.id}/edit`),
     onDeleteBuyer: (b) => setBuyerToDelete(b),
   });
 
   return (
     <div className="p-6 space-y-4">
-      {/* Header */}
+      {/* Page Header Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded bg-brand-primary/10 text-brand-primary">
+          <div className="p-2 rounded bg-accent/10 text-accent">
             <Building2 size={20} />
           </div>
           <div>
@@ -70,7 +70,7 @@ export const BuyerDirectoryPage: React.FC = () => {
               Buyers
             </h1>
             <p className="text-xs text-text-muted">
-              Global buyer directory, trade terms, and sub-brand portfolio
+              Directory & brand portfolio
             </p>
           </div>
         </div>
@@ -78,21 +78,19 @@ export const BuyerDirectoryPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <Button
             size="sm"
-            variant="outline"
+            variant="secondary"
             onClick={fetchBuyers}
             disabled={isLoading}
-            className="flex items-center gap-1 text-xs"
+            icon={<RefreshCw size={13} className={isLoading ? 'animate-spin' : ''} />}
           >
-            <RefreshCw size={13} className={isLoading ? 'animate-spin' : ''} />
             Refresh
           </Button>
           <Button
             size="sm"
             variant="primary"
-            onClick={() => setIsCreateOpen(true)}
-            className="flex items-center gap-1 text-xs"
+            onClick={() => navigate('/app/merchandising/buyers/new')}
+            icon={<Plus size={14} />}
           >
-            <Plus size={14} />
             Register
           </Button>
         </div>
@@ -105,7 +103,7 @@ export const BuyerDirectoryPage: React.FC = () => {
             <TextInput
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search code, name, country..."
+              placeholder="Search..."
               className="text-xs"
             />
           </div>
@@ -127,12 +125,12 @@ export const BuyerDirectoryPage: React.FC = () => {
           </div>
         </div>
 
-        <span className="text-xs font-medium text-text-muted">
-          Total: {buyers.length}
+        <span className="text-xs font-mono font-medium text-text-muted">
+          {buyers.length}
         </span>
       </div>
 
-      {/* Data Table */}
+      {/* High-Density Data Grid */}
       <div className="rounded border border-border-subtle bg-surface-card overflow-hidden">
         <DataTable
           columns={columns}
@@ -141,20 +139,7 @@ export const BuyerDirectoryPage: React.FC = () => {
         />
       </div>
 
-      {/* Modals & Drawers */}
-      <BuyerCreateModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        onSuccess={fetchBuyers}
-      />
-
-      <BuyerEditModal
-        isOpen={Boolean(buyerToEdit)}
-        buyer={buyerToEdit}
-        onClose={() => setBuyerToEdit(null)}
-        onSuccess={fetchBuyers}
-      />
-
+      {/* Confirmation Micro-Modal & Brand Drawer */}
       <BuyerDeleteModal
         isOpen={Boolean(buyerToDelete)}
         buyer={buyerToDelete}

@@ -74,8 +74,8 @@ export const useBuyerColumns = ({
         cell: ({ row }) => {
           const comm = row.original.commissionPercentage;
           return (
-            <span className="text-xs text-text-secondary">
-              {comm > 0 ? `${Number(comm).toFixed(2)}%` : '-'}
+            <span className="text-xs font-mono text-text-secondary">
+              {comm > 0 ? `${Number(comm).toFixed(2)}%` : '—'}
             </span>
           );
         },
@@ -117,14 +117,14 @@ export const useBuyerColumns = ({
         header: 'Brands',
         cell: ({ row }) => (
           <Button
-            size="sm"
+            size="xs"
             variant="outline"
             onClick={() => onOpenBrands(row.original)}
-            className="flex items-center gap-1 text-[11px] h-7 px-2"
+            className="flex items-center gap-1 text-[11px]"
           >
             <Tag size={12} />
             <span>Brands</span>
-            <span className="ml-0.5 text-xs font-mono font-semibold">
+            <span className="font-mono font-semibold">
               ({row.original.brandCount || 0})
             </span>
           </Button>
@@ -136,21 +136,19 @@ export const useBuyerColumns = ({
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <Button
-              size="sm"
+              size="xs"
               variant="outline"
               onClick={() => onEditBuyer(row.original)}
-              className="h-7 px-2 text-[11px]"
-              title="Edit"
+              className="text-[11px]"
             >
               <Edit2 size={12} className="mr-1" />
               Edit
             </Button>
             <Button
-              size="sm"
+              size="xs"
               variant="danger"
               onClick={() => onDeleteBuyer(row.original)}
-              className="h-7 px-2 text-[11px]"
-              title="Delete"
+              className="text-[11px]"
             >
               <Trash2 size={12} className="mr-1" />
               Delete

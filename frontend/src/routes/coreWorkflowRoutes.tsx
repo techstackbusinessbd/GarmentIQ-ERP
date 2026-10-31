@@ -4,14 +4,18 @@
  * [BN] কোর ওয়ার্কফ্লোজ ও মার্চেন্ডাইজিং রাউটস (coreWorkflowRoutes.tsx)
  * =============================================================================
  * [EN] Reference: docs/specifications/ROUTE_URL_AND_MENU_SPECIFICATION.md
- * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 21 (Component-based)
+ * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), Rule 21 (Component-based), Rule 27 (Full-Page Workflow)
  * [BN] ক্লায়েন্ট অ্যাপ (/app/*) ড্যাশবোর্ড, মার্চেন্ডাইজিং ও ইনভেন্টরি রাউটসমূহ।
  */
 
 import React from 'react';
 import { Route, Navigate } from 'react-router-dom';
 import { DashboardOverviewPage, ModulePlaceholderPage } from '@/pages';
-import { BuyerDirectoryPage } from '@/features/merchandising';
+import {
+  BuyerDirectoryPage,
+  BuyerCreatePage,
+  BuyerEditPage,
+} from '@/features/merchandising';
 
 export const renderCoreWorkflowRoutes = (): React.ReactNode => (
   <>
@@ -20,9 +24,13 @@ export const renderCoreWorkflowRoutes = (): React.ReactNode => (
     <Route path="/app/overview/dashboard" element={<DashboardOverviewPage />} />
     <Route path="/app/dashboard" element={<Navigate to="/app/overview/dashboard" replace />} />
 
-    {/* Merchandising & Orders */}
+    {/* Merchandising Domain - Buyer & Brand (Module 1) */}
     <Route path="/app/merchandising" element={<Navigate to="/app/merchandising/buyers" replace />} />
     <Route path="/app/merchandising/buyers" element={<BuyerDirectoryPage />} />
+    <Route path="/app/merchandising/buyers/new" element={<BuyerCreatePage />} />
+    <Route path="/app/merchandising/buyers/:id/edit" element={<BuyerEditPage />} />
+
+    {/* Merchandising Domain - Orders, Styles & Costing */}
     <Route
       path="/app/merchandising/orders"
       element={

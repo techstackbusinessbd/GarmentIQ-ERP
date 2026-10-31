@@ -114,3 +114,4 @@ export interface UpdateBuyerBrandPayload {
   status: BuyerStatus;
   notes?: string;
 }
+

@@ -46,3 +46,4 @@ export const SEASON_PATTERN_OPTIONS = [
   { value: 'TWO_SEASONS', label: 'Two Seasons' },
   { value: 'YEAR_ROUND', label: 'Year Round' },
 ] as const;
+
