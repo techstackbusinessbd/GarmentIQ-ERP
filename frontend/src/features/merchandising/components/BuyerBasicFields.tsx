@@ -8,10 +8,10 @@
  */
 
 import React from 'react';
-import { Building2 } from 'lucide-react';
-import { TextInput, Select } from '@/components/ui';
+import { Building2, Globe } from 'lucide-react';
+import { TextInput, Select, SearchableSelect } from '@/components/ui';
 import type { BuyerType } from '@/types';
-import { BUYER_TYPE_OPTIONS } from '../constants/buyerConstants';
+import { BUYER_TYPE_OPTIONS, COUNTRY_OPTIONS } from '../constants/buyerConstants';
 
 export interface BuyerBasicFieldsProps {
   readonly isEditing?: boolean;
@@ -112,14 +112,14 @@ export const BuyerBasicFields: React.FC<BuyerBasicFieldsProps> = ({
           <label className="block text-[11px] font-semibold text-text-secondary mb-1">
             Country of Origin *
           </label>
-          <div className="relative">
-            <TextInput
-              value={countryOfOrigin}
-              onChange={(e) => onCountryOfOriginChange(e.target.value)}
-              placeholder="e.g. Sweden, Spain, USA"
-              required
-            />
-          </div>
+          <SearchableSelect
+            options={COUNTRY_OPTIONS}
+            value={countryOfOrigin}
+            onChange={onCountryOfOriginChange}
+            placeholder="Select country..."
+            searchPlaceholder="Search country..."
+            icon={<Globe size={13} className="text-accent" />}
+          />
         </div>
 
         {/* Contact Person */}

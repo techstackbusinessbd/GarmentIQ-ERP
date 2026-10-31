@@ -47,3 +47,41 @@ export const SEASON_PATTERN_OPTIONS = [
   { value: 'YEAR_ROUND', label: 'Year Round' },
 ] as const;
 
+/**
+ * [EN] Standard destination and country of origin list for global RMG buyers
+ * [BN] তৈরি পোশাক রফতানি ও আন্তর্জাতিক বায়ারদের দেশসমূহের প্রমিত তালিকা
+ */
+export const COUNTRY_OPTIONS = [
+  { value: 'USA', label: 'United States (USA)' },
+  { value: 'United Kingdom', label: 'United Kingdom (UK)' },
+  { value: 'Germany', label: 'Germany' },
+  { value: 'Spain', label: 'Spain' },
+  { value: 'France', label: 'France' },
+  { value: 'Sweden', label: 'Sweden' },
+  { value: 'Italy', label: 'Italy' },
+  { value: 'Netherlands', label: 'Netherlands' },
+  { value: 'Canada', label: 'Canada' },
+  { value: 'Japan', label: 'Japan' },
+  { value: 'Australia', label: 'Australia' },
+  { value: 'Denmark', label: 'Denmark' },
+  { value: 'Belgium', label: 'Belgium' },
+  { value: 'Poland', label: 'Poland' },
+  { value: 'Switzerland', label: 'Switzerland' },
+  { value: 'Norway', label: 'Norway' },
+  { value: 'Ireland', label: 'Ireland' },
+  { value: 'Austria', label: 'Austria' },
+  { value: 'Portugal', label: 'Portugal' },
+  { value: 'Turkey', label: 'Turkey' },
+  { value: 'United Arab Emirates', label: 'United Arab Emirates (UAE)' },
+  { value: 'Saudi Arabia', label: 'Saudi Arabia' },
+  { value: 'China', label: 'China' },
+  { value: 'Hong Kong', label: 'Hong Kong' },
+  { value: 'Singapore', label: 'Singapore' },
+  { value: 'South Korea', label: 'South Korea' },
+  { value: 'Brazil', label: 'Brazil' },
+  { value: 'Mexico', label: 'Mexico' },
+  { value: 'South Africa', label: 'South Africa' },
+  { value: 'India', label: 'India' },
+  { value: 'Bangladesh', label: 'Bangladesh' },
+  { value: 'Other', label: 'Other' },
+] as const;
