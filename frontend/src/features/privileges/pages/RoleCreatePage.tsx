@@ -33,7 +33,7 @@ export const RoleCreatePage: React.FC = () => {
   const [selectedPermissions, setSelectedPermissions] = useState<Set<string>>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: rawCatalog = [], isLoading: isLoadingCatalog } = usePermissionCatalog('admin');
+  const { data: rawCatalog = [], isLoading: isLoadingCatalog } = usePermissionCatalog();
 
   // [EN] Omit platform-root modules (client_mgmt) for tenant operators
   // [BN] নন-সুপারঅ্যাডমিন অপারেটরদের জন্য ক্লায়েন্ট ম্যানেজমেন্ট বাদ দেওয়া

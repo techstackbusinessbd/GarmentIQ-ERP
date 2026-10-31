@@ -29,7 +29,7 @@ export interface UserMatrixViewProps {
 
 export const UserMatrixView: React.FC<UserMatrixViewProps> = ({ initialUserId, onUserChange }) => {
   const { isSuperAdmin: isCallerSuperAdmin } = usePermission();
-  const { data: rawCatalog = [], isLoading: isCatalogLoading } = usePermissionCatalog('admin');
+  const { data: rawCatalog = [], isLoading: isCatalogLoading } = usePermissionCatalog();
 
   // Filter out platform root modules (client_mgmt) and root purge permissions for tenant operators
   const catalogDomains = useMemo(() => isCallerSuperAdmin

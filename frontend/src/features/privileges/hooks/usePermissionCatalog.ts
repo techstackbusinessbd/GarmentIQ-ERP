@@ -15,14 +15,16 @@ import { permissionService } from '../services/permissionService';
 import type { MatrixDomainDef } from '../constants/accessMatrixTypes';
 
 /**
- * [EN] Reactive query hook to fetch the dynamic domain-module-action catalog
- * [BN] ডায়নামিক ডোমেন-মডিউল-অ্যাকশন ক্যাটালগ সংগ্রহের রিঅ্যাক্টিভ কোয়েরি হুক
+ * [EN] Reactive query hook to fetch the dynamic domain-module-action catalog.
+ *      When domain is omitted, fetches all domains across the system dynamically.
+ * [BN] ডায়নামিক ডোমেন-মডিউল-অ্যাকশন ক্যাটালগ সংগ্রহের রিঅ্যাক্টিভ কোয়েরি হুক।
+ *      ডোমেন উল্লেখ না থাকলে সিস্টেমের সকল ডোমেন স্বয়ংক্রিয়ভাবে সংগ্রহ করে।
  *
- * @param domain [EN] Optional domain filter (defaults to 'admin' for Domain 00)
+ * @param domain [EN] Optional domain filter / [BN] ঐচ্ছিক ডোমেন ফিল্টার
  */
-export const usePermissionCatalog = (domain: string = 'admin') => {
+export const usePermissionCatalog = (domain?: string) => {
   return useQuery<MatrixDomainDef[], Error>({
-    queryKey: ['permission-catalog', domain, isPlatformSuperAdmin(useAuthStore.getState().user) ? 'super' : 'tenant'],
+    queryKey: ['permission-catalog', domain || 'all', isPlatformSuperAdmin(useAuthStore.getState().user) ? 'super' : 'tenant'],
     queryFn: () => permissionService.getPermissionCatalog(domain),
     staleTime: 5 * 60 * 1000, // [EN] 5 minutes cache / [BN] ৫ মিনিট ক্যাশ
   });

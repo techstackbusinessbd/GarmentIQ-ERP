@@ -25,7 +25,7 @@ export interface RoleMatrixViewProps {
 
 export const RoleMatrixView: React.FC<RoleMatrixViewProps> = ({ initialRoleCode }) => {
   const { isSuperAdmin: isCallerSuperAdmin } = usePermission();
-  const { data: rawCatalog = [], isLoading: isCatalogLoading } = usePermissionCatalog('admin');
+  const { data: rawCatalog = [], isLoading: isCatalogLoading } = usePermissionCatalog();
 
   // Filter out platform root modules (client_mgmt) and root purge permissions for tenant operators
   const catalogDomains = useMemo(() => {

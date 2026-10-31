@@ -64,7 +64,7 @@ export const RoleTable: React.FC<RoleTableProps> = ({
     }
   }, [isSuperAdmin]);
 
-  const { data: catalogDomains = [] } = usePermissionCatalog('admin');
+  const { data: catalogDomains = [] } = usePermissionCatalog();
   const totalClearancesCount = useMemo(
     () => extractCatalogPermissionCodes(catalogDomains).length || 23,
     [catalogDomains]
