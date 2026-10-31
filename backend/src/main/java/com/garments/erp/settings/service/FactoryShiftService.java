@@ -17,12 +17,14 @@ import java.util.UUID;
  * [EN] Factory Shift Business Service (FactoryShiftService.java)
  * [BN] কারখানা শিফট ম্যানেজমেন্ট সার্ভিস
  * =============================================================================
+ * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), OWASP A09 (Audit Logging)
  */
 @Service
 @RequiredArgsConstructor
 public class FactoryShiftService {
 
     private final FactoryShiftRepository shiftRepository;
+    private final SystemAuditLogService auditLogService;
 
     @Transactional(readOnly = true)
     public List<FactoryShiftDto> getAllShifts() {
@@ -45,7 +47,18 @@ public class FactoryShiftService {
                 .isActive(dto.getIsActive() != null ? dto.getIsActive() : true)
                 .shiftType(dto.getType() != null ? dto.getType().trim() : "REGULAR")
                 .build();
-        return toDto(shiftRepository.save(entity));
+        FactoryShift saved = shiftRepository.save(entity);
+
+        auditLogService.record(
+                tenantId,
+                "FACTORY_SHIFTS",
+                "SHIFT_CREATED",
+                "Shift: " + saved.getName(),
+                "Created factory shift: " + saved.getName() + " (" + saved.getStartTime() + " - " + saved.getEndTime() + ")",
+                "INFO"
+        );
+
+        return toDto(saved);
     }
 
     @Transactional
@@ -54,6 +67,15 @@ public class FactoryShiftService {
         FactoryShift shift = shiftRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Shift not found with id: " + id));
         shiftRepository.delete(shift);
+
+        auditLogService.record(
+                tenantId,
+                "FACTORY_SHIFTS",
+                "SHIFT_DELETED",
+                "Shift: " + shift.getName(),
+                "Deleted factory shift: " + shift.getName(),
+                "WARNING"
+        );
     }
 
     private FactoryShiftDto toDto(FactoryShift s) {

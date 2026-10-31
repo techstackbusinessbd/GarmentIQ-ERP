@@ -238,6 +238,8 @@ export const SystemAuditLogsTab: React.FC = () => {
                 className="px-2 py-1 text-xs bg-surface-card border border-border-subtle rounded-[4px] text-text-primary focus:border-brand-accent focus:outline-none cursor-pointer shadow-2xs font-medium"
               >
                 <option value="ALL">All Categories</option>
+                <option value="MERCHANDISING">Merchandising & Buyers</option>
+                <option value="MASTER_LIBRARY">Master Library</option>
                 <option value="SECURITY_POLICY">Security Policy</option>
                 <option value="USER_MANAGEMENT">User Management & Passwords</option>
                 <option value="ROLE_MANAGEMENT">Role & Privilege Matrix</option>

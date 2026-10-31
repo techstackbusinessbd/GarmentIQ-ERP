@@ -18,12 +18,14 @@ import java.util.UUID;
  * [EN] Currency Exchange Rate Business Service (CurrencyExchangeRateService.java)
  * [BN] মুদ্রা বিনিময় হার সার্ভিস
  * =============================================================================
+ * [EN] Rules: Rule 07 (<300 lines), Rule 15 (Bilingual), OWASP A09 (Audit Logging)
  */
 @Service
 @RequiredArgsConstructor
 public class CurrencyExchangeRateService {
 
     private final CurrencyExchangeRateRepository currencyRepository;
+    private final SystemAuditLogService auditLogService;
 
     @Transactional(readOnly = true)
     public List<CurrencyExchangeRateDto> getAllCurrencies() {
@@ -41,7 +43,18 @@ public class CurrencyExchangeRateService {
                 .orElseThrow(() -> new ResourceNotFoundException("Currency not found: " + code));
 
         rate.setRateToBdt(newRateToBdt);
-        return toDto(currencyRepository.save(rate));
+        CurrencyExchangeRate saved = currencyRepository.save(rate);
+
+        auditLogService.record(
+                tenantId,
+                "CURRENCY_RATE",
+                "CURRENCY_UPDATED",
+                "Currency: " + saved.getCurrencyCode(),
+                "Updated exchange rate for " + saved.getCurrencyCode() + " to " + newRateToBdt + " BDT",
+                "INFO"
+        );
+
+        return toDto(saved);
     }
 
     @Transactional
@@ -63,7 +76,18 @@ public class CurrencyExchangeRateService {
         rate.setIsMaster(dto.getIsMaster() != null ? dto.getIsMaster() : false);
         rate.setIsOperating(dto.getIsOperating() != null ? dto.getIsOperating() : false);
 
-        return toDto(currencyRepository.save(rate));
+        CurrencyExchangeRate saved = currencyRepository.save(rate);
+
+        auditLogService.record(
+                tenantId,
+                "CURRENCY_RATE",
+                "CURRENCY_UPSERTED",
+                "Currency: " + saved.getCurrencyCode(),
+                "Configured exchange rate for " + saved.getCurrencyCode() + " (USD: " + saved.getRateToUsd() + ", BDT: " + saved.getRateToBdt() + ")",
+                "INFO"
+        );
+
+        return toDto(saved);
     }
 
     private CurrencyExchangeRateDto toDto(CurrencyExchangeRate c) {
@@ -76,7 +100,6 @@ public class CurrencyExchangeRateService {
                 .rateToBdt(c.getRateToBdt())
                 .isMaster(c.getIsMaster())
                 .isOperating(c.getIsOperating())
-                .lastUpdated(c.getUpdatedAt())
                 .build();
     }
 }

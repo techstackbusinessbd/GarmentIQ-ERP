@@ -20,7 +20,9 @@ export type AuditCategory =
   | 'AUTO_CODE'
   | 'FACTORY_SHIFTS'
   | 'CURRENCY_RATE'
-  | 'AUTH_EVENT';
+  | 'AUTH_EVENT'
+  | 'MERCHANDISING'
+  | 'MASTER_LIBRARY';
 
 export interface AuditLogEntry {
   id: string;
