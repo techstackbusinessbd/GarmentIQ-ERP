@@ -3,14 +3,14 @@
  * [EN] Global Buyer Directory Page (BuyerDirectoryPage.tsx)
  * [BN] গ্লোবাল বায়ার ডিরেক্টরি পেজ (BuyerDirectoryPage.tsx)
  * =============================================================================
- * [EN] Reference: Domain 01 Merchandising, Rule 05 (Zero Static), Rule 27 (Full Page), Rule 28 (Single-word buttons)
+ * [EN] Reference: Domain 01 Merchandising, Rule 05 (Zero Static), Rule 20 (Tokens), Rule 27 (Full Page), Rule 28 (Single-word buttons)
  * [BN] বায়ার মাস্টার তালিকা ও সাব-ব্র্যান্ড পোর্টফোলিও ব্যবস্থাপনা স্ক্রিন।
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw, Building2 } from 'lucide-react';
-import { Button, TextInput, Select, DataTable } from '@/components/ui';
+import { Button, DataTable } from '@/components/ui';
 import type { Buyer } from '@/types';
 import { buyerService } from '../services/buyerService';
 import { useBuyerColumns } from '../components/useBuyerColumns';
@@ -23,7 +23,6 @@ export const BuyerDirectoryPage: React.FC = () => {
 
   const [buyers, setBuyers] = useState<Buyer[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [search, setSearch] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [typeFilter, setTypeFilter] = useState<string>('ALL');
 
@@ -35,9 +34,9 @@ export const BuyerDirectoryPage: React.FC = () => {
     try {
       setIsLoading(true);
       const res = await buyerService.getBuyers({
-        search: search.trim() || undefined,
         status: statusFilter !== 'ALL' ? statusFilter : undefined,
         buyerType: typeFilter !== 'ALL' ? typeFilter : undefined,
+        size: 100,
       });
       setBuyers(res.content || []);
     } catch {
@@ -45,7 +44,7 @@ export const BuyerDirectoryPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [search, statusFilter, typeFilter]);
+  }, [statusFilter, typeFilter]);
 
   useEffect(() => {
     fetchBuyers();
@@ -58,86 +57,69 @@ export const BuyerDirectoryPage: React.FC = () => {
   });
 
   return (
-    <div className="p-6 space-y-4">
-      {/* Page Header Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded bg-accent/10 text-accent">
-            <Building2 size={20} />
-          </div>
-          <div>
-            <h1 className="text-base font-bold text-text-primary tracking-tight">
-              Buyers
-            </h1>
-            <p className="text-xs text-text-muted">
-              Directory & brand portfolio
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={fetchBuyers}
-            disabled={isLoading}
-            icon={<RefreshCw size={13} className={isLoading ? 'animate-spin' : ''} />}
-          >
-            Refresh
-          </Button>
-          <Button
-            size="sm"
-            variant="primary"
-            onClick={() => navigate('/app/merchandising/buyers/new')}
-            icon={<Plus size={14} />}
-          >
-            Register
-          </Button>
-        </div>
-      </div>
-
-      {/* Filter Toolbar */}
-      <div className="p-3 rounded border border-border-subtle bg-surface-card flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2 flex-1">
-          <div className="w-64">
-            <TextInput
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search..."
-              className="text-xs"
-            />
-          </div>
-
-          <div className="w-36">
-            <Select
+    <div className="w-full">
+      <DataTable
+        title="Buyers"
+        icon={<Building2 size={16} className="text-brand-accent" />}
+        headerExtra={
+          <span className="text-xs font-mono font-medium text-text-muted">
+            {buyers.length}
+          </span>
+        }
+        headerActions={
+          <div className="flex items-center gap-2">
+            <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              options={[{ value: 'ALL', label: 'All Types' }, ...BUYER_TYPE_OPTIONS] as any}
-            />
-          </div>
+              className="px-2.5 py-1 text-xs bg-surface-card border border-border-subtle rounded-[4px] text-text-primary focus:border-brand-accent focus:outline-none cursor-pointer shadow-2xs font-medium"
+            >
+              <option value="ALL">All Types</option>
+              {BUYER_TYPE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
 
-          <div className="w-32">
-            <Select
+            <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              options={[{ value: 'ALL', label: 'All Status' }, ...STATUS_OPTIONS] as any}
-            />
+              className="px-2.5 py-1 text-xs bg-surface-card border border-border-subtle rounded-[4px] text-text-primary focus:border-brand-accent focus:outline-none cursor-pointer shadow-2xs font-medium"
+            >
+              <option value="ALL">All Status</option>
+              {STATUS_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+
+            <Button
+              size="xs"
+              variant="secondary"
+              onClick={fetchBuyers}
+              disabled={isLoading}
+              icon={<RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />}
+            >
+              Refresh
+            </Button>
+
+            <Button
+              size="xs"
+              variant="primary"
+              onClick={() => navigate('/app/merchandising/buyers/new')}
+              icon={<Plus size={13} />}
+            >
+              Register
+            </Button>
           </div>
-        </div>
-
-        <span className="text-xs font-mono font-medium text-text-muted">
-          {buyers.length}
-        </span>
-      </div>
-
-      {/* High-Density Data Grid */}
-      <div className="rounded border border-border-subtle bg-surface-card overflow-hidden">
-        <DataTable
-          columns={columns}
-          data={buyers}
-          isLoading={isLoading}
-        />
-      </div>
+        }
+        searchPlaceholder="Search buyers..."
+        columns={columns}
+        data={buyers}
+        isLoading={isLoading}
+        initialPageSize={10}
+      />
 
       {/* Confirmation Micro-Modal & Brand Drawer */}
       <BuyerDeleteModal
@@ -156,3 +138,5 @@ export const BuyerDirectoryPage: React.FC = () => {
     </div>
   );
 };
+
+export default BuyerDirectoryPage;

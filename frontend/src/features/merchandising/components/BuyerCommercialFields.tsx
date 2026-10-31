@@ -152,3 +152,4 @@ export const BuyerCommercialFields: React.FC<BuyerCommercialFieldsProps> = ({
     </div>
   );
 };
+
